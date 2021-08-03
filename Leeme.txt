@@ -1,0 +1,1 @@
+En este repositorio estan todos los archivos correspondientes al concentrador de datos.
