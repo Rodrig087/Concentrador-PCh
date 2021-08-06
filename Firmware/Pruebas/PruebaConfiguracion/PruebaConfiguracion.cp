@@ -15,10 +15,10 @@ void main() {
  TEST = 1;
 
 
- while(1){
 
 
- }
+
+
 
 
 
@@ -38,12 +38,12 @@ void ConfiguracionPrincipal(){
  OSCCON.IRCF2=1;
  OSCCON.IRCF1=1;
  OSCCON.IRCF0=1;
- OSCCON.OSTS=1;
+ OSCCON.OSTS=0;
  OSCCON.HFIOFS=1;
  OSCCON.SCS1=1;
  OSCCON.SCS0=1;
- OSCCON2 = 0b10000000;
- OSCTUNE = 0b00011000;
+
+
 
 
  ANSELB = 0;
@@ -54,8 +54,8 @@ void ConfiguracionPrincipal(){
 
 
  T1CON = 0x01;
- TMR1H = 0x63;
- TMR1L = 0xC0;
+ TMR1H = 0xF0;
+ TMR1L = 0x60;
  PIR1.TMR1IF = 0;
  PIE1.TMR1IE = 1;
 
@@ -70,13 +70,13 @@ void interrupt(void){
 
 
  if (TMR1IF_bit==1){
+
+ TEST = ~TEST;
  TMR1IF_bit = 0;
 
 
- TMR1H = 0x63;
- TMR1L = 0xC0;
-
- TEST = ~TEST;
+ TMR1H = 0xF0;
+ TMR1L = 0x60;
 
  }
 

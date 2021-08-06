@@ -23,10 +23,10 @@ void main() {
     TEST = 1;
     
     //Entra al bucle princial del programa:
-    while(1){
+    //while(1){
              //TEST = ~TEST;
              //Delay_ms(80);
-    }
+    //}
      
 
 
@@ -46,12 +46,12 @@ void ConfiguracionPrincipal(){
      OSCCON.IRCF2=1;                                    //HFINTOSC=16MHz  IRFC=111
      OSCCON.IRCF1=1;
      OSCCON.IRCF0=1;
-     OSCCON.OSTS=1;                                     //El dispositivo está funcionando desde el reloj definido por FOSC <3:0> del registro CONFIG1H
+     OSCCON.OSTS=0;                                     //*El dispositivo está funcionando desde el reloj definido por FOSC <3:0> del registro CONFIG1H
      OSCCON.HFIOFS=1;                                   //HFINTOSC frequency is stable
      OSCCON.SCS1=1;                                     //System Clock Select bit:  1x=Internal oscillator block
      OSCCON.SCS0=1;
-     OSCCON2 = 0b10000000;                              //Select PLL as osc source
-     OSCTUNE = 0b00011000;                              //Frequency Tuning bits
+     //OSCCON2 = 0b10000000;                              //Select PLL as osc source
+     //OSCTUNE = 0b00000000 ;                               //Frequency Tuning bits: Fecuencia de calibracion de fabrica
 
      //Configuracion de puertos:
      ANSELB = 0;                                        //Configura PORTB como digital
@@ -60,10 +60,10 @@ void ConfiguracionPrincipal(){
      INTCON.GIE = 1;                                    //Habilita las interrupciones globales
      INTCON.PEIE = 1;                                   //Habilita las interrupciones perifericas
     
-     //Configuracion del TMR1 con un tiempo de 250ms
+     //Configuracion del TMR1 con un tiempo de 1ms
      T1CON = 0x01;                                      //Timer1 Input Clock Prescale Select bits
-     TMR1H = 0x63;
-     TMR1L = 0xC0;
+     TMR1H = 0xF0;
+     TMR1L = 0x60;
      PIR1.TMR1IF = 0;                                   //Limpia la bandera de interrupcion del TMR1
      PIE1.TMR1IE = 1;                                   //Habilita la interrupción de desbordamiento TMR1
     
@@ -78,13 +78,13 @@ void interrupt(void){
 //********************************************************************************************************************************************
 //Interrupcion por desbordamiento del Timer1
     if (TMR1IF_bit==1){
+        
+        TEST = ~TEST;
         TMR1IF_bit = 0;                                       //Limpia la bandera de interrupcion por desbordamiento del TMR1
         //T1CON.TMR1ON = 0;                                     //Apaga el Timer1
         //Reinicia el Timer1:
-        TMR1H = 0x63;
-        TMR1L = 0xC0;
-
-        TEST = ~TEST;
+        TMR1H = 0xF0;
+        TMR1L = 0x60;
 
     }
 //********************************************************************************************************************************************
