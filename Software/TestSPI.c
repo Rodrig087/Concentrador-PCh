@@ -51,17 +51,17 @@ int main() {
 	ConfiguracionPrincipal();
 	
 	//Datos de prueba:
-	idPet = 1;
-	funcionPet = 2;
+	idPet = 5;
+	funcionPet = 4;
 	subFuncionPet = 3;
-	numDatosPet = 1;
+	numDatosPet = 2;
 	payloadPet[0] = 0xFF;
 	payloadPet[1] = 0XEE;
 	
 	EnviarSolicitud(idPet, funcionPet, subFuncionPet, numDatosPet, payloadPet);
 	
-	while(1){}
-		
+	//while(1){}
+	Salir();	
 
 }
 
@@ -100,10 +100,18 @@ int ConfiguracionPrincipal(){
 	pinMode(LEDTEST, OUTPUT);
 	wiringPiISR (P1, INT_EDGE_RISING, RecibirRespuesta);
 	
+	//Enciende el pin LEDTEST:
 	digitalWrite (LEDTEST, HIGH);
+	
+	//Genera un pulso para resetear el PIC:
+    digitalWrite(MCLR, HIGH);
+    delay(100);
+    digitalWrite(MCLR, LOW);
+    delay(100);
+    digitalWrite(MCLR, HIGH); 
 		
 	printf("Configuracion completa\n");
-	sleep(5);
+	//sleep(1);
 	
 }
 //**************************************************************************************************************************************
@@ -143,7 +151,7 @@ void RecibirRespuesta(){
 	bcm2835_spi_transfer(0xF0);	
 	bcm2835_delayMicroseconds(TIEMPO_SPI);
 	
-	Salir();
+	//Salir();
 
 	
 }
@@ -156,18 +164,18 @@ void EnviarSolicitud(unsigned short id, unsigned short funcion, unsigned short s
 	//Envia la cabecera: [id, funcion, subfuncion, #Datos]:
 	bcm2835_spi_transfer(0xA1);
 	bcm2835_delayMicroseconds(TIEMPO_SPI);
-	id = bcm2835_spi_transfer(0x00);
+	bcm2835_spi_transfer(id);
 	bcm2835_delayMicroseconds(TIEMPO_SPI);
-	funcion = bcm2835_spi_transfer(0x00);
+	bcm2835_spi_transfer(funcion);
 	bcm2835_delayMicroseconds(TIEMPO_SPI);
-	subFuncion = bcm2835_spi_transfer(0x00);
+	bcm2835_spi_transfer(subFuncion);
 	bcm2835_delayMicroseconds(TIEMPO_SPI);
-	numDatos = bcm2835_spi_transfer(0x00);
+	bcm2835_spi_transfer(numDatos);
 	bcm2835_delayMicroseconds(TIEMPO_SPI);
 	
 	//Envia el payload:
 	for (i=0;i<numDatosPet;i++){
-        payload[i] = bcm2835_spi_transfer(0x00);
+        bcm2835_spi_transfer(payload[i]);
         bcm2835_delayMicroseconds(TIEMPO_SPI);
     }
 	
@@ -176,6 +184,7 @@ void EnviarSolicitud(unsigned short id, unsigned short funcion, unsigned short s
 	bcm2835_delayMicroseconds(TIEMPO_SPI);
 	
 	printf("Solicitud Enviada\n");
+	printf("Cabecera: %d %d %d %d\n", id, funcion, subFuncion, numDatos);
 	
 }
 

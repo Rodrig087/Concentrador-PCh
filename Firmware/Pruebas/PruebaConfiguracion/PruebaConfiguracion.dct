@@ -175,6 +175,8 @@ b5
 b6
 b7
 banked
+banspi0
+banspi1
 baud1con
 baud2con
 baudcon
@@ -222,6 +224,7 @@ brgh1_bit
 brgh2
 brgh2_bit
 bsr
+bufferspi
 byte2double
 c
 c_bit
@@ -331,6 +334,8 @@ c5tsel0
 c5tsel0_bit
 c5tsel1
 c5tsel1_bit
+cabeceraoutrs485
+cambiarestadobandera
 ccp1
 ccp1_bit
 ccp1as0
@@ -626,6 +631,7 @@ delay_cyc
 dhen
 dhen_bit
 dhen_ssp1con3_bit
+direccionrs485
 div_16x16_s
 div_16x16_s_l
 div_16x16_u
@@ -735,6 +741,7 @@ fsr2
 fsr2h
 fsr2l
 fsr2ptr
+funcionrs485
 fvrcon
 fvren
 fvren_bit
@@ -783,6 +790,7 @@ hlvdl2
 hlvdl2_bit
 hlvdl3
 hlvdl3_bit
+i
 ics_auto
 ics_off
 idissen
@@ -887,6 +895,7 @@ itrim5
 itrim5_bit
 ivrst
 ivrst_bit
+j
 kbi0
 kbi0_bit
 kbi1
@@ -1069,6 +1078,7 @@ not_write_bit
 not_write_ssp1stat_bit
 nrm3232
 nrm4032
+numdatosrs485
 nvcfg0
 nvcfg0_bit
 nvcfg1
@@ -1771,6 +1781,7 @@ str3d_bit
 str3sync
 str3sync_bit
 sub_32x32_fp
+subfuncionrs485
 swap
 swdte
 swdte_bit
@@ -2080,6 +2091,7 @@ to__bit
 tosh
 tosl
 tosu
+tramasolicitudspi
 trigsel
 trigsel_bit
 trisa
@@ -2266,5 +2278,7 @@ wrerr_bit
 wue
 wue_baud1con_bit
 wue_bit
+x
+y
 z
 z_bit
