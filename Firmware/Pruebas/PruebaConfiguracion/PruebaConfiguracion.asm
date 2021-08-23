@@ -22,36 +22,44 @@ _ConfiguracionPrincipal:
 	BSF         OSCCON+0, 5 
 ;PruebaConfiguracion.c,48 :: 		OSCCON.IRCF0=1;
 	BSF         OSCCON+0, 4 
-;PruebaConfiguracion.c,49 :: 		OSCCON.OSTS=0;                                     //*El dispositivo está funcionando desde el reloj definido por FOSC <3:0> del registro CONFIG1H
-	BCF         OSCCON+0, 3 
-;PruebaConfiguracion.c,50 :: 		OSCCON.HFIOFS=1;                                   //HFINTOSC frequency is stable
-	BSF         OSCCON+0, 2 
 ;PruebaConfiguracion.c,51 :: 		OSCCON.SCS1=1;                                     //System Clock Select bit:  1x=Internal oscillator block
 	BSF         OSCCON+0, 1 
 ;PruebaConfiguracion.c,52 :: 		OSCCON.SCS0=1;
 	BSF         OSCCON+0, 0 
-;PruebaConfiguracion.c,57 :: 		ANSELB = 0;                                        //Configura PORTB como digital
+;PruebaConfiguracion.c,59 :: 		ANSELA = 0;                                        //Configura PORTA como digital
+	CLRF        ANSELA+0 
+;PruebaConfiguracion.c,60 :: 		ANSELB = 0;                                        //Configura PORTB como digital
 	CLRF        ANSELB+0 
-;PruebaConfiguracion.c,58 :: 		TEST_Direction = 0;                                //Configura el pin TEST como salida
+;PruebaConfiguracion.c,61 :: 		ANSELC = 0;                                        //Configura PORTC como digital
+	CLRF        ANSELC+0 
+;PruebaConfiguracion.c,63 :: 		TEST_Direction = 0;                                //Configura el pin TEST como salida
 	BCF         TRISB2_bit+0, BitPos(TRISB2_bit+0) 
-;PruebaConfiguracion.c,60 :: 		INTCON.GIE = 1;                                    //Habilita las interrupciones globales
+;PruebaConfiguracion.c,64 :: 		TRISA5_bit = 1;                                    //SS1 In
+	BSF         TRISA5_bit+0, BitPos(TRISA5_bit+0) 
+;PruebaConfiguracion.c,65 :: 		TRISC3_bit = 1;                                    //SCK1 In
+	BSF         TRISC3_bit+0, BitPos(TRISC3_bit+0) 
+;PruebaConfiguracion.c,66 :: 		TRISC4_bit = 1;                                    //SDI1 In
+	BSF         TRISC4_bit+0, BitPos(TRISC4_bit+0) 
+;PruebaConfiguracion.c,67 :: 		TRISC5_bit = 0;                                    //SDO1 Out
+	BCF         TRISC5_bit+0, BitPos(TRISC5_bit+0) 
+;PruebaConfiguracion.c,69 :: 		INTCON.GIE = 1;                                    //Habilita las interrupciones globales
 	BSF         INTCON+0, 7 
-;PruebaConfiguracion.c,61 :: 		INTCON.PEIE = 1;                                   //Habilita las interrupciones perifericas
+;PruebaConfiguracion.c,70 :: 		INTCON.PEIE = 1;                                   //Habilita las interrupciones perifericas
 	BSF         INTCON+0, 6 
-;PruebaConfiguracion.c,64 :: 		T1CON = 0x01;                                      //Timer1 Input Clock Prescale Select bits
-	MOVLW       1
-	MOVWF       T1CON+0 
-;PruebaConfiguracion.c,65 :: 		TMR1H = 0xF0;
-	MOVLW       240
-	MOVWF       TMR1H+0 
-;PruebaConfiguracion.c,66 :: 		TMR1L = 0x60;
-	MOVLW       96
-	MOVWF       TMR1L+0 
-;PruebaConfiguracion.c,67 :: 		PIR1.TMR1IF = 0;                                   //Limpia la bandera de interrupcion del TMR1
-	BCF         PIR1+0, 0 
-;PruebaConfiguracion.c,68 :: 		PIE1.TMR1IE = 1;                                   //Habilita la interrupción de desbordamiento TMR1
-	BSF         PIE1+0, 0 
-;PruebaConfiguracion.c,70 :: 		Delay_ms(100);                                     //Espera hasta que se estabilicen los cambios
+;PruebaConfiguracion.c,73 :: 		SSP1IE_bit = 1;
+	BSF         SSP1IE_bit+0, BitPos(SSP1IE_bit+0) 
+;PruebaConfiguracion.c,74 :: 		SPI1_Init_Advanced(_SPI_SLAVE_SS_ENABLE, _SPI_DATA_SAMPLE_END, _SPI_CLK_IDLE_HIGH, _SPI_HIGH_2_LOW);
+	MOVLW       4
+	MOVWF       FARG_SPI1_Init_Advanced_master+0 
+	MOVLW       128
+	MOVWF       FARG_SPI1_Init_Advanced_data_sample+0 
+	MOVLW       16
+	MOVWF       FARG_SPI1_Init_Advanced_clock_idle+0 
+	CLRF        FARG_SPI1_Init_Advanced_transmit_edge+0 
+	CALL        _SPI1_Init_Advanced+0, 0
+;PruebaConfiguracion.c,75 :: 		SSP1IF_bit = 0;                                                            //Limpia la bandera de interrupcion por SPI *
+	BCF         SSP1IF_bit+0, BitPos(SSP1IF_bit+0) 
+;PruebaConfiguracion.c,85 :: 		Delay_ms(100);                                     //Espera hasta que se estabilicen los cambios
 	MOVLW       3
 	MOVWF       R11, 0
 	MOVLW       8
@@ -65,30 +73,24 @@ L_ConfiguracionPrincipal0:
 	BRA         L_ConfiguracionPrincipal0
 	DECFSZ      R11, 1, 1
 	BRA         L_ConfiguracionPrincipal0
-;PruebaConfiguracion.c,71 :: 		}
+;PruebaConfiguracion.c,86 :: 		}
 L_end_ConfiguracionPrincipal:
 	RETURN      0
 ; end of _ConfiguracionPrincipal
 
 _interrupt:
 
-;PruebaConfiguracion.c,76 :: 		void interrupt(void){
-;PruebaConfiguracion.c,80 :: 		if (TMR1IF_bit==1){
-	BTFSS       TMR1IF_bit+0, BitPos(TMR1IF_bit+0) 
+;PruebaConfiguracion.c,91 :: 		void interrupt(void){
+;PruebaConfiguracion.c,107 :: 		if (SSP1IF_bit==1){
+	BTFSS       SSP1IF_bit+0, BitPos(SSP1IF_bit+0) 
 	GOTO        L_interrupt1
-;PruebaConfiguracion.c,82 :: 		TEST = ~TEST;
+;PruebaConfiguracion.c,109 :: 		SSP1IF_bit = 0;
+	BCF         SSP1IF_bit+0, BitPos(SSP1IF_bit+0) 
+;PruebaConfiguracion.c,110 :: 		TEST = ~TEST;
 	BTG         RB2_bit+0, BitPos(RB2_bit+0) 
-;PruebaConfiguracion.c,83 :: 		TMR1IF_bit = 0;                                       //Limpia la bandera de interrupcion por desbordamiento del TMR1
-	BCF         TMR1IF_bit+0, BitPos(TMR1IF_bit+0) 
-;PruebaConfiguracion.c,86 :: 		TMR1H = 0xF0;
-	MOVLW       240
-	MOVWF       TMR1H+0 
-;PruebaConfiguracion.c,87 :: 		TMR1L = 0x60;
-	MOVLW       96
-	MOVWF       TMR1L+0 
-;PruebaConfiguracion.c,89 :: 		}
+;PruebaConfiguracion.c,112 :: 		}
 L_interrupt1:
-;PruebaConfiguracion.c,92 :: 		}
+;PruebaConfiguracion.c,114 :: 		}
 L_end_interrupt:
 L__interrupt5:
 	RETFIE      1
