@@ -3,3 +3,4 @@ main
 		SPI1_Init_Advanced
 interrupt
 	CambiarEstadoBandera
+	ResponderSPI

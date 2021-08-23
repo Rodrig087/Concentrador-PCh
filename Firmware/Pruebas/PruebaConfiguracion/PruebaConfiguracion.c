@@ -11,26 +11,27 @@ Observaciones:
 #define IDNODO 3                                                                //Direccion del nodo
 
 ////////////////////////////////////////////// Declaracion de variables y costantes ///////////////////////////////////////////////////////
-//Variables y contantes para la peticion y respuesta de datos
+//Definicion de pines:
+sbit RP0 at LATC0_bit;                                                          //Definicion del pin P1
+sbit RP0_Direction at TRISC0_bit;
 sbit TEST at RB2_bit;                                                           //Definicion del pin de indicador auxiliar para hacer pruebas
 sbit TEST_Direction at TRISB2_bit;
-
 //Subindices:
 unsigned int i, j, x, y;
-
 //Variables para la comunicacion SPI:
 unsigned short bufferSPI;
 unsigned short banSPI0, banSPI1;
 unsigned char tramaSolicitudSPI[10];                                            //Vector para almacenar los datos de solicitud que envia la RPi a traves del SPI
-
 //Variables para manejo del RS485:
 unsigned short direccionSol, funcionSol, subFuncionSol, numDatosSol;
-unsigned char payloadSol[15];                                                //Vector para almacenar el pyload de la trama RS485 a enviar
+unsigned char cabeceraSolicitud[4];                                                   //Vector para almacenar la cabecera de la trama RS485 a enviar
+unsigned char payloadSolicitud[15];                                                   //Vector para almacenar el pyload de la trama RS485 a enviar
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /////////////////////////////////////////////////////////  Declaracion de funciones  /////////////////////////////////////////////////////////
 void ConfiguracionPrincipal();
 void CambiarEstadoBandera(unsigned short bandera, unsigned short estado);
+void ResponderSPI(unsigned char *cabeceraRespuesta, unsigned char *payloadRespuesta);
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////      Main      ////////////////////////////////////////////////////////////////
@@ -52,7 +53,8 @@ void main() {
     funcionSol = 0;
     subFuncionSol = 0;
     numDatosSol = 0;
-    
+    //Puertos:
+    RP0 = 0;
     TEST = 1;
     
     //Entra al bucle princial del programa:
@@ -87,6 +89,7 @@ void ConfiguracionPrincipal(){
      ANSELC = 0;                                        //Configura PORTC como digital
      
      TEST_Direction = 0;                                //Configura el pin TEST como salida
+     RP0_Direction = 0;                                 //Configura el pin RP0 como salida
      TRISA5_bit = 1;                                    //SS1 In
      TRISC3_bit = 1;                                    //SCK1 In
      TRISC4_bit = 1;                                    //SDI1 In
@@ -110,7 +113,7 @@ void ConfiguracionPrincipal(){
 
     Delay_ms(100);                                     //Espera hasta que se estabilicen los cambios
 }
-
+//************************************************************************************************************************************
 //Funcion para cambiar el estado de las banderas:
 void CambiarEstadoBandera(unsigned short bandera, unsigned short estado){
 
@@ -135,6 +138,16 @@ void CambiarEstadoBandera(unsigned short bandera, unsigned short estado){
      }
 }
 //*****************************************************************************************************************************************
+//Funcion para enviar la respuesta a la RPi por SPI
+void ResponderSPI(unsigned char *cabeceraRespuesta, unsigned char *payloadRespuesta){
+
+     //Genera el pulso RP0 para producir la interrupcion externa en la RPi:
+     RP0 = 1;
+     Delay_us(100);
+     RP0 = 0;
+
+}
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -163,10 +176,6 @@ void interrupt(void){
        //Rutina para recibir la trama de solicitud (C:0xA1   F:0xF1):
        if ((banSPI1==0)&&(bufferSPI==0xA1)){
           i = 0;                                                                //Limpia el subindice para guardar la trama SPI
-          direccionSol = 0;                                                     //Limpia los datos de cabecera de la solicitud
-          funcionSol = 0;
-          subFuncionSol = 0;
-          numDatosSol = 0;
           CambiarEstadoBandera(1,1);                                            //Activa la bandera banSPI1
        }
        if ((banSPI1==1)&&(bufferSPI!=0xA1)&&(bufferSPI!=0xF1)){
@@ -175,24 +184,26 @@ void interrupt(void){
        }
        if ((banSPI1==1)&&(bufferSPI==0xF1)){
           //Recupera los datos de cabecera de la solicitud:
-          direccionSol = tramaSolicitudSPI[0];
-          funcionSol = tramaSolicitudSPI[1];
-          subFuncionSol = tramaSolicitudSPI[2];
-          numDatosSol = tramaSolicitudSPI[3];
+          for (j=0;j<4;j++){
+              cabeceraSolicitud[j] = tramaSolicitudSPI[j];
+          }
           //Recupera los datos de payload de la solicitud:
-          for (j=0;j<numDatosSol;j++){
-              payloadSol[j] = tramaSolicitudSPI[4+j];
+          for (j=0;j<(cabeceraSolicitud[3]);j++){
+              payloadSolicitud[j] = tramaSolicitudSPI[4+j];
           }
           
           //Prueba: Cambia el estado del led si coincide el Id de la peticion
-           if ((payloadSol[1])==0xEE){
+           if ((payloadSolicitud[1])==0xEE){
               TEST = ~TEST;
+              ResponderSPI(cabeceraSolicitud, payloadSolicitud);
            }
+          //Fin Prueba
           
           CambiarEstadoBandera(1,0);                                            //Limpia la bandera
        }
        
        //Rutina para enviar la trama de respuesta (C:0xA0   F:0xF0):
+
 
     
     }

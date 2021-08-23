@@ -334,6 +334,7 @@ c5tsel0
 c5tsel0_bit
 c5tsel1
 c5tsel1_bit
+cabecerasolicitud
 cambiarestadobandera
 ccp1
 ccp1_bit
@@ -1211,7 +1212,7 @@ p3ssbd0
 p3ssbd0_bit
 p3ssbd1
 p3ssbd1_bit
-payloadsol
+payloadsolicitud
 pc
 pcie
 pcie_bit
@@ -1476,8 +1477,11 @@ rd16_bit
 re3
 re3_bit
 res032
+responderspi
 ri
 ri_bit
+rp0
+rp0_direction
 rsen
 rsen_bit
 rsen_ssp1con2_bit

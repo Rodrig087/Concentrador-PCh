@@ -11,7 +11,7 @@
 
 
 //Declaracion de constantes
-#define P1 0																	//Pin 11 GPIO
+#define P0 0																	//Pin 11 GPIO
 #define MCLR 28																	//Pin 38 GPIO
 #define LEDTEST 29 																//Pin 40 GPIO																						
 #define TIEMPO_SPI 10
@@ -60,8 +60,8 @@ int main() {
 	
 	EnviarSolicitud(idPet, funcionPet, subFuncionPet, numDatosPet, payloadPet);
 	
-	//while(1){}
-	Salir();	
+	while(1){}
+	//Salir();	
 
 }
 
@@ -95,10 +95,10 @@ int ConfiguracionPrincipal(){
 		
 	//Configuracion libreria WiringPi:
     wiringPiSetup();
-    pinMode(P1, INPUT);
+    pinMode(P0, INPUT);
 	pinMode(MCLR, OUTPUT);
 	pinMode(LEDTEST, OUTPUT);
-	wiringPiISR (P1, INT_EDGE_RISING, RecibirRespuesta);
+	wiringPiISR (P0, INT_EDGE_RISING, RecibirRespuesta);
 	
 	//Enciende el pin LEDTEST:
 	digitalWrite (LEDTEST, HIGH);
@@ -122,6 +122,7 @@ int ConfiguracionPrincipal(){
 //C:0xA0    F:0xF0
 void RecibirRespuesta(){
 	
+	/*
 	bcm2835_delayMicroseconds(200);
 	
 	unsigned short idResp;
@@ -151,7 +152,10 @@ void RecibirRespuesta(){
 	bcm2835_spi_transfer(0xF0);	
 	bcm2835_delayMicroseconds(TIEMPO_SPI);
 	
-	//Salir();
+	*/
+	
+	printf("Interrupcion recibida\n");
+	Salir();
 
 	
 }
