@@ -20,14 +20,14 @@ _main:
 	CLRF        _banSPI0+0 
 ;PruebaConfiguracion.c,49 :: 		banSPI1 = 0;
 	CLRF        _banSPI1+0 
-;PruebaConfiguracion.c,51 :: 		direccionRS485 = 0;
-	CLRF        _direccionRS485+0 
-;PruebaConfiguracion.c,52 :: 		funcionRS485 = 0;
-	CLRF        _funcionRS485+0 
-;PruebaConfiguracion.c,53 :: 		subFuncionRS485 = 0;
-	CLRF        _subFuncionRS485+0 
-;PruebaConfiguracion.c,54 :: 		numDatosRS485 = 0;
-	CLRF        _numDatosRS485+0 
+;PruebaConfiguracion.c,51 :: 		direccionSol = 0;
+	CLRF        _direccionSol+0 
+;PruebaConfiguracion.c,52 :: 		funcionSol = 0;
+	CLRF        _funcionSol+0 
+;PruebaConfiguracion.c,53 :: 		subFuncionSol = 0;
+	CLRF        _subFuncionSol+0 
+;PruebaConfiguracion.c,54 :: 		numDatosSol = 0;
+	CLRF        _numDatosSol+0 
 ;PruebaConfiguracion.c,56 :: 		TEST = 1;
 	BSF         RB2_bit+0, BitPos(RB2_bit+0) 
 ;PruebaConfiguracion.c,67 :: 		}
@@ -181,19 +181,27 @@ _interrupt:
 	XORLW       161
 	BTFSS       STATUS+0, 2 
 	GOTO        L_interrupt10
-L__interrupt20:
-;PruebaConfiguracion.c,165 :: 		CambiarEstadoBandera(1,1);
+L__interrupt23:
+;PruebaConfiguracion.c,165 :: 		i = 0;                                                                //Limpia el subindice para guardar la trama SPI
+	CLRF        _i+0 
+	CLRF        _i+1 
+;PruebaConfiguracion.c,166 :: 		direccionSol = 0;                                                     //Limpia los datos de cabecera de la solicitud
+	CLRF        _direccionSol+0 
+;PruebaConfiguracion.c,167 :: 		funcionSol = 0;
+	CLRF        _funcionSol+0 
+;PruebaConfiguracion.c,168 :: 		subFuncionSol = 0;
+	CLRF        _subFuncionSol+0 
+;PruebaConfiguracion.c,169 :: 		numDatosSol = 0;
+	CLRF        _numDatosSol+0 
+;PruebaConfiguracion.c,170 :: 		CambiarEstadoBandera(1,1);                                            //Activa la bandera banSPI1
 	MOVLW       1
 	MOVWF       FARG_CambiarEstadoBandera_bandera+0 
 	MOVLW       1
 	MOVWF       FARG_CambiarEstadoBandera_estado+0 
 	CALL        _CambiarEstadoBandera+0, 0
-;PruebaConfiguracion.c,166 :: 		i = 0;
-	CLRF        _i+0 
-	CLRF        _i+1 
-;PruebaConfiguracion.c,167 :: 		}
+;PruebaConfiguracion.c,171 :: 		}
 L_interrupt10:
-;PruebaConfiguracion.c,168 :: 		if ((banSPI1==1)&&(bufferSPI!=0xA1)&&(bufferSPI!=0xF1)){
+;PruebaConfiguracion.c,172 :: 		if ((banSPI1==1)&&(bufferSPI!=0xA1)&&(bufferSPI!=0xF1)){
 	MOVF        _banSPI1+0, 0 
 	XORLW       1
 	BTFSS       STATUS+0, 2 
@@ -206,8 +214,8 @@ L_interrupt10:
 	XORLW       241
 	BTFSC       STATUS+0, 2 
 	GOTO        L_interrupt13
-L__interrupt19:
-;PruebaConfiguracion.c,169 :: 		tramaSolicitudSPI[i] = bufferSPI;                                     //Recupera la direccion del nodo y el indicador de sobrescritura de la SD
+L__interrupt22:
+;PruebaConfiguracion.c,173 :: 		tramaSolicitudSPI[i] = bufferSPI;                                     //Recupera la trama de solicitud SPI
 	MOVLW       _tramaSolicitudSPI+0
 	ADDWF       _i+0, 0 
 	MOVWF       FSR1 
@@ -216,12 +224,12 @@ L__interrupt19:
 	MOVWF       FSR1H 
 	MOVF        _bufferSPI+0, 0 
 	MOVWF       POSTINC1+0 
-;PruebaConfiguracion.c,170 :: 		i++;
+;PruebaConfiguracion.c,174 :: 		i++;
 	INFSNZ      _i+0, 1 
 	INCF        _i+1, 1 
-;PruebaConfiguracion.c,171 :: 		}
+;PruebaConfiguracion.c,175 :: 		}
 L_interrupt13:
-;PruebaConfiguracion.c,172 :: 		if ((banSPI1==1)&&(bufferSPI==0xF1)){
+;PruebaConfiguracion.c,176 :: 		if ((banSPI1==1)&&(bufferSPI==0xF1)){
 	MOVF        _banSPI1+0, 0 
 	XORLW       1
 	BTFSS       STATUS+0, 2 
@@ -230,47 +238,79 @@ L_interrupt13:
 	XORLW       241
 	BTFSS       STATUS+0, 2 
 	GOTO        L_interrupt16
-L__interrupt18:
-;PruebaConfiguracion.c,173 :: 		direccionRS485 = tramaSolicitudSPI[0];
+L__interrupt21:
+;PruebaConfiguracion.c,178 :: 		direccionSol = tramaSolicitudSPI[0];
 	MOVF        _tramaSolicitudSPI+0, 0 
-	MOVWF       _direccionRS485+0 
-;PruebaConfiguracion.c,174 :: 		funcionRS485 = tramaSolicitudSPI[1];
+	MOVWF       _direccionSol+0 
+;PruebaConfiguracion.c,179 :: 		funcionSol = tramaSolicitudSPI[1];
 	MOVF        _tramaSolicitudSPI+1, 0 
-	MOVWF       _funcionRS485+0 
-;PruebaConfiguracion.c,175 :: 		subFuncionRS485 = tramaSolicitudSPI[2];
+	MOVWF       _funcionSol+0 
+;PruebaConfiguracion.c,180 :: 		subFuncionSol = tramaSolicitudSPI[2];
 	MOVF        _tramaSolicitudSPI+2, 0 
-	MOVWF       _subFuncionRS485+0 
-;PruebaConfiguracion.c,176 :: 		numDatosRS485 = tramaSolicitudSPI[3];
+	MOVWF       _subFuncionSol+0 
+;PruebaConfiguracion.c,181 :: 		numDatosSol = tramaSolicitudSPI[3];
 	MOVF        _tramaSolicitudSPI+3, 0 
-	MOVWF       _numDatosRS485+0 
-;PruebaConfiguracion.c,180 :: 		if (numDatosRS485==2){
-	MOVF        _tramaSolicitudSPI+3, 0 
-	XORLW       2
-	BTFSS       STATUS+0, 2 
-	GOTO        L_interrupt17
-;PruebaConfiguracion.c,181 :: 		direccionRS485 = 0;
-	CLRF        _direccionRS485+0 
-;PruebaConfiguracion.c,182 :: 		funcionRS485 = 0;
-	CLRF        _funcionRS485+0 
-;PruebaConfiguracion.c,183 :: 		subFuncionRS485 = 0;
-	CLRF        _subFuncionRS485+0 
-;PruebaConfiguracion.c,184 :: 		numDatosRS485 = 0;
-	CLRF        _numDatosRS485+0 
-;PruebaConfiguracion.c,185 :: 		TEST = ~TEST;
-	BTG         RB2_bit+0, BitPos(RB2_bit+0) 
-;PruebaConfiguracion.c,186 :: 		}
+	MOVWF       _numDatosSol+0 
+;PruebaConfiguracion.c,183 :: 		for (j=0;j<numDatosSol;j++){
+	CLRF        _j+0 
+	CLRF        _j+1 
 L_interrupt17:
-;PruebaConfiguracion.c,188 :: 		CambiarEstadoBandera(1,0);                                            //Limpia la bandera
+	MOVLW       0
+	SUBWF       _j+1, 0 
+	BTFSS       STATUS+0, 2 
+	GOTO        L__interrupt29
+	MOVF        _numDatosSol+0, 0 
+	SUBWF       _j+0, 0 
+L__interrupt29:
+	BTFSC       STATUS+0, 0 
+	GOTO        L_interrupt18
+;PruebaConfiguracion.c,184 :: 		payloadSol[j] = tramaSolicitudSPI[4+j];
+	MOVLW       _payloadSol+0
+	ADDWF       _j+0, 0 
+	MOVWF       FSR1 
+	MOVLW       hi_addr(_payloadSol+0)
+	ADDWFC      _j+1, 0 
+	MOVWF       FSR1H 
+	MOVLW       4
+	ADDWF       _j+0, 0 
+	MOVWF       R0 
+	MOVLW       0
+	ADDWFC      _j+1, 0 
+	MOVWF       R1 
+	MOVLW       _tramaSolicitudSPI+0
+	ADDWF       R0, 0 
+	MOVWF       FSR0 
+	MOVLW       hi_addr(_tramaSolicitudSPI+0)
+	ADDWFC      R1, 0 
+	MOVWF       FSR0H 
+	MOVF        POSTINC0+0, 0 
+	MOVWF       POSTINC1+0 
+;PruebaConfiguracion.c,183 :: 		for (j=0;j<numDatosSol;j++){
+	INFSNZ      _j+0, 1 
+	INCF        _j+1, 1 
+;PruebaConfiguracion.c,185 :: 		}
+	GOTO        L_interrupt17
+L_interrupt18:
+;PruebaConfiguracion.c,188 :: 		if ((payloadSol[1])==0xEE){
+	MOVF        _payloadSol+1, 0 
+	XORLW       238
+	BTFSS       STATUS+0, 2 
+	GOTO        L_interrupt20
+;PruebaConfiguracion.c,190 :: 		TEST = ~TEST;
+	BTG         RB2_bit+0, BitPos(RB2_bit+0) 
+;PruebaConfiguracion.c,191 :: 		}
+L_interrupt20:
+;PruebaConfiguracion.c,193 :: 		CambiarEstadoBandera(1,0);                                            //Limpia la bandera
 	MOVLW       1
 	MOVWF       FARG_CambiarEstadoBandera_bandera+0 
 	CLRF        FARG_CambiarEstadoBandera_estado+0 
 	CALL        _CambiarEstadoBandera+0, 0
-;PruebaConfiguracion.c,189 :: 		}
-L_interrupt16:
 ;PruebaConfiguracion.c,194 :: 		}
+L_interrupt16:
+;PruebaConfiguracion.c,199 :: 		}
 L_interrupt7:
-;PruebaConfiguracion.c,196 :: 		}
+;PruebaConfiguracion.c,201 :: 		}
 L_end_interrupt:
-L__interrupt25:
+L__interrupt28:
 	RETFIE      1
 ; end of _interrupt

@@ -12,8 +12,8 @@ unsigned short banSPI0, banSPI1;
 unsigned char tramaSolicitudSPI[10];
 
 
-unsigned short direccionRS485, funcionRS485, subFuncionRS485, numDatosRS485;
-unsigned char cabeceraOutRS485[15];
+unsigned short direccionSol, funcionSol, subFuncionSol, numDatosSol;
+unsigned char payloadSol[15];
 
 
 
@@ -36,10 +36,10 @@ void main() {
  banSPI0 = 0;
  banSPI1 = 0;
 
- direccionRS485 = 0;
- funcionRS485 = 0;
- subFuncionRS485 = 0;
- numDatosRS485 = 0;
+ direccionSol = 0;
+ funcionSol = 0;
+ subFuncionSol = 0;
+ numDatosSol = 0;
 
  TEST = 1;
 
@@ -136,26 +136,31 @@ void interrupt(void){
 
 
  if ((banSPI1==0)&&(bufferSPI==0xA1)){
- CambiarEstadoBandera(1,1);
  i = 0;
+ direccionSol = 0;
+ funcionSol = 0;
+ subFuncionSol = 0;
+ numDatosSol = 0;
+ CambiarEstadoBandera(1,1);
  }
  if ((banSPI1==1)&&(bufferSPI!=0xA1)&&(bufferSPI!=0xF1)){
  tramaSolicitudSPI[i] = bufferSPI;
  i++;
  }
  if ((banSPI1==1)&&(bufferSPI==0xF1)){
- direccionRS485 = tramaSolicitudSPI[0];
- funcionRS485 = tramaSolicitudSPI[1];
- subFuncionRS485 = tramaSolicitudSPI[2];
- numDatosRS485 = tramaSolicitudSPI[3];
+
+ direccionSol = tramaSolicitudSPI[0];
+ funcionSol = tramaSolicitudSPI[1];
+ subFuncionSol = tramaSolicitudSPI[2];
+ numDatosSol = tramaSolicitudSPI[3];
+
+ for (j=0;j<numDatosSol;j++){
+ payloadSol[j] = tramaSolicitudSPI[4+j];
+ }
 
 
+ if ((payloadSol[1])==0xEE){
 
- if (numDatosRS485==2){
- direccionRS485 = 0;
- funcionRS485 = 0;
- subFuncionRS485 = 0;
- numDatosRS485 = 0;
  TEST = ~TEST;
  }
 

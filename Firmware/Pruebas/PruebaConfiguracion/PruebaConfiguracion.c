@@ -24,8 +24,8 @@ unsigned short banSPI0, banSPI1;
 unsigned char tramaSolicitudSPI[10];                                            //Vector para almacenar los datos de solicitud que envia la RPi a traves del SPI
 
 //Variables para manejo del RS485:
-unsigned short direccionRS485, funcionRS485, subFuncionRS485, numDatosRS485;
-unsigned char cabeceraOutRS485[15];                                            //Vector para almacenar el pyload de la trama RS485 a enviar
+unsigned short direccionSol, funcionSol, subFuncionSol, numDatosSol;
+unsigned char payloadSol[15];                                                //Vector para almacenar el pyload de la trama RS485 a enviar
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /////////////////////////////////////////////////////////  Declaracion de funciones  /////////////////////////////////////////////////////////
@@ -48,10 +48,10 @@ void main() {
     banSPI0 = 0;
     banSPI1 = 0;
     //Comunicacion RS485:
-    direccionRS485 = 0;
-    funcionRS485 = 0;
-    subFuncionRS485 = 0;
-    numDatosRS485 = 0;
+    direccionSol = 0;
+    funcionSol = 0;
+    subFuncionSol = 0;
+    numDatosSol = 0;
     
     TEST = 1;
     
@@ -160,35 +160,39 @@ void interrupt(void){
        SSP1IF_bit = 0;                                                          //Limpia la bandera de interrupcion por SPI
        bufferSPI = SSP1BUF;                                                     //Guarda el contenido del bufeer (lectura)
        
-       //Rutina para iniciar el muestreo (C:0xA1   F:0xF1):
+       //Rutina para recibir la trama de solicitud (C:0xA1   F:0xF1):
        if ((banSPI1==0)&&(bufferSPI==0xA1)){
-          CambiarEstadoBandera(1,1);
-          i = 0;
+          i = 0;                                                                //Limpia el subindice para guardar la trama SPI
+          direccionSol = 0;                                                     //Limpia los datos de cabecera de la solicitud
+          funcionSol = 0;
+          subFuncionSol = 0;
+          numDatosSol = 0;
+          CambiarEstadoBandera(1,1);                                            //Activa la bandera banSPI1
        }
        if ((banSPI1==1)&&(bufferSPI!=0xA1)&&(bufferSPI!=0xF1)){
-          tramaSolicitudSPI[i] = bufferSPI;                                     //Recupera la direccion del nodo y el indicador de sobrescritura de la SD
+          tramaSolicitudSPI[i] = bufferSPI;                                     //Recupera la trama de solicitud SPI
           i++;
        }
        if ((banSPI1==1)&&(bufferSPI==0xF1)){
-          direccionRS485 = tramaSolicitudSPI[0];
-          funcionRS485 = tramaSolicitudSPI[1];
-          subFuncionRS485 = tramaSolicitudSPI[2];
-          numDatosRS485 = tramaSolicitudSPI[3];
-          //cabeceraOutRS485[0] = 0xD1;                                           //Subfuncion iniciar muestreo
+          //Recupera los datos de cabecera de la solicitud:
+          direccionSol = tramaSolicitudSPI[0];
+          funcionSol = tramaSolicitudSPI[1];
+          subFuncionSol = tramaSolicitudSPI[2];
+          numDatosSol = tramaSolicitudSPI[3];
+          //Recupera los datos de payload de la solicitud:
+          for (j=0;j<numDatosSol;j++){
+              payloadSol[j] = tramaSolicitudSPI[4+j];
+          }
           
-          //Pruieba: Cambia el estado del led si coincide el Id de la peticion
-           if (numDatosRS485==2){
-              direccionRS485 = 0;
-              funcionRS485 = 0;
-              subFuncionRS485 = 0;
-              numDatosRS485 = 0;
+          //Prueba: Cambia el estado del led si coincide el Id de la peticion
+           if ((payloadSol[1])==0xEE){
               TEST = ~TEST;
            }
           
           CambiarEstadoBandera(1,0);                                            //Limpia la bandera
        }
        
-
+       //Rutina para enviar la trama de respuesta (C:0xA0   F:0xF0):
 
     
     }
