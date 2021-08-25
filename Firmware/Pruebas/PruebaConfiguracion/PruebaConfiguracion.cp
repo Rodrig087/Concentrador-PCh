@@ -9,10 +9,11 @@ unsigned int i, j, x, y;
 
 unsigned short bufferSPI;
 unsigned short banSPI0, banSPI1;
-unsigned char tramaSolicitudSPI[10];
+unsigned char tramaSolicitudSPI[20];
+unsigned char tramaRespuestaSPI[20];
 
 unsigned short direccionSol, funcionSol, subFuncionSol, numDatosSol;
-unsigned char cabeceraSolicitud[4];
+unsigned char cabeceraSolicitud[5];
 unsigned char payloadSolicitud[15];
 
 
@@ -130,6 +131,16 @@ void CambiarEstadoBandera(unsigned short bandera, unsigned short estado){
 void ResponderSPI(unsigned char *cabeceraRespuesta, unsigned char *payloadRespuesta){
 
 
+ tramaRespuestaSPI[0] = cabeceraRespuesta[0];
+ tramaRespuestaSPI[1] = cabeceraRespuesta[1];
+ tramaRespuestaSPI[2] = cabeceraRespuesta[2];
+ tramaRespuestaSPI[3] = cabeceraRespuesta[3];
+
+
+ for (j=0;j<(cabeceraRespuesta[3]);j++){
+ tramaRespuestaSPI[j+4] = payloadRespuesta[j];
+ }
+#line 165 "C:/Users/milto/Milton/RSA/Git/Proyecto Chanlud/Concentrador PCh/Concentrador-PCh/Firmware/Pruebas/PruebaConfiguracion/PruebaConfiguracion.c"
  RP0 = 1;
  Delay_us(100);
  RP0 = 0;
@@ -141,11 +152,25 @@ void ResponderSPI(unsigned char *cabeceraRespuesta, unsigned char *payloadRespue
 
 
 void interrupt(void){
-#line 171 "C:/Users/milto/Milton/RSA/Git/Proyecto Chanlud/Concentrador PCh/Concentrador-PCh/Firmware/Pruebas/PruebaConfiguracion/PruebaConfiguracion.c"
+#line 191 "C:/Users/milto/Milton/RSA/Git/Proyecto Chanlud/Concentrador PCh/Concentrador-PCh/Firmware/Pruebas/PruebaConfiguracion/PruebaConfiguracion.c"
  if (SSP1IF_bit==1){
 
  SSP1IF_bit = 0;
  bufferSPI = SSP1BUF;
+
+
+ if ((banSPI0==0)&&(bufferSPI==0xA0)) {
+ CambiarEstadoBandera(0,1);
+ i = 1;
+ SSP1BUF = tramaRespuestaSPI[0];
+ }
+ if ((banSPI0==1)&&(bufferSPI!=0xA0)&&(bufferSPI!=0xF0)){
+ SSP1BUF = tramaRespuestaSPI[i];
+ i++;
+ }
+ if ((banSPI0==1)&&(bufferSPI==0xF0)){
+ CambiarEstadoBandera(0,0);
+ }
 
 
  if ((banSPI1==0)&&(bufferSPI==0xA1)){
@@ -167,7 +192,7 @@ void interrupt(void){
  }
 
 
- if ((payloadSolicitud[1])==0xEE){
+ if ((payloadSolicitud[4])==0xE5){
  TEST = ~TEST;
  ResponderSPI(cabeceraSolicitud, payloadSolicitud);
  }

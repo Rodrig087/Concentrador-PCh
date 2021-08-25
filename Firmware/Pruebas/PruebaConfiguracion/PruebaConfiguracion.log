@@ -1,11 +1,11 @@
 0	1	mikroCPIC1618.exe -MSF -DBG -pP18F25K22 -DL -O11111114 -fo16 -N"C:\Users\milto\Milton\RSA\Git\Proyecto Chanlud\Concentrador PCh\Concentrador-PCh\Firmware\Pruebas\PruebaConfiguracion\PruebaConfiguracion.mcppi" -SP"C:\Users\Public\Documents\Mikroelektronika\mikroC PRO for PIC\Defs\" -SP"C:\Users\Public\Documents\Mikroelektronika\mikroC PRO for PIC\uses\P18\" -SP"C:\Users\milto\Milton\RSA\Git\Proyecto Chanlud\Concentrador PCh\Concentrador-PCh\Firmware\Pruebas\PruebaConfiguracion\" -IP"C:\Users\Public\Documents\Mikroelektronika\mikroC PRO for PIC\uses\P18\" -IP"C:\Users\milto\Milton\RSA\Git\Proyecto Chanlud\Concentrador PCh\Concentrador-PCh\Firmware\Pruebas\PruebaConfiguracion\" "PruebaConfiguracion.c" "__Lib_Math.mcl" "__Lib_MathDouble.mcl" "__Lib_System.mcl" "__Lib_Delays.mcl" "__Lib_SPI_c345b123.mcl"	 
 hint: 0	1139	Available RAM: 1515 [bytes], Available ROM: 32768 [bytes]	 
 diagnostics: 0	122	Compilation Started	PruebaConfiguracion.c
-diagnostics: 211	123	Compiled Successfully	PruebaConfiguracion.c
-diagnostics: 0	127	All files Compiled in 78 ms	 
-hint: 0	1144	Used RAM (bytes): 60 (4%)  Free RAM (bytes): 1455 (96%)	Used RAM (bytes): 60 (4%)  Free RAM (bytes): 1455 (96%)
-hint: 0	1144	Used ROM (bytes): 532 (2%)  Free ROM (bytes): 32236 (98%)	Used ROM (bytes): 532 (2%)  Free ROM (bytes): 32236 (98%)
+diagnostics: 245	123	Compiled Successfully	PruebaConfiguracion.c
+diagnostics: 0	127	All files Compiled in 62 ms	 
+hint: 0	1144	Used RAM (bytes): 91 (6%)  Free RAM (bytes): 1424 (94%)	Used RAM (bytes): 91 (6%)  Free RAM (bytes): 1424 (94%)
+hint: 0	1144	Used ROM (bytes): 776 (2%)  Free ROM (bytes): 31992 (98%)	Used ROM (bytes): 776 (2%)  Free ROM (bytes): 31992 (98%)
 diagnostics: 0	125	Project Linked Successfully	PruebaConfiguracion.mcppi
 diagnostics: 0	128	Linked in 16 ms	 
-diagnostics: 0	129	Project 'PruebaConfiguracion.mcppi' completed: 109 ms	 
-diagnostics: 0	103	Finished successfully: 23 ago. 2021, 18:37:24	PruebaConfiguracion.mcppi
+diagnostics: 0	129	Project 'PruebaConfiguracion.mcppi' completed: 110 ms	 
+diagnostics: 0	103	Finished successfully: 25 ago. 2021, 00:31:23	PruebaConfiguracion.mcppi

@@ -15,8 +15,10 @@
 #define MCLR 28																	//Pin 38 GPIO
 #define LEDTEST 29 																//Pin 40 GPIO																						
 #define TIEMPO_SPI 10
-#define FreqSPI 2000000
+#define FreqSPI 400000
 
+#define RED   "\x1B[31m"
+#define RESET "\x1B[0m"
 
 //Declaracion de variables
 unsigned short i;
@@ -30,13 +32,15 @@ unsigned short numDatosPet;
 unsigned char payloadPet[255];
 unsigned char payloadResp[255];
 
+unsigned int sumEnviado;
+unsigned int sumRecibido;
+
 //Declaracion de funciones
 int ConfiguracionPrincipal();
 void RecibirRespuesta();														//C:0xA0    F:0xF0
 void EnviarSolicitud(unsigned short id, unsigned short funcion, unsigned short subFuncion, unsigned short numDatos, unsigned char* payload); //C:0xA1    F:0xF1														//C:0xA4	F:0xF4
 
 void Salir();						
-void SetRelojLocal(unsigned char* tramaTiempo);
 
 
 int main() {
@@ -54,9 +58,15 @@ int main() {
 	idPet = 5;
 	funcionPet = 4;
 	subFuncionPet = 3;
-	numDatosPet = 2;
-	payloadPet[0] = 0xFF;
-	payloadPet[1] = 0XEE;
+	numDatosPet = 5;
+	payloadPet[0] = 0xE1;
+	payloadPet[1] = 0XE2;
+	payloadPet[2] = 0XE3;
+	payloadPet[3] = 0XE4;
+	payloadPet[4] = 0XE5;
+	
+	sumEnviado = 0;
+	sumRecibido = 0;
 	
 	EnviarSolicitud(idPet, funcionPet, subFuncionPet, numDatosPet, payloadPet);
 	
@@ -87,8 +97,7 @@ int ConfiguracionPrincipal(){
 
     bcm2835_spi_setBitOrder(BCM2835_SPI_BIT_ORDER_MSBFIRST);
     bcm2835_spi_setDataMode(BCM2835_SPI_MODE3);
-	//bcm2835_spi_setClockDivider(BCM2835_SPI_CLOCK_DIVIDER_32);				/Clock divider RPi 2
-	bcm2835_spi_setClockDivider(BCM2835_SPI_CLOCK_DIVIDER_64);					//Clock divider RPi 3		
+	bcm2835_spi_setClockDivider(BCM2835_SPI_CLOCK_DIVIDER_256);					//Clock divider RPi 3		
     bcm2835_spi_set_speed_hz(FreqSPI);
     bcm2835_spi_chipSelect(BCM2835_SPI_CS0);
     bcm2835_spi_setChipSelectPolarity(BCM2835_SPI_CS0, LOW);
@@ -110,7 +119,7 @@ int ConfiguracionPrincipal(){
     delay(100);
     digitalWrite(MCLR, HIGH); 
 		
-	printf("Configuracion completa\n");
+	//printf("Configuracion completa\n");
 	//sleep(1);
 	
 }
@@ -122,7 +131,6 @@ int ConfiguracionPrincipal(){
 //C:0xA0    F:0xF0
 void RecibirRespuesta(){
 	
-	/*
 	bcm2835_delayMicroseconds(200);
 	
 	unsigned short idResp;
@@ -141,7 +149,7 @@ void RecibirRespuesta(){
 	bcm2835_delayMicroseconds(TIEMPO_SPI);
 	numDatosResp = bcm2835_spi_transfer(0x00);
 	bcm2835_delayMicroseconds(TIEMPO_SPI);
-	
+		
 	//Recupera el payload:
 	for (i=0;i<numDatosResp;i++){
         payloadResp[i] = bcm2835_spi_transfer(0x00);
@@ -150,11 +158,35 @@ void RecibirRespuesta(){
 	
 	//Envia el delimitador de fin de trama:
 	bcm2835_spi_transfer(0xF0);	
-	bcm2835_delayMicroseconds(TIEMPO_SPI);
+	//bcm2835_delayMicroseconds(TIEMPO_SPI);
 	
-	*/
+	delay(25); //**Este retardo es muy importante**
 	
-	printf("Interrupcion recibida\n");
+	//sumatoria de control:
+	for (i=0;i<numDatosResp;i++){
+        sumRecibido = sumRecibido + payloadResp[i];
+    }
+	
+	//Imprime la respuesta:
+	printf("\nTrama recibida");
+	printf("\nCabecera: %d %d %d %d", idResp, funcionResp, subFuncionResp, numDatosResp);
+	printf("\nPayload: ");
+	for (i=0;i<numDatosResp;i++){
+        printf("%#02X ", payloadResp[i]);
+    }
+	//printf("\n");
+	
+	
+	if (sumEnviado==sumRecibido){
+		printf("\nSumatoria control = %d", sumRecibido);
+	}else{
+		printf("\nSumatoria control = " RED "%d" RESET, sumRecibido);
+	}
+	
+	
+	//Apaga el LEDTEST:
+	digitalWrite (LEDTEST, LOW);
+	
 	Salir();
 
 	
@@ -162,6 +194,11 @@ void RecibirRespuesta(){
 
 //C:0xA1	F:0xF1
 void EnviarSolicitud(unsigned short id, unsigned short funcion, unsigned short subFuncion, unsigned short numDatos, unsigned char* payload){
+	
+	//sumatoria de control:
+	for (i=0;i<numDatosPet;i++){
+        sumEnviado = sumEnviado + payload[i];
+    }
 	
 	bcm2835_delayMicroseconds(200);
 	
@@ -183,12 +220,21 @@ void EnviarSolicitud(unsigned short id, unsigned short funcion, unsigned short s
         bcm2835_delayMicroseconds(TIEMPO_SPI);
     }
 	
+	
 	//Envia el delimitador de fin de trama:
 	bcm2835_spi_transfer(0xF1);	
 	bcm2835_delayMicroseconds(TIEMPO_SPI);
 	
-	printf("Solicitud Enviada\n");
-	printf("Cabecera: %d %d %d %d\n", id, funcion, subFuncion, numDatos);
+	//Imprime la solicitud:
+	printf("\nSolicitud enviada");
+	printf("\nCabecera: %d %d %d %d", id, funcion, subFuncion, numDatos);
+	printf("\nPayload: ");
+	for (i=0;i<numDatosPet;i++){
+        printf("%#02X ", payload[i]);
+    }
+	printf("\nSumatoria control = %d", sumEnviado);
+	
+	digitalWrite (LEDTEST, HIGH);
 	
 }
 
@@ -201,47 +247,10 @@ void Salir(){
 	
 	bcm2835_spi_end();
 	bcm2835_close();
-	printf("Adios...\n");
+	printf("\nAdios...\n");
 	exit (-1);
 }
 
-void SetRelojLocal(unsigned char* tramaTiempo){
-	
-	printf("Sincronizando hora local...\n");
-	char datePIC[22];
-	char comando[40];	
-	//Configura el reloj interno de la RPi con la hora recuperada del PIC:
-	strcpy(comando, "sudo date --set ");	//strcpy( <variable_destino>, <cadena_fuente> )
-	//Ejemplo: '2019-09-13 17:45:00':
-	datePIC[0] = 0x27;						//'
-	datePIC[1] = '2';
-	datePIC[2] = '0';
-	datePIC[3] = (tramaTiempo[0]/10)+48;		//aa: (19/10)+48 = 49 = '1'
-	datePIC[4] = (tramaTiempo[0]%10)+48;		//    (19%10)+48 = 57 = '9'
-	datePIC[5] = '-';	
-	datePIC[6] = (tramaTiempo[1]/10)+48;		//MM
-	datePIC[7] = (tramaTiempo[1]%10)+48;
-	datePIC[8] = '-';
-	datePIC[9] = (tramaTiempo[2]/10)+48;		//dd
-	datePIC[10] = (tramaTiempo[2]%10)+48;
-	datePIC[11] = ' ';
-	datePIC[12] = (tramaTiempo[3]/10)+48;		//hh
-	datePIC[13] = (tramaTiempo[3]%10)+48;
-	datePIC[14] = ':';
-	datePIC[15] = (tramaTiempo[4]/10)+48;		//mm
-	datePIC[16] = (tramaTiempo[4]%10)+48;
-	datePIC[17] = ':';
-	datePIC[18] = (tramaTiempo[5]/10)+48;		//ss
-	datePIC[19] = (tramaTiempo[5]%10)+48;
-	datePIC[20] = 0x27;
-	datePIC[21] = '\0';
-	
-	strcat(comando, datePIC);
-	
-	system(comando);
-	system("date");
-	
-}
 
 //**************************************************************************************************************************************
 
