@@ -1,14 +1,11 @@
 main
+	__CC2DW
 	ConfiguracionPrincipal
-		SPI1_Init_Advanced
 		UART1_Init
-		UART2_Init
 interrupt
-	CambiarEstadoBandera
+	UART1_Read
 	EnviarTramaRS485
 		UART1_Write
 		UART1_Tx_Idle
 		UART2_Write
 		UART2_Tx_Idle
-	UART1_Read
-	ResponderSPI

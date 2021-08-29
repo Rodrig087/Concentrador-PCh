@@ -6,17 +6,17 @@ Value=0
 [BUILD_TYPE]
 Value=0
 [ACTIVE_TAB]
-Value=PruebaConfiguracion.c
+Value=PruebaNodo2.c
 [USE_EEPROM]
 Value=0
 [USE_HEAP]
 Value=0
 [HEAP_SIZE]
-Value=2000
+Value=0
 [EEPROM_DEFINITION]
 Value=
 [FILES]
-File0=PruebaConfiguracion.c
+File0=PruebaNodo2.c
 Count=1
 [BINARIES]
 Count=0
@@ -24,7 +24,7 @@ Count=0
 Count=0
 ActiveImageIndex=-1
 [OPENED_FILES]
-File0=PruebaConfiguracion.c
+File0=PruebaNodo2.c
 Count=1
 [EEPROM]
 Count=0
@@ -43,13 +43,11 @@ Count=0
 [PLDS]
 Count=0
 [Useses]
-File0=SPI
-File1=UART
-Count=2
-[EXPANDED_NODES]
-0=PruebaConfiguracion.mcppi
+File0=UART
 Count=1
+[EXPANDED_NODES]
+Count=0
 [LIB_EXPANDED_NODES]
 0=mikroE Libraries
 1=System Libraries
-Count=3
+Count=2

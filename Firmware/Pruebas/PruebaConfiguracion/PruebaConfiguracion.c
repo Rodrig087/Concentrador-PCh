@@ -6,9 +6,13 @@ Observaciones:
 
 ---------------------------------------------------------------------------------------------------------------------------*/
 
+////////////////////////////////////////////////////         Librerias         /////////////////////////////////////////////////////////////
+#include <RS485.c>
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Credenciales (Esto iria en los nodos):
-#define IDNODO 3                                                                //Direccion del nodo
+//#define IDNODO 3                                                                //Direccion del nodo
 
 ////////////////////////////////////////////// Declaracion de variables y costantes ///////////////////////////////////////////////////////
 //Definicion de pines:
@@ -16,6 +20,10 @@ sbit RP0 at LATC0_bit;                                                          
 sbit RP0_Direction at TRISC0_bit;
 sbit TEST at RB2_bit;                                                           //Definicion del pin de indicador auxiliar para hacer pruebas
 sbit TEST_Direction at TRISB2_bit;
+sbit MS1RS485 at LATB3_bit;                                                     //Definicion del pin MS1 RS485
+sbit MS1RS485_Direction at TRISB3_bit;
+sbit MS2RS485 at LATB5_bit;                                                     //Definicion del pin MS1 RS485
+sbit MS2RS485_Direction at TRISB5_bit;
 //Subindices:
 unsigned int i, j, x, y;
 //Variables para la comunicacion SPI:
@@ -23,10 +31,19 @@ unsigned short bufferSPI;
 unsigned short banSPI0, banSPI1;
 unsigned char tramaSolicitudSPI[20];                                            //Vector para almacenar los datos de solicitud que envia la RPi a traves del SPI
 unsigned char tramaRespuestaSPI[20];
+unsigned short idSolicitud;                                                     //Variable para almacenar el id del nodo al que se hizo la solicitud
 //Variables para manejo del RS485:
-unsigned short direccionSol, funcionSol, subFuncionSol, numDatosSol;
 unsigned char cabeceraSolicitud[5];                                             //Vector para almacenar la cabecera de la trama RS485 a enviar
 unsigned char payloadSolicitud[15];                                             //Vector para almacenar el pyload de la trama RS485 a enviar
+unsigned short banRSI, banRSC;                                                  //Banderas de control de inicio de trama y trama completa
+unsigned char byteRS485;
+unsigned int i_rs485;                                                           //Subindice
+unsigned char tramaCabeceraRS485[5];                                            //Vector para almacenar los datos de cabecera de la trama RS485: [0x3A, Direccion, Funcion, NumeroDatos]
+unsigned char inputPyloadRS485[15];                                             //Vector para almacenar el pyload de la trama RS485 recibida
+unsigned char outputPyloadRS485[15];                                            //Vector para almacenar el pyload de la trama RS485 a enviar
+unsigned short direccionRS485, funcionRS485, subFuncionRS485, numDatosRS485;
+
+unsigned short sumValidacion;
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /////////////////////////////////////////////////////////  Declaracion de funciones  /////////////////////////////////////////////////////////
@@ -39,7 +56,7 @@ void ResponderSPI(unsigned char *cabeceraRespuesta, unsigned char *payloadRespue
 void main() {
 
     ConfiguracionPrincipal();
-    
+
     //Inicializacion de variables:
     //Subindices:
     i = 0;
@@ -49,14 +66,25 @@ void main() {
     //Comunicacion SPI:
     banSPI0 = 0;
     banSPI1 = 0;
+    idSolicitud = 0;
     //Comunicacion RS485:
-    direccionSol = 0;
-    funcionSol = 0;
-    subFuncionSol = 0;
-    numDatosSol = 0;
+    banRSI = 0;
+    banRSC = 0;
+    byteRS485 = 0;
+    i_rs485 = 0;
+    funcionRS485 = 0;
+    subFuncionRS485 = 0;
+    numDatosRS485 = 0;
+    MS1RS485 = 0;
+    MS2RS485 = 0;
+
     //Puertos:
     RP0 = 0;
     TEST = 1;
+    MS1RS485 = 0;
+    MS2RS485 = 0;
+    
+    sumValidacion = 0;
     
     //Entra al bucle princial del programa:
     //while(1){
@@ -91,6 +119,8 @@ void ConfiguracionPrincipal(){
      
      TEST_Direction = 0;                                //Configura el pin TEST como salida
      RP0_Direction = 0;                                 //Configura el pin RP0 como salida
+     MS1RS485_Direction = 0;                            //Configura el pin MS1RS485 como salida
+     MS2RS485_Direction = 0;                            //Configura el pin MS2RS485 como salida
      TRISA5_bit = 1;                                    //SS1 In
      TRISC3_bit = 1;                                    //SCK1 In
      TRISC4_bit = 1;                                    //SDI1 In
@@ -100,9 +130,17 @@ void ConfiguracionPrincipal(){
      INTCON.PEIE = 1;                                   //Habilita las interrupciones perifericas
     
      //Configuracion de SPI en modo esclavo:
-     SSP1IE_bit = 1;
+     PIE1.SSP1IE = 1;                                   //Activa la interrupcion por SPI
+     PIR1.SSP1IF = 0;                                   //Limpia la bandera de interrupcion por SPI *
      SPI1_Init_Advanced(_SPI_SLAVE_SS_ENABLE, _SPI_DATA_SAMPLE_END, _SPI_CLK_IDLE_HIGH, _SPI_HIGH_2_LOW);
-     SSP1IF_bit = 0;                                                            //Limpia la bandera de interrupcion por SPI *
+
+     //Configuracion del USART:
+     PIE1.RC1IE = 1;                                   //Habilita la interrupcion en UART1 receive
+     PIR1.RC1IF = 0;                                   //Limpia la bandera de interrupcion UART1
+     PIE3.RC2IE = 1;                                   //Habilita la interrupcion en UART2 receive
+     PIR3.RC2IF = 0;                                   //Limpia la bandera de interrupcion
+     UART1_Init(19200);                                //Inicializa el UART1 a 19200 bps
+     UART2_Init(19200);                                //Inicializa el UART2 a 19200 bps
 
 
      //Configuracion del TMR1 con un tiempo de 1ms
@@ -153,14 +191,6 @@ void ResponderSPI(unsigned char *cabeceraRespuesta, unsigned char *payloadRespue
          tramaRespuestaSPI[j+4] = payloadRespuesta[j];
      }
 
-     /*
-     tramaRespuestaSPI[4] = 0xD1;
-     tramaRespuestaSPI[5] = 0xD2;
-     tramaRespuestaSPI[6] = 0xD3;
-     tramaRespuestaSPI[7] = 0xD4;
-     tramaRespuestaSPI[8] = 0xD5;
-     */
-     
      //Genera el pulso RP0 para producir la interrupcion externa en la RPi:
      RP0 = 1;
      Delay_us(100);
@@ -187,7 +217,7 @@ void interrupt(void){
 //********************************************************************************************************************************************
 
 //********************************************************************************************************************************************
-//Interrupcion por SPi:
+// Interrupcion por SPi //
     if (SSP1IF_bit==1){
     
        SSP1IF_bit = 0;                                                          //Limpia la bandera de interrupcion por SPI
@@ -226,21 +256,101 @@ void interrupt(void){
               payloadSolicitud[j] = tramaSolicitudSPI[4+j];
           }
           
+          idSolicitud = cabeceraSolicitud[0];
+          
+          /*
           //Prueba: Cambia el estado del led si coincide el Id de la peticion
-           if ((payloadSolicitud[4])==0xE5){
-              TEST = ~TEST;
-              ResponderSPI(cabeceraSolicitud, payloadSolicitud); //Esta parte deberia ir en la interrupcion uart
+           if ((cabeceraSolicitud[0])==5){
+              //TEST = ~TEST;
+              EnviarTramaRS485(1, cabeceraSolicitud, payloadSolicitud);
+              EnviarTramaRS485(2, cabeceraSolicitud, payloadSolicitud);
            }
           //Fin Prueba
+          */
+          
+          //Renvia la trama de solicitud a traves de RS485:
+          EnviarTramaRS485(1, cabeceraSolicitud, payloadSolicitud);
           
           CambiarEstadoBandera(1,0);                                            //Limpia la bandera
+       
        }
        
+    }
+//********************************************************************************************************************************************
 
+//********************************************************************************************************************************************
+// Interrupcion por UART1 //
+    if (RC1IF_bit==1){
+    
+       RC1IF_bit = 0;                                                           //Limpia la bandera de interrupcion
+       byteRS485 = UART1_Read();
+       //TEST = ~TEST;
 
+       //Recupera el pyload de la trama RS485:                                  //Aqui deberia entrar despues de recuperar la cabecera de trama
+       if (banRSI==2){
+          //Recupera el pyload de final de trama:
+          if (i_rs485<(numDatosRS485)){
+             inputPyloadRS485[i_rs485] = byteRS485;
+             i_rs485++;
+          } else {
+             banRSI = 0;                                                        //Limpia la bandera de inicio de trama
+             banRSC = 1;                                                        //Activa la bandera de trama completa
+          }
+       }
 
+       //Recupera la cabecera de la trama RS485:                                //Aqui deberia entrar primero cada vez que se recibe una trama nueva
+       if ((banRSI==0)&&(banRSC==0)){
+          if (byteRS485==0x3A){                                                 //Verifica si el primer byte recibido sea el byte de inicio de trama
+             banRSI = 1;
+             i_rs485 = 0;
+          }
+       }
+       if ((banRSI==1)&&(byteRS485!=0x3A)&&(i_rs485<4)){
+          tramaCabeceraRS485[i_rs485] = byteRS485;                              //Recupera los datos de cabecera de la trama UART: [Direccion, Funcion, Subfuncion, NumeroDatos]
+          i_rs485++;
+       }
+       if ((banRSI==1)&&(i_rs485==4)){
+          //Comprueba la direccion del nodo solicitado:
+          if (tramaCabeceraRS485[0]==idSolicitud){
+             //Recupera la funcion, la subfuncion y el numero de datos:
+             funcionRS485 = tramaCabeceraRS485[1];
+             subFuncionRS485 = tramaCabeceraRS485[2];
+             numDatosRS485 = tramaCabeceraRS485[3];
+             banRSI = 2;
+             i_rs485 = 0;
+          } else {
+             banRSI = 0;
+             banRSC = 0;
+             i_rs485 = 0;
+          }
+       }
+
+       //Realiza el procesamiento de la informacion del  pyload:                  //Aqui se realiza cualquier accion con el pyload recuperado
+       if (banRSC==1){
+          TEST = ~TEST;
+          
+          for (i=0;i<10;i++){
+              sumValidacion = sumValidacion+inputPyloadRS485[i];
+          }
+          if (sumValidacion==145){
+             ResponderSPI(tramaCabeceraRS485, inputPyloadRS485);
+             sumValidacion = 0;
+          }
+          banRSC = 0;
+       }
     
     }
+//********************************************************************************************************************************************
+
+//********************************************************************************************************************************************
+// Interrupcion por UART2 //
+    if (RC2IF_bit==1){
+    
+       RC2IF_bit = 0;                                                           //Limpia la bandera de interrupcion
+    
+    
+    }
+//********************************************************************************************************************************************
 
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

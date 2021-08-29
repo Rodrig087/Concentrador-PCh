@@ -130,13 +130,13 @@ int ConfiguracionPrincipal(){
 
 //C:0xA0    F:0xF0
 void RecibirRespuesta(){
-	
-	bcm2835_delayMicroseconds(200);
-	
+		
 	unsigned short idResp;
 	unsigned short funcionResp;
 	unsigned short subFuncionResp;
 	unsigned short numDatosResp;
+	
+	bcm2835_delayMicroseconds(200);
 	
 	//Recupera la cabecera: [id, funcion, subfuncion, #Datos]:
 	bcm2835_spi_transfer(0xA0);
