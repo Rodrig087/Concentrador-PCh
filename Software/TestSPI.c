@@ -14,8 +14,8 @@
 #define P0 0																	//Pin 11 GPIO
 #define MCLR 28																	//Pin 38 GPIO
 #define LEDTEST 29 																//Pin 40 GPIO																						
-#define TIEMPO_SPI 10
-#define FreqSPI 400000
+#define TIEMPO_SPI 100
+#define FreqSPI 200000
 
 #define RED   "\x1B[31m"
 #define RESET "\x1B[0m"
@@ -29,17 +29,25 @@ unsigned short funcionPet;
 unsigned short subFuncionPet;
 unsigned short numDatosPet;
 
+unsigned short idResp;
+unsigned short funcionResp;
+unsigned short subFuncionResp;
+unsigned short numDatosResp;
+
 unsigned char payloadPet[255];
 unsigned char payloadResp[255];
 
 unsigned int sumEnviado;
 unsigned int sumRecibido;
 
+
+
 //Declaracion de funciones
 int ConfiguracionPrincipal();
 void RecibirRespuesta();														//C:0xA0    F:0xF0
 void EnviarSolicitud(unsigned short id, unsigned short funcion, unsigned short subFuncion, unsigned short numDatos, unsigned char* payload); //C:0xA1    F:0xF1														//C:0xA4	F:0xF4
 
+void ImprimirInformacion();
 void Salir();						
 
 
@@ -50,6 +58,15 @@ int main() {
 	//Inicializa las variables:
 	i = 0;
 	x = 0;
+	
+	idPet = 0;
+	funcionPet = 0;
+	subFuncionPet = 0;
+	numDatosPet = 0;
+	idResp = 0;
+	funcionPet = 0;
+	subFuncionResp = 0;
+	numDatosResp = 0;
 		
 	//Configuracion principal:
 	ConfiguracionPrincipal();
@@ -59,11 +76,11 @@ int main() {
 	funcionPet = 4;
 	subFuncionPet = 3;
 	numDatosPet = 5;
-	payloadPet[0] = 0xE1;
-	payloadPet[1] = 0XE2;
-	payloadPet[2] = 0XE3;
-	payloadPet[3] = 0XE4;
-	payloadPet[4] = 0XE5;
+	payloadPet[0] = 10;
+	payloadPet[1] = 20;
+	payloadPet[2] = 30;
+	payloadPet[3] = 40;
+	payloadPet[4] = 50;
 	
 	sumEnviado = 0;
 	sumRecibido = 0;
@@ -80,11 +97,6 @@ int main() {
 
 int ConfiguracionPrincipal(){
 	
-	//Reinicia el modulo SPI
-	system("sudo rmmod  spi_bcm2835");
-	bcm2835_delayMicroseconds(500);
-	system("sudo modprobe spi_bcm2835");
-
     //Configuracion libreria bcm2835:
 	if (!bcm2835_init()){
 		printf("bcm2835_init fallo. Ejecuto el programa como root?\n");
@@ -98,7 +110,7 @@ int ConfiguracionPrincipal(){
     bcm2835_spi_setBitOrder(BCM2835_SPI_BIT_ORDER_MSBFIRST);
     bcm2835_spi_setDataMode(BCM2835_SPI_MODE3);
 	bcm2835_spi_setClockDivider(BCM2835_SPI_CLOCK_DIVIDER_256);					//Clock divider RPi 3		
-    bcm2835_spi_set_speed_hz(FreqSPI);
+	bcm2835_spi_set_speed_hz(FreqSPI);
     bcm2835_spi_chipSelect(BCM2835_SPI_CS0);
     bcm2835_spi_setChipSelectPolarity(BCM2835_SPI_CS0, LOW);
 		
@@ -113,11 +125,11 @@ int ConfiguracionPrincipal(){
 	digitalWrite (LEDTEST, HIGH);
 	
 	//Genera un pulso para resetear el PIC:
-    digitalWrite(MCLR, HIGH);
-    delay(100);
-    digitalWrite(MCLR, LOW);
-    delay(100);
-    digitalWrite(MCLR, HIGH); 
+    //digitalWrite(MCLR, HIGH);
+    //delay(100);
+    //digitalWrite(MCLR, LOW);
+    //delay(100);
+    //digitalWrite(MCLR, HIGH); 
 		
 	//printf("Configuracion completa\n");
 	//sleep(1);
@@ -125,16 +137,41 @@ int ConfiguracionPrincipal(){
 }
 //**************************************************************************************************************************************
 
+//Imprimir en pantalla los datos relevantes
+void ImprimirInformacion(){
+	
+	//Imprime la solicitud:
+	printf("\nTrama enviada:");
+	printf("\n Cabecera: %d %d %d %d", idPet, funcionPet, subFuncionPet, numDatosPet);
+	printf("\n Payload: ");
+	for (i=0;i<numDatosPet;i++){
+        printf("%#02X ", payloadPet[i]);
+    }
+	printf("\n Sumatoria control = %d", sumEnviado);
+	
+	//Imprime la respuesta:
+	printf("\nTrama recibida:");
+	printf("\n Cabecera: %d %d %d %d", idResp, funcionResp, subFuncionResp, numDatosResp);
+	printf("\n Payload: ");
+	for (i=0;i<numDatosResp;i++){
+        printf("%#02X ", payloadResp[i]);
+    }
+	
+	if (sumRecibido==1135){
+		printf("\n Sumatoria control = %d", sumRecibido);
+	}else{
+		printf("\n Sumatoria control = " RED "%d" RESET, sumRecibido);
+	}
+	
+	Salir();
+	
+}
+
 //**************************************************************************************************************************************
 //Comunicacion RPi-dsPIC:
 
 //C:0xA0    F:0xF0
 void RecibirRespuesta(){
-		
-	unsigned short idResp;
-	unsigned short funcionResp;
-	unsigned short subFuncionResp;
-	unsigned short numDatosResp;
 	
 	bcm2835_delayMicroseconds(200);
 	
@@ -152,7 +189,7 @@ void RecibirRespuesta(){
 		
 	//Recupera el payload:
 	for (i=0;i<numDatosResp;i++){
-        payloadResp[i] = bcm2835_spi_transfer(0x00);
+        payloadResp[i] = bcm2835_spi_transfer(0x01);
         bcm2835_delayMicroseconds(TIEMPO_SPI);
     }
 	
@@ -168,24 +205,13 @@ void RecibirRespuesta(){
     }
 	
 	//Imprime la respuesta:
-	printf("\nTrama recibida");
-	printf("\nCabecera: %d %d %d %d", idResp, funcionResp, subFuncionResp, numDatosResp);
-	printf("\nPayload: ");
-	for (i=0;i<numDatosResp;i++){
-        printf("%#02X ", payloadResp[i]);
-    }
-	//printf("\n");
-	
-	
-	if (sumEnviado==sumRecibido){
-		printf("\nSumatoria control = %d", sumRecibido);
-	}else{
-		printf("\nSumatoria control = " RED "%d" RESET, sumRecibido);
-	}
-	
-	
+	printf("\n>Respuesta recibida\n");
+			
 	//Apaga el LEDTEST:
 	digitalWrite (LEDTEST, LOW);
+	
+	//Imprime la informacion de solicitud y respuesta:
+	ImprimirInformacion();
 	
 	Salir();
 
@@ -196,7 +222,7 @@ void RecibirRespuesta(){
 void EnviarSolicitud(unsigned short id, unsigned short funcion, unsigned short subFuncion, unsigned short numDatos, unsigned char* payload){
 	
 	//sumatoria de control:
-	for (i=0;i<numDatosPet;i++){
+	for (i=0;i<numDatos;i++){
         sumEnviado = sumEnviado + payload[i];
     }
 	
@@ -215,25 +241,19 @@ void EnviarSolicitud(unsigned short id, unsigned short funcion, unsigned short s
 	bcm2835_delayMicroseconds(TIEMPO_SPI);
 	
 	//Envia el payload:
-	for (i=0;i<numDatosPet;i++){
+	for (i=0;i<numDatos;i++){
         bcm2835_spi_transfer(payload[i]);
         bcm2835_delayMicroseconds(TIEMPO_SPI);
     }
-	
-	
+		
 	//Envia el delimitador de fin de trama:
 	bcm2835_spi_transfer(0xF1);	
 	bcm2835_delayMicroseconds(TIEMPO_SPI);
 	
 	//Imprime la solicitud:
-	printf("\nSolicitud enviada");
-	printf("\nCabecera: %d %d %d %d", id, funcion, subFuncion, numDatos);
-	printf("\nPayload: ");
-	for (i=0;i<numDatosPet;i++){
-        printf("%#02X ", payload[i]);
-    }
-	printf("\nSumatoria control = %d", sumEnviado);
+	printf("\n>Solicitud enviada");
 	
+	//Enciende el LEDTEST:
 	digitalWrite (LEDTEST, HIGH);
 	
 }

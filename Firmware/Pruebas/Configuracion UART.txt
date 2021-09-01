@@ -1,6 +1,14 @@
+/////////////////////////////////// Formato de la trama de datos ///////////////////////////////////
+//| byteInicio |                     Cabecera                    |     Payload     |   bytesFin   |
+//|   1 byte   |   1 byte  |  1 byte   |    1 byte    |  1 byte  |     n bytes     |    2 bytes   |
+//|    0x3A    | Direccion |  Funcion  |  Subfuncion  |  #Datos  |     Payload     |  0Dh  |  0Ah |
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#define IDNODO 1                                                                //Direccion del nodo. Hay que ponernos deacuerdo con la direccion de cada sensor de cada piso
+
 //Definicion de pines:
-//**Es importante definir los dos pines MS del RS485
-//**Si solo se utiliza uno, se debe sobrescribir al momento de definir el pin
+//**Es importante definir los dos pines MS del RS485. Si solo se utiliza uno, se debe sobrescribir al momento de definir el pin:
 sbit MS2RS485 at LATC5_bit;                                                     
 sbit MS2RS485_Direction at TRISC5_bit;                                          
 sbit MS1RS485 at LATC5_bit;                                                     //Definicion del pin MS1 RS485
@@ -11,9 +19,19 @@ unsigned short banRSI, banRSC;                                                  
 unsigned char byteRS485;
 unsigned int i_rs485;                                                           //Indice
 unsigned char tramaCabeceraRS485[5];                                            //Vector para almacenar los datos de cabecera de la trama RS485: [0x3A, Direccion, Funcion, NumeroDatos]
-unsigned char inputPyloadRS485[15];                                            //Vector para almacenar el pyload de la trama RS485 recibida
-unsigned char outputPyloadRS485[15];                                            //Vector para almacenar el pyload de la trama RS485 a enviar
+unsigned char inputPyloadRS485[5];                                              //Vector para almacenar el pyload de la trama RS485 recibida
+unsigned char outputPyloadRS485[5];                                             //Vector para almacenar el pyload de la trama RS485 a enviar
 unsigned short direccionRS485, funcionRS485, subFuncionRS485, numDatosRS485;
+
+//Ejemplos de variables para almacenar las respuestas de las operaciones del sensor.
+//Reemplaza estas variables con las que utilizas para alamacenar las respuestas.
+unsigned shor respuestaShort;
+unsigned int respuestaInt;
+float respuestaFloat;
+
+//Punteros asociados a las variable de respuesta de tipo int(2bytes) y tipo float(4bytes):
+unsigned char *ptrRespuestaInt;
+unsigned char *ptrRespuestaFloat;
 
 //////////////////////////////////////////////////////////////      Main      ////////////////////////////////////////////////////////////////
 void main() {
@@ -27,7 +45,16 @@ void main() {
      subFuncionRS485 = 0;
      numDatosRS485 = 0;
      MS1RS485 = 0;
-
+ 
+    //Variables de ejemplo:
+	respuestaShort = 0;
+	respuestaInt = 0;
+	respuestaFloat = 0;
+	
+	//Asignacion de punteros de respuesta:
+	ptrRespuestaInt = (unsigned char *) & respuestaInt;
+	ptrRespuestaFloat = (unsigned char *) & respuestaFloat;
+	
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -59,7 +86,7 @@ void ConfiguracionPrincipal(){
     if (RC1IF_bit==1){
 
        RC1IF_bit = 0;                                                           //Limpia la bandera de interrupcion
-       byteRS485 = UART1_Read();
+       byteRS485 = UART1_Read();                                                //Lee el byte recuperado por el UART  
 
        //Recupera el pyload de la trama RS485:                                  //Aqui deberia entrar despues de recuperar la cabecera de trama
        if (banRSI==2){
@@ -91,19 +118,68 @@ void ConfiguracionPrincipal(){
              funcionRS485 = tramaCabeceraRS485[1];
              subFuncionRS485 = tramaCabeceraRS485[2];
              numDatosRS485 = tramaCabeceraRS485[3];
-             banRSI = 2;
-             i_rs485 = 0;
+             banRSI = 2;														//Cambia la bandera para salir del bucle de cabecera
+             i_rs485 = 0;														//Encera el subindice para recuperar el payload
           } else {
-             banRSI = 0;
+             banRSI = 0;														//Limpia las banderas y el subindice
              banRSC = 0;
              i_rs485 = 0;
           }
        }
 
-       //Realiza el procesamiento de la informacion del  pyload:                  //Aqui se realiza cualquier accion con el pyload recuperado
+       //Realiza el procesamiento de la informacion del  pyload:                //Aqui se realiza cualquier accion con el payload recuperado
        if (banRSC==1){
-          TEST = ~TEST;
+          //Aqui realiza la operacion requerida por la solicitud				  		  
+		  //Si la respuesta tiene mas de un byte se debe trabajar con punteros.
+		  //Por ejemplo, si la respuesta es de tipo float, la asignacion de bytes de la trama payload de respuesta sera asi:		  
+		  outputPyloadRS485[0] = *respuestaFloat;								//LSB respuestaFloat
+	      outputPyloadRS485[1] = *(respuestaFloat+1);
+		  outputPyloadRS485[2] = *(respuestaFloat+2);
+		  outputPyloadRS485[3] = *(respuestaFloat+3);							//MSB respuestaFloat
+		  
+		  //Posteriomente se atualiza el byte #Datos de la cabecera de la trama.
+		  //Por lo general el resto de bytes de la cabecera permanecen iguales (Id, Funcion, Subfuncion)
+		  tramaCabeceraRS485[3] = 4; 
+		  	  
+		  //Si hay un problema en el procesamiento de la solicitud, se puede utiliza los bytes de funcion y subfuncion para indicar el problema:
+		  tramaCabeceraRS485[1] = 0xEE;                                         //El codigo 0xEE en el byte de funcion indica la presencia de un error
+		  tramaCabeceraRS485[2] = 0xE1; 										//Se puede utilizar el byte de subfuncion para indicar el tipo de error. El codigo varia segun el sensor, puede ser cualquiera siempre y cuando me indiques que significa.
+		  //Como en este caso no hay ningun dato para enviar se establece el byte #Datos como cero:
+		  tramaCabeceraRS485[3] = 0; 
+		  
+		  //Envia la trama de respuesta utilizando la libreria. El primer argumento indica el puerto UART que se utiliza, en este caso UART1:
+		  EnviarTramaRS485(1, tramaCabeceraRS485, outputPyloadRS485);
+		  
+		  //Limpia la bandera de trama completa:
+		  banRSC = 0;															
        }
 
     }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/*
+Protocolo:
+
+Funciones:
+Funcion 00: Inicio de medicion. En el caso de los colectores de datos, se puede utilizar esta funcion para ordenar el inicio de un ciclo de medicion.
+Funcion 01: Lectura de datos. Se utiliza para solicitar al sensor los datos de una lectura.
+Funcion 02: Escritura de datos. Se utiliza para escribir en el sensor algun dato, como por ejemplo algun valor de calibracion.
+
+Subfunciones:
+Sirven en algunos casos como por ejemplo para indicar el tipo de error, o otro que se necesite a futuro. 
+Si no se utiliza se puede establecer este byte como cero.
+
+Payload:
+Funcion 00: Un payload igual a 0xFF (Broadcast) se utiliza para iniciar una medicion de todos los parametros que permite el colector de datos.
+			Un payload con un valor especifico, por ejemplo 0x01, se utiliza para medir solo el parametro 01, que puede ser por ejemplo un sensor de temperatura.
+
+Funcion 01: Para la lectura de datos creo que es mejor que sea el concentrador el que decida que sensor necesita leer, para que el colector envie solo un valor a la vez.
+
+Funcion 02: Por lo pronto podemos obviar esta funcion para evitar confusiones.	
+*/			
+
+
+
+
+
+

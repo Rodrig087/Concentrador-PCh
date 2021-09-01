@@ -73,9 +73,10 @@ unsigned short banSPI0, banSPI1;
 unsigned char tramaSolicitudSPI[20];
 unsigned char tramaRespuestaSPI[20];
 unsigned short idSolicitud;
+unsigned char tramaPruebaSPI[5]= {0xE1, 0xE2, 0xE3, 0xE4, 0xE5};
 
 unsigned char cabeceraSolicitud[5];
-unsigned char payloadSolicitud[15];
+unsigned char payloadSolicitud[5];
 unsigned short banRSI, banRSC;
 unsigned char byteRS485;
 unsigned int i_rs485;
@@ -107,6 +108,7 @@ void main() {
 
  banSPI0 = 0;
  banSPI1 = 0;
+ bufferSPI = 0;
  idSolicitud = 0;
 
  banRSI = 0;
@@ -190,7 +192,6 @@ void ConfiguracionPrincipal(){
 
 
 
-
  Delay_ms(100);
 }
 
@@ -233,6 +234,11 @@ void ResponderSPI(unsigned char *cabeceraRespuesta, unsigned char *payloadRespue
  }
 
 
+
+
+
+
+
  RP0 = 1;
  Delay_us(100);
  RP0 = 0;
@@ -244,21 +250,24 @@ void ResponderSPI(unsigned char *cabeceraRespuesta, unsigned char *payloadRespue
 
 
 void interrupt(void){
-#line 221 "C:/Users/milto/Milton/RSA/Git/Proyecto Chanlud/Concentrador PCh/Concentrador-PCh/Firmware/Pruebas/PruebaConfiguracion/PruebaConfiguracion.c"
+#line 227 "C:/Users/milto/Milton/RSA/Git/Proyecto Chanlud/Concentrador PCh/Concentrador-PCh/Firmware/Pruebas/PruebaConfiguracion/PruebaConfiguracion.c"
  if (SSP1IF_bit==1){
 
  SSP1IF_bit = 0;
  bufferSPI = SSP1BUF;
+ TEST = ~TEST;
+
 
 
  if ((banSPI0==0)&&(bufferSPI==0xA0)) {
- CambiarEstadoBandera(0,1);
- i = 1;
  SSP1BUF = tramaRespuestaSPI[0];
+ i = 1;
+ CambiarEstadoBandera(0,1);
  }
  if ((banSPI0==1)&&(bufferSPI!=0xA0)&&(bufferSPI!=0xF0)){
  SSP1BUF = tramaRespuestaSPI[i];
  i++;
+
  }
  if ((banSPI0==1)&&(bufferSPI==0xF0)){
  CambiarEstadoBandera(0,0);
@@ -284,9 +293,14 @@ void interrupt(void){
  }
 
  idSolicitud = cabeceraSolicitud[0];
-#line 272 "C:/Users/milto/Milton/RSA/Git/Proyecto Chanlud/Concentrador PCh/Concentrador-PCh/Firmware/Pruebas/PruebaConfiguracion/PruebaConfiguracion.c"
- EnviarTramaRS485(1, cabeceraSolicitud, payloadSolicitud);
 
+
+
+
+
+ TEST = ~TEST;
+ ResponderSPI(cabeceraSolicitud, tramaPruebaSPI);
+#line 290 "C:/Users/milto/Milton/RSA/Git/Proyecto Chanlud/Concentrador PCh/Concentrador-PCh/Firmware/Pruebas/PruebaConfiguracion/PruebaConfiguracion.c"
  CambiarEstadoBandera(1,0);
 
  }
@@ -300,7 +314,6 @@ void interrupt(void){
 
  RC1IF_bit = 0;
  byteRS485 = UART1_Read();
-
 
 
  if (banRSI==2){
@@ -332,8 +345,10 @@ void interrupt(void){
  funcionRS485 = tramaCabeceraRS485[1];
  subFuncionRS485 = tramaCabeceraRS485[2];
  numDatosRS485 = tramaCabeceraRS485[3];
- banRSI = 2;
+ idSolicitud = 0;
  i_rs485 = 0;
+ banRSI = 2;
+
  } else {
  banRSI = 0;
  banRSC = 0;
@@ -344,14 +359,7 @@ void interrupt(void){
 
  if (banRSC==1){
  TEST = ~TEST;
-
- for (i=0;i<10;i++){
- sumValidacion = sumValidacion+inputPyloadRS485[i];
- }
- if (sumValidacion==145){
- ResponderSPI(tramaCabeceraRS485, inputPyloadRS485);
- sumValidacion = 0;
- }
+#line 360 "C:/Users/milto/Milton/RSA/Git/Proyecto Chanlud/Concentrador PCh/Concentrador-PCh/Firmware/Pruebas/PruebaConfiguracion/PruebaConfiguracion.c"
  banRSC = 0;
  }
 

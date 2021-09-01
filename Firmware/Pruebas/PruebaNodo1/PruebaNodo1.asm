@@ -219,8 +219,6 @@ _main:
 	CLRF        _numDatosRS485+0 
 ;PruebaNodo1.c,65 :: 		MS1RS485 = 0;
 	BCF         LATC5_bit+0, BitPos(LATC5_bit+0) 
-;PruebaNodo1.c,66 :: 		MS2RS485 = 0;
-	BCF         LATB5_bit+0, BitPos(LATB5_bit+0) 
 ;PruebaNodo1.c,69 :: 		TEST = 1;
 	BSF         LATC4_bit+0, BitPos(LATC4_bit+0) 
 ;PruebaNodo1.c,78 :: 		}

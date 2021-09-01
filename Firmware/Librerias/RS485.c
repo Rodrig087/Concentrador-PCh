@@ -1,8 +1,8 @@
 //Libreria para la comunicacion a travez de RS485
 //Version 2: Esta version recibe como parametros el puerto, la trama de cabecera y la trama pdu
 
-/////////////////////// /// Formato de la trama de datos //////////////////////////
-//|                     Cabecera                 |       PDU       |      Fin     |
+/////////////////////////////////// Formato de la trama de datos ///////////////////////////////////
+//| byteInicio |                     Cabecera                    |     Payload     |   bytesFin   |
 //|   1 byte   |   1 byte  |  1 byte   |    1 byte    |  1 byte  |     n bytes     |    2 bytes   |
 //|    0x3A    | Direccion |  Funcion  |  Subfuncion  |  #Datos  |     Payload     |  0Dh  |  0Ah |
 

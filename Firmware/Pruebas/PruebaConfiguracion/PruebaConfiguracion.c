@@ -32,9 +32,10 @@ unsigned short banSPI0, banSPI1;
 unsigned char tramaSolicitudSPI[20];                                            //Vector para almacenar los datos de solicitud que envia la RPi a traves del SPI
 unsigned char tramaRespuestaSPI[20];
 unsigned short idSolicitud;                                                     //Variable para almacenar el id del nodo al que se hizo la solicitud
+unsigned char tramaPruebaSPI[5]= {0xE1, 0xE2, 0xE3, 0xE4, 0xE5};                //Trama de 5 elementos para probar la comunicacion SPI
 //Variables para manejo del RS485:
 unsigned char cabeceraSolicitud[5];                                             //Vector para almacenar la cabecera de la trama RS485 a enviar
-unsigned char payloadSolicitud[15];                                             //Vector para almacenar el pyload de la trama RS485 a enviar
+unsigned char payloadSolicitud[5];                                             //Vector para almacenar el pyload de la trama RS485 a enviar
 unsigned short banRSI, banRSC;                                                  //Banderas de control de inicio de trama y trama completa
 unsigned char byteRS485;
 unsigned int i_rs485;                                                           //Subindice
@@ -66,6 +67,7 @@ void main() {
     //Comunicacion SPI:
     banSPI0 = 0;
     banSPI1 = 0;
+    bufferSPI = 0;
     idSolicitud = 0;
     //Comunicacion RS485:
     banRSI = 0;
@@ -142,7 +144,6 @@ void ConfiguracionPrincipal(){
      UART1_Init(19200);                                //Inicializa el UART1 a 19200 bps
      UART2_Init(19200);                                //Inicializa el UART2 a 19200 bps
 
-
      //Configuracion del TMR1 con un tiempo de 1ms
      //T1CON = 0x01;                                      //Timer1 Input Clock Prescale Select bits
      //TMR1H = 0xF0;
@@ -150,7 +151,7 @@ void ConfiguracionPrincipal(){
      //PIR1.TMR1IF = 0;                                   //Limpia la bandera de interrupcion del TMR1
      //PIE1.TMR1IE = 1;                                   //Habilita la interrupción de desbordamiento TMR1
 
-    Delay_ms(100);                                     //Espera hasta que se estabilicen los cambios
+     Delay_ms(100);                                     //Espera hasta que se estabilicen los cambios
 }
 //************************************************************************************************************************************
 //Funcion para cambiar el estado de las banderas:
@@ -185,11 +186,16 @@ void ResponderSPI(unsigned char *cabeceraRespuesta, unsigned char *payloadRespue
      tramaRespuestaSPI[1] = cabeceraRespuesta[1];
      tramaRespuestaSPI[2] = cabeceraRespuesta[2];
      tramaRespuestaSPI[3] = cabeceraRespuesta[3];
-     
+
      //Llena la trama de respuesta con los datos del payload:
      for (j=0;j<(cabeceraRespuesta[3]);j++){
          tramaRespuestaSPI[j+4] = payloadRespuesta[j];
      }
+     
+     //Ejemplo:
+     //tramaRespuestaSPI[3] = 6;   //**Envia un byte mas para control
+     //tramaRespuestaSPI[9] = tramaRespuestaSPI[4] + tramaRespuestaSPI[5] + tramaRespuestaSPI[6] + tramaRespuestaSPI[7] + tramaRespuestaSPI[8];
+     //Fin ejemplo
 
      //Genera el pulso RP0 para producir la interrupcion externa en la RPi:
      RP0 = 1;
@@ -222,16 +228,19 @@ void interrupt(void){
     
        SSP1IF_bit = 0;                                                          //Limpia la bandera de interrupcion por SPI
        bufferSPI = SSP1BUF;                                                     //Guarda el contenido del bufeer (lectura)
-       
+       TEST = ~TEST;
+
+
        //Rutina para enviar la trama de respuesta a la RPi  (C:0xA0   F:0xF0)
        if ((banSPI0==0)&&(bufferSPI==0xA0)) {
-          CambiarEstadoBandera(0,1);                                            //Activa la bandera
-          i = 1;
           SSP1BUF = tramaRespuestaSPI[0];                                       //Carga en el buffer el primer elemento de la cabecera (id)
+          i = 1;
+          CambiarEstadoBandera(0,1);                                            //Activa la bandera
        }
        if ((banSPI0==1)&&(bufferSPI!=0xA0)&&(bufferSPI!=0xF0)){
-          SSP1BUF = tramaRespuestaSPI[i];                                       //Se envia la subfuncion, y el LSB y MSB de la variable numBytesSPI
+          SSP1BUF = tramaRespuestaSPI[i];                                       //Se envia la trama de respuesta
           i++;
+          
        }
        if ((banSPI0==1)&&(bufferSPI==0xF0)){
           CambiarEstadoBandera(0,0);                                            //Limpia las banderas
@@ -258,18 +267,25 @@ void interrupt(void){
           
           idSolicitud = cabeceraSolicitud[0];
           
+          //Renvia la trama de solicitud a traves de RS485:
+          //EnviarTramaRS485(1, cabeceraSolicitud, payloadSolicitud);
+          
+          //Prueba SPI:
+          TEST = ~TEST;
+          ResponderSPI(cabeceraSolicitud, tramaPruebaSPI);
+          //Fin prueba
+          
           /*
-          //Prueba: Cambia el estado del led si coincide el Id de la peticion
+          //Prueba RS485:
            if ((cabeceraSolicitud[0])==5){
-              //TEST = ~TEST;
+              TEST = ~TEST;
               EnviarTramaRS485(1, cabeceraSolicitud, payloadSolicitud);
               EnviarTramaRS485(2, cabeceraSolicitud, payloadSolicitud);
            }
           //Fin Prueba
           */
           
-          //Renvia la trama de solicitud a traves de RS485:
-          EnviarTramaRS485(1, cabeceraSolicitud, payloadSolicitud);
+
           
           CambiarEstadoBandera(1,0);                                            //Limpia la bandera
        
@@ -284,7 +300,6 @@ void interrupt(void){
     
        RC1IF_bit = 0;                                                           //Limpia la bandera de interrupcion
        byteRS485 = UART1_Read();
-       //TEST = ~TEST;
 
        //Recupera el pyload de la trama RS485:                                  //Aqui deberia entrar despues de recuperar la cabecera de trama
        if (banRSI==2){
@@ -316,8 +331,10 @@ void interrupt(void){
              funcionRS485 = tramaCabeceraRS485[1];
              subFuncionRS485 = tramaCabeceraRS485[2];
              numDatosRS485 = tramaCabeceraRS485[3];
-             banRSI = 2;
-             i_rs485 = 0;
+             idSolicitud = 0;                                                   //Encera el idSolicitud
+             i_rs485 = 0;                                                       //Encera el subindice para almacenar el payload
+             banRSI = 2;                                                        //Cambia el valor de la bandera para salir del bucle
+
           } else {
              banRSI = 0;
              banRSC = 0;
@@ -329,6 +346,7 @@ void interrupt(void){
        if (banRSC==1){
           TEST = ~TEST;
           
+          /*Ejemplo:
           for (i=0;i<10;i++){
               sumValidacion = sumValidacion+inputPyloadRS485[i];
           }
@@ -336,6 +354,9 @@ void interrupt(void){
              ResponderSPI(tramaCabeceraRS485, inputPyloadRS485);
              sumValidacion = 0;
           }
+          */
+          
+          //Limpia la bandera de trama completa:
           banRSC = 0;
        }
     

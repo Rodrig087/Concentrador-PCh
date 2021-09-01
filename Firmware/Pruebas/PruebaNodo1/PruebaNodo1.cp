@@ -59,10 +59,10 @@ void EnviarTramaRS485(unsigned short puertoUART, unsigned char *cabecera, unsign
 #line 19 "C:/Users/milto/Milton/RSA/Git/Proyecto Chanlud/Concentrador PCh/Concentrador-PCh/Firmware/Pruebas/PruebaNodo1/PruebaNodo1.c"
 sbit TEST at LATC4_bit;
 sbit TEST_Direction at TRISC4_bit;
+sbit MS2RS485 at LATC5_bit;
+sbit MS2RS485_Direction at TRISC5_bit;
 sbit MS1RS485 at LATC5_bit;
 sbit MS1RS485_Direction at TRISC5_bit;
-sbit MS2RS485 at LATB5_bit;
-sbit MS2RS485_Direction at TRISB5_bit;
 
 unsigned int i, j, x, y;
 
@@ -104,7 +104,7 @@ void main() {
  subFuncionRS485 = 0;
  numDatosRS485 = 0;
  MS1RS485 = 0;
- MS2RS485 = 0;
+
 
 
  TEST = 1;

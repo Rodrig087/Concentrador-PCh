@@ -187,107 +187,109 @@ L_end_EnviarTramaRS485:
 
 _main:
 
-;PruebaConfiguracion.c,56 :: 		void main() {
-;PruebaConfiguracion.c,58 :: 		ConfiguracionPrincipal();
+;PruebaConfiguracion.c,57 :: 		void main() {
+;PruebaConfiguracion.c,59 :: 		ConfiguracionPrincipal();
 	CALL        _ConfiguracionPrincipal+0, 0
-;PruebaConfiguracion.c,62 :: 		i = 0;
+;PruebaConfiguracion.c,63 :: 		i = 0;
 	CLRF        _i+0 
 	CLRF        _i+1 
-;PruebaConfiguracion.c,63 :: 		j = 0;
+;PruebaConfiguracion.c,64 :: 		j = 0;
 	CLRF        _j+0 
 	CLRF        _j+1 
-;PruebaConfiguracion.c,64 :: 		x = 0;
+;PruebaConfiguracion.c,65 :: 		x = 0;
 	CLRF        _x+0 
 	CLRF        _x+1 
-;PruebaConfiguracion.c,65 :: 		y = 0;
+;PruebaConfiguracion.c,66 :: 		y = 0;
 	CLRF        _y+0 
 	CLRF        _y+1 
-;PruebaConfiguracion.c,67 :: 		banSPI0 = 0;
+;PruebaConfiguracion.c,68 :: 		banSPI0 = 0;
 	CLRF        _banSPI0+0 
-;PruebaConfiguracion.c,68 :: 		banSPI1 = 0;
+;PruebaConfiguracion.c,69 :: 		banSPI1 = 0;
 	CLRF        _banSPI1+0 
-;PruebaConfiguracion.c,69 :: 		idSolicitud = 0;
+;PruebaConfiguracion.c,70 :: 		bufferSPI = 0;
+	CLRF        _bufferSPI+0 
+;PruebaConfiguracion.c,71 :: 		idSolicitud = 0;
 	CLRF        _idSolicitud+0 
-;PruebaConfiguracion.c,71 :: 		banRSI = 0;
+;PruebaConfiguracion.c,73 :: 		banRSI = 0;
 	CLRF        _banRSI+0 
-;PruebaConfiguracion.c,72 :: 		banRSC = 0;
+;PruebaConfiguracion.c,74 :: 		banRSC = 0;
 	CLRF        _banRSC+0 
-;PruebaConfiguracion.c,73 :: 		byteRS485 = 0;
+;PruebaConfiguracion.c,75 :: 		byteRS485 = 0;
 	CLRF        _byteRS485+0 
-;PruebaConfiguracion.c,74 :: 		i_rs485 = 0;
+;PruebaConfiguracion.c,76 :: 		i_rs485 = 0;
 	CLRF        _i_rs485+0 
 	CLRF        _i_rs485+1 
-;PruebaConfiguracion.c,75 :: 		funcionRS485 = 0;
+;PruebaConfiguracion.c,77 :: 		funcionRS485 = 0;
 	CLRF        _funcionRS485+0 
-;PruebaConfiguracion.c,76 :: 		subFuncionRS485 = 0;
+;PruebaConfiguracion.c,78 :: 		subFuncionRS485 = 0;
 	CLRF        _subFuncionRS485+0 
-;PruebaConfiguracion.c,77 :: 		numDatosRS485 = 0;
+;PruebaConfiguracion.c,79 :: 		numDatosRS485 = 0;
 	CLRF        _numDatosRS485+0 
-;PruebaConfiguracion.c,78 :: 		MS1RS485 = 0;
+;PruebaConfiguracion.c,80 :: 		MS1RS485 = 0;
 	BCF         LATB3_bit+0, BitPos(LATB3_bit+0) 
-;PruebaConfiguracion.c,79 :: 		MS2RS485 = 0;
+;PruebaConfiguracion.c,81 :: 		MS2RS485 = 0;
 	BCF         LATB5_bit+0, BitPos(LATB5_bit+0) 
-;PruebaConfiguracion.c,82 :: 		RP0 = 0;
+;PruebaConfiguracion.c,84 :: 		RP0 = 0;
 	BCF         LATC0_bit+0, BitPos(LATC0_bit+0) 
-;PruebaConfiguracion.c,83 :: 		TEST = 1;
+;PruebaConfiguracion.c,85 :: 		TEST = 1;
 	BSF         RB2_bit+0, BitPos(RB2_bit+0) 
-;PruebaConfiguracion.c,84 :: 		MS1RS485 = 0;
+;PruebaConfiguracion.c,86 :: 		MS1RS485 = 0;
 	BCF         LATB3_bit+0, BitPos(LATB3_bit+0) 
-;PruebaConfiguracion.c,85 :: 		MS2RS485 = 0;
+;PruebaConfiguracion.c,87 :: 		MS2RS485 = 0;
 	BCF         LATB5_bit+0, BitPos(LATB5_bit+0) 
-;PruebaConfiguracion.c,87 :: 		sumValidacion = 0;
+;PruebaConfiguracion.c,89 :: 		sumValidacion = 0;
 	CLRF        _sumValidacion+0 
-;PruebaConfiguracion.c,98 :: 		}
+;PruebaConfiguracion.c,100 :: 		}
 L_end_main:
 	GOTO        $+0
 ; end of _main
 
 _ConfiguracionPrincipal:
 
-;PruebaConfiguracion.c,105 :: 		void ConfiguracionPrincipal(){
-;PruebaConfiguracion.c,108 :: 		OSCCON.IDLEN=1;                                    //Entra en modo IDLE durante la instruccion SLEEP
+;PruebaConfiguracion.c,107 :: 		void ConfiguracionPrincipal(){
+;PruebaConfiguracion.c,110 :: 		OSCCON.IDLEN=1;                                    //Entra en modo IDLE durante la instruccion SLEEP
 	BSF         OSCCON+0, 7 
-;PruebaConfiguracion.c,109 :: 		OSCCON.IRCF2=1;                                    //HFINTOSC=16MHz  IRFC=111
+;PruebaConfiguracion.c,111 :: 		OSCCON.IRCF2=1;                                    //HFINTOSC=16MHz  IRFC=111
 	BSF         OSCCON+0, 6 
-;PruebaConfiguracion.c,110 :: 		OSCCON.IRCF1=1;
+;PruebaConfiguracion.c,112 :: 		OSCCON.IRCF1=1;
 	BSF         OSCCON+0, 5 
-;PruebaConfiguracion.c,111 :: 		OSCCON.IRCF0=1;
+;PruebaConfiguracion.c,113 :: 		OSCCON.IRCF0=1;
 	BSF         OSCCON+0, 4 
-;PruebaConfiguracion.c,112 :: 		OSCCON.SCS1=1;                                     //System Clock Select bit:  1x=Internal oscillator block
+;PruebaConfiguracion.c,114 :: 		OSCCON.SCS1=1;                                     //System Clock Select bit:  1x=Internal oscillator block
 	BSF         OSCCON+0, 1 
-;PruebaConfiguracion.c,113 :: 		OSCCON.SCS0=1;
+;PruebaConfiguracion.c,115 :: 		OSCCON.SCS0=1;
 	BSF         OSCCON+0, 0 
-;PruebaConfiguracion.c,116 :: 		ANSELA = 0;                                        //Configura PORTA como digital
+;PruebaConfiguracion.c,118 :: 		ANSELA = 0;                                        //Configura PORTA como digital
 	CLRF        ANSELA+0 
-;PruebaConfiguracion.c,117 :: 		ANSELB = 0;                                        //Configura PORTB como digital
+;PruebaConfiguracion.c,119 :: 		ANSELB = 0;                                        //Configura PORTB como digital
 	CLRF        ANSELB+0 
-;PruebaConfiguracion.c,118 :: 		ANSELC = 0;                                        //Configura PORTC como digital
+;PruebaConfiguracion.c,120 :: 		ANSELC = 0;                                        //Configura PORTC como digital
 	CLRF        ANSELC+0 
-;PruebaConfiguracion.c,120 :: 		TEST_Direction = 0;                                //Configura el pin TEST como salida
+;PruebaConfiguracion.c,122 :: 		TEST_Direction = 0;                                //Configura el pin TEST como salida
 	BCF         TRISB2_bit+0, BitPos(TRISB2_bit+0) 
-;PruebaConfiguracion.c,121 :: 		RP0_Direction = 0;                                 //Configura el pin RP0 como salida
+;PruebaConfiguracion.c,123 :: 		RP0_Direction = 0;                                 //Configura el pin RP0 como salida
 	BCF         TRISC0_bit+0, BitPos(TRISC0_bit+0) 
-;PruebaConfiguracion.c,122 :: 		MS1RS485_Direction = 0;                            //Configura el pin MS1RS485 como salida
+;PruebaConfiguracion.c,124 :: 		MS1RS485_Direction = 0;                            //Configura el pin MS1RS485 como salida
 	BCF         TRISB3_bit+0, BitPos(TRISB3_bit+0) 
-;PruebaConfiguracion.c,123 :: 		MS2RS485_Direction = 0;                            //Configura el pin MS2RS485 como salida
+;PruebaConfiguracion.c,125 :: 		MS2RS485_Direction = 0;                            //Configura el pin MS2RS485 como salida
 	BCF         TRISB5_bit+0, BitPos(TRISB5_bit+0) 
-;PruebaConfiguracion.c,124 :: 		TRISA5_bit = 1;                                    //SS1 In
+;PruebaConfiguracion.c,126 :: 		TRISA5_bit = 1;                                    //SS1 In
 	BSF         TRISA5_bit+0, BitPos(TRISA5_bit+0) 
-;PruebaConfiguracion.c,125 :: 		TRISC3_bit = 1;                                    //SCK1 In
+;PruebaConfiguracion.c,127 :: 		TRISC3_bit = 1;                                    //SCK1 In
 	BSF         TRISC3_bit+0, BitPos(TRISC3_bit+0) 
-;PruebaConfiguracion.c,126 :: 		TRISC4_bit = 1;                                    //SDI1 In
+;PruebaConfiguracion.c,128 :: 		TRISC4_bit = 1;                                    //SDI1 In
 	BSF         TRISC4_bit+0, BitPos(TRISC4_bit+0) 
-;PruebaConfiguracion.c,127 :: 		TRISC5_bit = 0;                                    //SDO1 Out
+;PruebaConfiguracion.c,129 :: 		TRISC5_bit = 0;                                    //SDO1 Out
 	BCF         TRISC5_bit+0, BitPos(TRISC5_bit+0) 
-;PruebaConfiguracion.c,129 :: 		INTCON.GIE = 1;                                    //Habilita las interrupciones globales
+;PruebaConfiguracion.c,131 :: 		INTCON.GIE = 1;                                    //Habilita las interrupciones globales
 	BSF         INTCON+0, 7 
-;PruebaConfiguracion.c,130 :: 		INTCON.PEIE = 1;                                   //Habilita las interrupciones perifericas
+;PruebaConfiguracion.c,132 :: 		INTCON.PEIE = 1;                                   //Habilita las interrupciones perifericas
 	BSF         INTCON+0, 6 
-;PruebaConfiguracion.c,133 :: 		PIE1.SSP1IE = 1;                                   //Activa la interrupcion por SPI
+;PruebaConfiguracion.c,135 :: 		PIE1.SSP1IE = 1;                                   //Activa la interrupcion por SPI
 	BSF         PIE1+0, 3 
-;PruebaConfiguracion.c,134 :: 		PIR1.SSP1IF = 0;                                   //Limpia la bandera de interrupcion por SPI *
+;PruebaConfiguracion.c,136 :: 		PIR1.SSP1IF = 0;                                   //Limpia la bandera de interrupcion por SPI *
 	BCF         PIR1+0, 3 
-;PruebaConfiguracion.c,135 :: 		SPI1_Init_Advanced(_SPI_SLAVE_SS_ENABLE, _SPI_DATA_SAMPLE_END, _SPI_CLK_IDLE_HIGH, _SPI_HIGH_2_LOW);
+;PruebaConfiguracion.c,137 :: 		SPI1_Init_Advanced(_SPI_SLAVE_SS_ENABLE, _SPI_DATA_SAMPLE_END, _SPI_CLK_IDLE_HIGH, _SPI_HIGH_2_LOW);
 	MOVLW       4
 	MOVWF       FARG_SPI1_Init_Advanced_master+0 
 	MOVLW       128
@@ -296,29 +298,29 @@ _ConfiguracionPrincipal:
 	MOVWF       FARG_SPI1_Init_Advanced_clock_idle+0 
 	CLRF        FARG_SPI1_Init_Advanced_transmit_edge+0 
 	CALL        _SPI1_Init_Advanced+0, 0
-;PruebaConfiguracion.c,138 :: 		PIE1.RC1IE = 1;                                   //Habilita la interrupcion en UART1 receive
+;PruebaConfiguracion.c,140 :: 		PIE1.RC1IE = 1;                                   //Habilita la interrupcion en UART1 receive
 	BSF         PIE1+0, 5 
-;PruebaConfiguracion.c,139 :: 		PIR1.RC1IF = 0;                                   //Limpia la bandera de interrupcion UART1
+;PruebaConfiguracion.c,141 :: 		PIR1.RC1IF = 0;                                   //Limpia la bandera de interrupcion UART1
 	BCF         PIR1+0, 5 
-;PruebaConfiguracion.c,140 :: 		PIE3.RC2IE = 1;                                   //Habilita la interrupcion en UART2 receive
+;PruebaConfiguracion.c,142 :: 		PIE3.RC2IE = 1;                                   //Habilita la interrupcion en UART2 receive
 	BSF         PIE3+0, 5 
-;PruebaConfiguracion.c,141 :: 		PIR3.RC2IF = 0;                                   //Limpia la bandera de interrupcion
+;PruebaConfiguracion.c,143 :: 		PIR3.RC2IF = 0;                                   //Limpia la bandera de interrupcion
 	BCF         PIR3+0, 5 
-;PruebaConfiguracion.c,142 :: 		UART1_Init(19200);                                //Inicializa el UART1 a 19200 bps
+;PruebaConfiguracion.c,144 :: 		UART1_Init(19200);                                //Inicializa el UART1 a 19200 bps
 	BSF         BAUDCON+0, 3, 0
 	CLRF        SPBRGH+0 
 	MOVLW       207
 	MOVWF       SPBRG+0 
 	BSF         TXSTA+0, 2, 0
 	CALL        _UART1_Init+0, 0
-;PruebaConfiguracion.c,143 :: 		UART2_Init(19200);                                //Inicializa el UART2 a 19200 bps
+;PruebaConfiguracion.c,145 :: 		UART2_Init(19200);                                //Inicializa el UART2 a 19200 bps
 	BSF         BAUDCON2+0, 3, 0
 	CLRF        SPBRGH2+0 
 	MOVLW       207
 	MOVWF       SPBRG2+0 
 	BSF         TXSTA2+0, 2, 0
 	CALL        _UART2_Init+0, 0
-;PruebaConfiguracion.c,153 :: 		Delay_ms(100);                                     //Espera hasta que se estabilicen los cambios
+;PruebaConfiguracion.c,154 :: 		Delay_ms(100);                                     //Espera hasta que se estabilicen los cambios
 	MOVLW       3
 	MOVWF       R11, 0
 	MOVLW       8
@@ -332,42 +334,42 @@ L_ConfiguracionPrincipal12:
 	BRA         L_ConfiguracionPrincipal12
 	DECFSZ      R11, 1, 1
 	BRA         L_ConfiguracionPrincipal12
-;PruebaConfiguracion.c,154 :: 		}
+;PruebaConfiguracion.c,155 :: 		}
 L_end_ConfiguracionPrincipal:
 	RETURN      0
 ; end of _ConfiguracionPrincipal
 
 _CambiarEstadoBandera:
 
-;PruebaConfiguracion.c,157 :: 		void CambiarEstadoBandera(unsigned short bandera, unsigned short estado){
-;PruebaConfiguracion.c,159 :: 		if (estado==1){
+;PruebaConfiguracion.c,158 :: 		void CambiarEstadoBandera(unsigned short bandera, unsigned short estado){
+;PruebaConfiguracion.c,160 :: 		if (estado==1){
 	MOVF        FARG_CambiarEstadoBandera_estado+0, 0 
 	XORLW       1
 	BTFSS       STATUS+0, 2 
 	GOTO        L_CambiarEstadoBandera13
-;PruebaConfiguracion.c,161 :: 		banSPI0 = 3;
+;PruebaConfiguracion.c,162 :: 		banSPI0 = 3;
 	MOVLW       3
 	MOVWF       _banSPI0+0 
-;PruebaConfiguracion.c,162 :: 		banSPI1 = 3;
+;PruebaConfiguracion.c,163 :: 		banSPI1 = 3;
 	MOVLW       3
 	MOVWF       _banSPI1+0 
-;PruebaConfiguracion.c,164 :: 		switch (bandera){
+;PruebaConfiguracion.c,165 :: 		switch (bandera){
 	GOTO        L_CambiarEstadoBandera14
-;PruebaConfiguracion.c,165 :: 		case 0:
+;PruebaConfiguracion.c,166 :: 		case 0:
 L_CambiarEstadoBandera16:
-;PruebaConfiguracion.c,166 :: 		banSPI0 = 1;
+;PruebaConfiguracion.c,167 :: 		banSPI0 = 1;
 	MOVLW       1
 	MOVWF       _banSPI0+0 
-;PruebaConfiguracion.c,167 :: 		break;
+;PruebaConfiguracion.c,168 :: 		break;
 	GOTO        L_CambiarEstadoBandera15
-;PruebaConfiguracion.c,168 :: 		case 1:
+;PruebaConfiguracion.c,169 :: 		case 1:
 L_CambiarEstadoBandera17:
-;PruebaConfiguracion.c,169 :: 		banSPI1 = 1;
+;PruebaConfiguracion.c,170 :: 		banSPI1 = 1;
 	MOVLW       1
 	MOVWF       _banSPI1+0 
-;PruebaConfiguracion.c,170 :: 		break;
+;PruebaConfiguracion.c,171 :: 		break;
 	GOTO        L_CambiarEstadoBandera15
-;PruebaConfiguracion.c,171 :: 		}
+;PruebaConfiguracion.c,172 :: 		}
 L_CambiarEstadoBandera14:
 	MOVF        FARG_CambiarEstadoBandera_bandera+0, 0 
 	XORLW       0
@@ -378,33 +380,33 @@ L_CambiarEstadoBandera14:
 	BTFSC       STATUS+0, 2 
 	GOTO        L_CambiarEstadoBandera17
 L_CambiarEstadoBandera15:
-;PruebaConfiguracion.c,172 :: 		}
+;PruebaConfiguracion.c,173 :: 		}
 L_CambiarEstadoBandera13:
-;PruebaConfiguracion.c,174 :: 		if (estado==0){
+;PruebaConfiguracion.c,175 :: 		if (estado==0){
 	MOVF        FARG_CambiarEstadoBandera_estado+0, 0 
 	XORLW       0
 	BTFSS       STATUS+0, 2 
 	GOTO        L_CambiarEstadoBandera18
-;PruebaConfiguracion.c,175 :: 		banSPI0 = 0;
+;PruebaConfiguracion.c,176 :: 		banSPI0 = 0;
 	CLRF        _banSPI0+0 
-;PruebaConfiguracion.c,176 :: 		banSPI1 = 0;
+;PruebaConfiguracion.c,177 :: 		banSPI1 = 0;
 	CLRF        _banSPI1+0 
-;PruebaConfiguracion.c,177 :: 		}
-L_CambiarEstadoBandera18:
 ;PruebaConfiguracion.c,178 :: 		}
+L_CambiarEstadoBandera18:
+;PruebaConfiguracion.c,179 :: 		}
 L_end_CambiarEstadoBandera:
 	RETURN      0
 ; end of _CambiarEstadoBandera
 
 _ResponderSPI:
 
-;PruebaConfiguracion.c,181 :: 		void ResponderSPI(unsigned char *cabeceraRespuesta, unsigned char *payloadRespuesta){
-;PruebaConfiguracion.c,184 :: 		tramaRespuestaSPI[0] = cabeceraRespuesta[0];
+;PruebaConfiguracion.c,182 :: 		void ResponderSPI(unsigned char *cabeceraRespuesta, unsigned char *payloadRespuesta){
+;PruebaConfiguracion.c,185 :: 		tramaRespuestaSPI[0] = cabeceraRespuesta[0];
 	MOVFF       FARG_ResponderSPI_cabeceraRespuesta+0, FSR0
 	MOVFF       FARG_ResponderSPI_cabeceraRespuesta+1, FSR0H
 	MOVF        POSTINC0+0, 0 
 	MOVWF       _tramaRespuestaSPI+0 
-;PruebaConfiguracion.c,185 :: 		tramaRespuestaSPI[1] = cabeceraRespuesta[1];
+;PruebaConfiguracion.c,186 :: 		tramaRespuestaSPI[1] = cabeceraRespuesta[1];
 	MOVLW       1
 	ADDWF       FARG_ResponderSPI_cabeceraRespuesta+0, 0 
 	MOVWF       FSR0 
@@ -413,7 +415,7 @@ _ResponderSPI:
 	MOVWF       FSR0H 
 	MOVF        POSTINC0+0, 0 
 	MOVWF       _tramaRespuestaSPI+1 
-;PruebaConfiguracion.c,186 :: 		tramaRespuestaSPI[2] = cabeceraRespuesta[2];
+;PruebaConfiguracion.c,187 :: 		tramaRespuestaSPI[2] = cabeceraRespuesta[2];
 	MOVLW       2
 	ADDWF       FARG_ResponderSPI_cabeceraRespuesta+0, 0 
 	MOVWF       FSR0 
@@ -422,7 +424,7 @@ _ResponderSPI:
 	MOVWF       FSR0H 
 	MOVF        POSTINC0+0, 0 
 	MOVWF       _tramaRespuestaSPI+2 
-;PruebaConfiguracion.c,187 :: 		tramaRespuestaSPI[3] = cabeceraRespuesta[3];
+;PruebaConfiguracion.c,188 :: 		tramaRespuestaSPI[3] = cabeceraRespuesta[3];
 	MOVLW       3
 	ADDWF       FARG_ResponderSPI_cabeceraRespuesta+0, 0 
 	MOVWF       FSR0 
@@ -431,7 +433,7 @@ _ResponderSPI:
 	MOVWF       FSR0H 
 	MOVF        POSTINC0+0, 0 
 	MOVWF       _tramaRespuestaSPI+3 
-;PruebaConfiguracion.c,190 :: 		for (j=0;j<(cabeceraRespuesta[3]);j++){
+;PruebaConfiguracion.c,191 :: 		for (j=0;j<(cabeceraRespuesta[3]);j++){
 	CLRF        _j+0 
 	CLRF        _j+1 
 L_ResponderSPI19:
@@ -446,13 +448,13 @@ L_ResponderSPI19:
 	MOVLW       0
 	SUBWF       _j+1, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__ResponderSPI84
+	GOTO        L__ResponderSPI80
 	MOVF        R1, 0 
 	SUBWF       _j+0, 0 
-L__ResponderSPI84:
+L__ResponderSPI80:
 	BTFSC       STATUS+0, 0 
 	GOTO        L_ResponderSPI20
-;PruebaConfiguracion.c,191 :: 		tramaRespuestaSPI[j+4] = payloadRespuesta[j];
+;PruebaConfiguracion.c,192 :: 		tramaRespuestaSPI[j+4] = payloadRespuesta[j];
 	MOVLW       4
 	ADDWF       _j+0, 0 
 	MOVWF       R0 
@@ -473,39 +475,41 @@ L__ResponderSPI84:
 	MOVWF       FSR0H 
 	MOVF        POSTINC0+0, 0 
 	MOVWF       POSTINC1+0 
-;PruebaConfiguracion.c,190 :: 		for (j=0;j<(cabeceraRespuesta[3]);j++){
+;PruebaConfiguracion.c,191 :: 		for (j=0;j<(cabeceraRespuesta[3]);j++){
 	INFSNZ      _j+0, 1 
 	INCF        _j+1, 1 
-;PruebaConfiguracion.c,192 :: 		}
+;PruebaConfiguracion.c,193 :: 		}
 	GOTO        L_ResponderSPI19
 L_ResponderSPI20:
-;PruebaConfiguracion.c,195 :: 		RP0 = 1;
+;PruebaConfiguracion.c,201 :: 		RP0 = 1;
 	BSF         LATC0_bit+0, BitPos(LATC0_bit+0) 
-;PruebaConfiguracion.c,196 :: 		Delay_us(100);
+;PruebaConfiguracion.c,202 :: 		Delay_us(100);
 	MOVLW       133
 	MOVWF       R13, 0
 L_ResponderSPI22:
 	DECFSZ      R13, 1, 1
 	BRA         L_ResponderSPI22
-;PruebaConfiguracion.c,197 :: 		RP0 = 0;
+;PruebaConfiguracion.c,203 :: 		RP0 = 0;
 	BCF         LATC0_bit+0, BitPos(LATC0_bit+0) 
-;PruebaConfiguracion.c,199 :: 		}
+;PruebaConfiguracion.c,205 :: 		}
 L_end_ResponderSPI:
 	RETURN      0
 ; end of _ResponderSPI
 
 _interrupt:
 
-;PruebaConfiguracion.c,205 :: 		void interrupt(void){
-;PruebaConfiguracion.c,221 :: 		if (SSP1IF_bit==1){
+;PruebaConfiguracion.c,211 :: 		void interrupt(void){
+;PruebaConfiguracion.c,227 :: 		if (SSP1IF_bit==1){
 	BTFSS       SSP1IF_bit+0, BitPos(SSP1IF_bit+0) 
 	GOTO        L_interrupt23
-;PruebaConfiguracion.c,223 :: 		SSP1IF_bit = 0;                                                          //Limpia la bandera de interrupcion por SPI
+;PruebaConfiguracion.c,229 :: 		SSP1IF_bit = 0;                                                          //Limpia la bandera de interrupcion por SPI
 	BCF         SSP1IF_bit+0, BitPos(SSP1IF_bit+0) 
-;PruebaConfiguracion.c,224 :: 		bufferSPI = SSP1BUF;                                                     //Guarda el contenido del bufeer (lectura)
+;PruebaConfiguracion.c,230 :: 		bufferSPI = SSP1BUF;                                                     //Guarda el contenido del bufeer (lectura)
 	MOVF        SSP1BUF+0, 0 
 	MOVWF       _bufferSPI+0 
-;PruebaConfiguracion.c,227 :: 		if ((banSPI0==0)&&(bufferSPI==0xA0)) {
+;PruebaConfiguracion.c,231 :: 		TEST = ~TEST;
+	BTG         RB2_bit+0, BitPos(RB2_bit+0) 
+;PruebaConfiguracion.c,235 :: 		if ((banSPI0==0)&&(bufferSPI==0xA0)) {
 	MOVF        _banSPI0+0, 0 
 	XORLW       0
 	BTFSS       STATUS+0, 2 
@@ -514,23 +518,23 @@ _interrupt:
 	XORLW       160
 	BTFSS       STATUS+0, 2 
 	GOTO        L_interrupt26
-L__interrupt78:
-;PruebaConfiguracion.c,228 :: 		CambiarEstadoBandera(0,1);                                            //Activa la bandera
-	CLRF        FARG_CambiarEstadoBandera_bandera+0 
-	MOVLW       1
-	MOVWF       FARG_CambiarEstadoBandera_estado+0 
-	CALL        _CambiarEstadoBandera+0, 0
-;PruebaConfiguracion.c,229 :: 		i = 1;
+L__interrupt74:
+;PruebaConfiguracion.c,236 :: 		SSP1BUF = tramaRespuestaSPI[0];                                       //Carga en el buffer el primer elemento de la cabecera (id)
+	MOVF        _tramaRespuestaSPI+0, 0 
+	MOVWF       SSP1BUF+0 
+;PruebaConfiguracion.c,237 :: 		i = 1;
 	MOVLW       1
 	MOVWF       _i+0 
 	MOVLW       0
 	MOVWF       _i+1 
-;PruebaConfiguracion.c,230 :: 		SSP1BUF = tramaRespuestaSPI[0];                                       //Carga en el buffer el primer elemento de la cabecera (id)
-	MOVF        _tramaRespuestaSPI+0, 0 
-	MOVWF       SSP1BUF+0 
-;PruebaConfiguracion.c,231 :: 		}
+;PruebaConfiguracion.c,238 :: 		CambiarEstadoBandera(0,1);                                            //Activa la bandera
+	CLRF        FARG_CambiarEstadoBandera_bandera+0 
+	MOVLW       1
+	MOVWF       FARG_CambiarEstadoBandera_estado+0 
+	CALL        _CambiarEstadoBandera+0, 0
+;PruebaConfiguracion.c,239 :: 		}
 L_interrupt26:
-;PruebaConfiguracion.c,232 :: 		if ((banSPI0==1)&&(bufferSPI!=0xA0)&&(bufferSPI!=0xF0)){
+;PruebaConfiguracion.c,240 :: 		if ((banSPI0==1)&&(bufferSPI!=0xA0)&&(bufferSPI!=0xF0)){
 	MOVF        _banSPI0+0, 0 
 	XORLW       1
 	BTFSS       STATUS+0, 2 
@@ -543,8 +547,8 @@ L_interrupt26:
 	XORLW       240
 	BTFSC       STATUS+0, 2 
 	GOTO        L_interrupt29
-L__interrupt77:
-;PruebaConfiguracion.c,233 :: 		SSP1BUF = tramaRespuestaSPI[i];                                       //Se envia la subfuncion, y el LSB y MSB de la variable numBytesSPI
+L__interrupt73:
+;PruebaConfiguracion.c,241 :: 		SSP1BUF = tramaRespuestaSPI[i];                                       //Se envia la trama de respuesta
 	MOVLW       _tramaRespuestaSPI+0
 	ADDWF       _i+0, 0 
 	MOVWF       FSR0 
@@ -553,12 +557,12 @@ L__interrupt77:
 	MOVWF       FSR0H 
 	MOVF        POSTINC0+0, 0 
 	MOVWF       SSP1BUF+0 
-;PruebaConfiguracion.c,234 :: 		i++;
+;PruebaConfiguracion.c,242 :: 		i++;
 	INFSNZ      _i+0, 1 
 	INCF        _i+1, 1 
-;PruebaConfiguracion.c,235 :: 		}
+;PruebaConfiguracion.c,244 :: 		}
 L_interrupt29:
-;PruebaConfiguracion.c,236 :: 		if ((banSPI0==1)&&(bufferSPI==0xF0)){
+;PruebaConfiguracion.c,245 :: 		if ((banSPI0==1)&&(bufferSPI==0xF0)){
 	MOVF        _banSPI0+0, 0 
 	XORLW       1
 	BTFSS       STATUS+0, 2 
@@ -567,14 +571,14 @@ L_interrupt29:
 	XORLW       240
 	BTFSS       STATUS+0, 2 
 	GOTO        L_interrupt32
-L__interrupt76:
-;PruebaConfiguracion.c,237 :: 		CambiarEstadoBandera(0,0);                                            //Limpia las banderas
+L__interrupt72:
+;PruebaConfiguracion.c,246 :: 		CambiarEstadoBandera(0,0);                                            //Limpia las banderas
 	CLRF        FARG_CambiarEstadoBandera_bandera+0 
 	CLRF        FARG_CambiarEstadoBandera_estado+0 
 	CALL        _CambiarEstadoBandera+0, 0
-;PruebaConfiguracion.c,238 :: 		}
+;PruebaConfiguracion.c,247 :: 		}
 L_interrupt32:
-;PruebaConfiguracion.c,241 :: 		if ((banSPI1==0)&&(bufferSPI==0xA1)){
+;PruebaConfiguracion.c,250 :: 		if ((banSPI1==0)&&(bufferSPI==0xA1)){
 	MOVF        _banSPI1+0, 0 
 	XORLW       0
 	BTFSS       STATUS+0, 2 
@@ -583,19 +587,19 @@ L_interrupt32:
 	XORLW       161
 	BTFSS       STATUS+0, 2 
 	GOTO        L_interrupt35
-L__interrupt75:
-;PruebaConfiguracion.c,242 :: 		i = 0;                                                                //Limpia el subindice para guardar la trama SPI
+L__interrupt71:
+;PruebaConfiguracion.c,251 :: 		i = 0;                                                                //Limpia el subindice para guardar la trama SPI
 	CLRF        _i+0 
 	CLRF        _i+1 
-;PruebaConfiguracion.c,243 :: 		CambiarEstadoBandera(1,1);                                            //Activa la bandera banSPI1
+;PruebaConfiguracion.c,252 :: 		CambiarEstadoBandera(1,1);                                            //Activa la bandera banSPI1
 	MOVLW       1
 	MOVWF       FARG_CambiarEstadoBandera_bandera+0 
 	MOVLW       1
 	MOVWF       FARG_CambiarEstadoBandera_estado+0 
 	CALL        _CambiarEstadoBandera+0, 0
-;PruebaConfiguracion.c,244 :: 		}
+;PruebaConfiguracion.c,253 :: 		}
 L_interrupt35:
-;PruebaConfiguracion.c,245 :: 		if ((banSPI1==1)&&(bufferSPI!=0xA1)&&(bufferSPI!=0xF1)){
+;PruebaConfiguracion.c,254 :: 		if ((banSPI1==1)&&(bufferSPI!=0xA1)&&(bufferSPI!=0xF1)){
 	MOVF        _banSPI1+0, 0 
 	XORLW       1
 	BTFSS       STATUS+0, 2 
@@ -608,8 +612,8 @@ L_interrupt35:
 	XORLW       241
 	BTFSC       STATUS+0, 2 
 	GOTO        L_interrupt38
-L__interrupt74:
-;PruebaConfiguracion.c,246 :: 		tramaSolicitudSPI[i] = bufferSPI;                                     //Recupera la trama de solicitud SPI
+L__interrupt70:
+;PruebaConfiguracion.c,255 :: 		tramaSolicitudSPI[i] = bufferSPI;                                     //Recupera la trama de solicitud SPI
 	MOVLW       _tramaSolicitudSPI+0
 	ADDWF       _i+0, 0 
 	MOVWF       FSR1 
@@ -618,12 +622,12 @@ L__interrupt74:
 	MOVWF       FSR1H 
 	MOVF        _bufferSPI+0, 0 
 	MOVWF       POSTINC1+0 
-;PruebaConfiguracion.c,247 :: 		i++;
+;PruebaConfiguracion.c,256 :: 		i++;
 	INFSNZ      _i+0, 1 
 	INCF        _i+1, 1 
-;PruebaConfiguracion.c,248 :: 		}
+;PruebaConfiguracion.c,257 :: 		}
 L_interrupt38:
-;PruebaConfiguracion.c,249 :: 		if ((banSPI1==1)&&(bufferSPI==0xF1)){
+;PruebaConfiguracion.c,258 :: 		if ((banSPI1==1)&&(bufferSPI==0xF1)){
 	MOVF        _banSPI1+0, 0 
 	XORLW       1
 	BTFSS       STATUS+0, 2 
@@ -632,21 +636,21 @@ L_interrupt38:
 	XORLW       241
 	BTFSS       STATUS+0, 2 
 	GOTO        L_interrupt41
-L__interrupt73:
-;PruebaConfiguracion.c,251 :: 		for (j=0;j<4;j++){
+L__interrupt69:
+;PruebaConfiguracion.c,260 :: 		for (j=0;j<4;j++){
 	CLRF        _j+0 
 	CLRF        _j+1 
 L_interrupt42:
 	MOVLW       0
 	SUBWF       _j+1, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__interrupt87
+	GOTO        L__interrupt83
 	MOVLW       4
 	SUBWF       _j+0, 0 
-L__interrupt87:
+L__interrupt83:
 	BTFSC       STATUS+0, 0 
 	GOTO        L_interrupt43
-;PruebaConfiguracion.c,252 :: 		cabeceraSolicitud[j] = tramaSolicitudSPI[j];
+;PruebaConfiguracion.c,261 :: 		cabeceraSolicitud[j] = tramaSolicitudSPI[j];
 	MOVLW       _cabeceraSolicitud+0
 	ADDWF       _j+0, 0 
 	MOVWF       FSR1 
@@ -661,26 +665,26 @@ L__interrupt87:
 	MOVWF       FSR0H 
 	MOVF        POSTINC0+0, 0 
 	MOVWF       POSTINC1+0 
-;PruebaConfiguracion.c,251 :: 		for (j=0;j<4;j++){
+;PruebaConfiguracion.c,260 :: 		for (j=0;j<4;j++){
 	INFSNZ      _j+0, 1 
 	INCF        _j+1, 1 
-;PruebaConfiguracion.c,253 :: 		}
+;PruebaConfiguracion.c,262 :: 		}
 	GOTO        L_interrupt42
 L_interrupt43:
-;PruebaConfiguracion.c,255 :: 		for (j=0;j<(cabeceraSolicitud[3]);j++){
+;PruebaConfiguracion.c,264 :: 		for (j=0;j<(cabeceraSolicitud[3]);j++){
 	CLRF        _j+0 
 	CLRF        _j+1 
 L_interrupt45:
 	MOVLW       0
 	SUBWF       _j+1, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__interrupt88
+	GOTO        L__interrupt84
 	MOVF        _cabeceraSolicitud+3, 0 
 	SUBWF       _j+0, 0 
-L__interrupt88:
+L__interrupt84:
 	BTFSC       STATUS+0, 0 
 	GOTO        L_interrupt46
-;PruebaConfiguracion.c,256 :: 		payloadSolicitud[j] = tramaSolicitudSPI[4+j];
+;PruebaConfiguracion.c,265 :: 		payloadSolicitud[j] = tramaSolicitudSPI[4+j];
 	MOVLW       _payloadSolicitud+0
 	ADDWF       _j+0, 0 
 	MOVWF       FSR1 
@@ -701,61 +705,61 @@ L__interrupt88:
 	MOVWF       FSR0H 
 	MOVF        POSTINC0+0, 0 
 	MOVWF       POSTINC1+0 
-;PruebaConfiguracion.c,255 :: 		for (j=0;j<(cabeceraSolicitud[3]);j++){
+;PruebaConfiguracion.c,264 :: 		for (j=0;j<(cabeceraSolicitud[3]);j++){
 	INFSNZ      _j+0, 1 
 	INCF        _j+1, 1 
-;PruebaConfiguracion.c,257 :: 		}
+;PruebaConfiguracion.c,266 :: 		}
 	GOTO        L_interrupt45
 L_interrupt46:
-;PruebaConfiguracion.c,259 :: 		idSolicitud = cabeceraSolicitud[0];
+;PruebaConfiguracion.c,268 :: 		idSolicitud = cabeceraSolicitud[0];
 	MOVF        _cabeceraSolicitud+0, 0 
 	MOVWF       _idSolicitud+0 
-;PruebaConfiguracion.c,272 :: 		EnviarTramaRS485(1, cabeceraSolicitud, payloadSolicitud);
-	MOVLW       1
-	MOVWF       FARG_EnviarTramaRS485_puertoUART+0 
+;PruebaConfiguracion.c,274 :: 		TEST = ~TEST;
+	BTG         RB2_bit+0, BitPos(RB2_bit+0) 
+;PruebaConfiguracion.c,275 :: 		ResponderSPI(cabeceraSolicitud, tramaPruebaSPI);
 	MOVLW       _cabeceraSolicitud+0
-	MOVWF       FARG_EnviarTramaRS485_cabecera+0 
+	MOVWF       FARG_ResponderSPI_cabeceraRespuesta+0 
 	MOVLW       hi_addr(_cabeceraSolicitud+0)
-	MOVWF       FARG_EnviarTramaRS485_cabecera+1 
-	MOVLW       _payloadSolicitud+0
-	MOVWF       FARG_EnviarTramaRS485_payload+0 
-	MOVLW       hi_addr(_payloadSolicitud+0)
-	MOVWF       FARG_EnviarTramaRS485_payload+1 
-	CALL        _EnviarTramaRS485+0, 0
-;PruebaConfiguracion.c,274 :: 		CambiarEstadoBandera(1,0);                                            //Limpia la bandera
+	MOVWF       FARG_ResponderSPI_cabeceraRespuesta+1 
+	MOVLW       _tramaPruebaSPI+0
+	MOVWF       FARG_ResponderSPI_payloadRespuesta+0 
+	MOVLW       hi_addr(_tramaPruebaSPI+0)
+	MOVWF       FARG_ResponderSPI_payloadRespuesta+1 
+	CALL        _ResponderSPI+0, 0
+;PruebaConfiguracion.c,290 :: 		CambiarEstadoBandera(1,0);                                            //Limpia la bandera
 	MOVLW       1
 	MOVWF       FARG_CambiarEstadoBandera_bandera+0 
 	CLRF        FARG_CambiarEstadoBandera_estado+0 
 	CALL        _CambiarEstadoBandera+0, 0
-;PruebaConfiguracion.c,276 :: 		}
+;PruebaConfiguracion.c,292 :: 		}
 L_interrupt41:
-;PruebaConfiguracion.c,278 :: 		}
+;PruebaConfiguracion.c,294 :: 		}
 L_interrupt23:
-;PruebaConfiguracion.c,283 :: 		if (RC1IF_bit==1){
+;PruebaConfiguracion.c,299 :: 		if (RC1IF_bit==1){
 	BTFSS       RC1IF_bit+0, BitPos(RC1IF_bit+0) 
 	GOTO        L_interrupt48
-;PruebaConfiguracion.c,285 :: 		RC1IF_bit = 0;                                                           //Limpia la bandera de interrupcion
+;PruebaConfiguracion.c,301 :: 		RC1IF_bit = 0;                                                           //Limpia la bandera de interrupcion
 	BCF         RC1IF_bit+0, BitPos(RC1IF_bit+0) 
-;PruebaConfiguracion.c,286 :: 		byteRS485 = UART1_Read();
+;PruebaConfiguracion.c,302 :: 		byteRS485 = UART1_Read();
 	CALL        _UART1_Read+0, 0
 	MOVF        R0, 0 
 	MOVWF       _byteRS485+0 
-;PruebaConfiguracion.c,290 :: 		if (banRSI==2){
+;PruebaConfiguracion.c,305 :: 		if (banRSI==2){
 	MOVF        _banRSI+0, 0 
 	XORLW       2
 	BTFSS       STATUS+0, 2 
 	GOTO        L_interrupt49
-;PruebaConfiguracion.c,292 :: 		if (i_rs485<(numDatosRS485)){
+;PruebaConfiguracion.c,307 :: 		if (i_rs485<(numDatosRS485)){
 	MOVLW       0
 	SUBWF       _i_rs485+1, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__interrupt89
+	GOTO        L__interrupt85
 	MOVF        _numDatosRS485+0, 0 
 	SUBWF       _i_rs485+0, 0 
-L__interrupt89:
+L__interrupt85:
 	BTFSC       STATUS+0, 0 
 	GOTO        L_interrupt50
-;PruebaConfiguracion.c,293 :: 		inputPyloadRS485[i_rs485] = byteRS485;
+;PruebaConfiguracion.c,308 :: 		inputPyloadRS485[i_rs485] = byteRS485;
 	MOVLW       _inputPyloadRS485+0
 	ADDWF       _i_rs485+0, 0 
 	MOVWF       FSR1 
@@ -764,22 +768,22 @@ L__interrupt89:
 	MOVWF       FSR1H 
 	MOVF        _byteRS485+0, 0 
 	MOVWF       POSTINC1+0 
-;PruebaConfiguracion.c,294 :: 		i_rs485++;
+;PruebaConfiguracion.c,309 :: 		i_rs485++;
 	INFSNZ      _i_rs485+0, 1 
 	INCF        _i_rs485+1, 1 
-;PruebaConfiguracion.c,295 :: 		} else {
+;PruebaConfiguracion.c,310 :: 		} else {
 	GOTO        L_interrupt51
 L_interrupt50:
-;PruebaConfiguracion.c,296 :: 		banRSI = 0;                                                        //Limpia la bandera de inicio de trama
+;PruebaConfiguracion.c,311 :: 		banRSI = 0;                                                        //Limpia la bandera de inicio de trama
 	CLRF        _banRSI+0 
-;PruebaConfiguracion.c,297 :: 		banRSC = 1;                                                        //Activa la bandera de trama completa
+;PruebaConfiguracion.c,312 :: 		banRSC = 1;                                                        //Activa la bandera de trama completa
 	MOVLW       1
 	MOVWF       _banRSC+0 
-;PruebaConfiguracion.c,298 :: 		}
+;PruebaConfiguracion.c,313 :: 		}
 L_interrupt51:
-;PruebaConfiguracion.c,299 :: 		}
+;PruebaConfiguracion.c,314 :: 		}
 L_interrupt49:
-;PruebaConfiguracion.c,302 :: 		if ((banRSI==0)&&(banRSC==0)){
+;PruebaConfiguracion.c,317 :: 		if ((banRSI==0)&&(banRSC==0)){
 	MOVF        _banRSI+0, 0 
 	XORLW       0
 	BTFSS       STATUS+0, 2 
@@ -788,23 +792,23 @@ L_interrupt49:
 	XORLW       0
 	BTFSS       STATUS+0, 2 
 	GOTO        L_interrupt54
-L__interrupt72:
-;PruebaConfiguracion.c,303 :: 		if (byteRS485==0x3A){                                                 //Verifica si el primer byte recibido sea el byte de inicio de trama
+L__interrupt68:
+;PruebaConfiguracion.c,318 :: 		if (byteRS485==0x3A){                                                 //Verifica si el primer byte recibido sea el byte de inicio de trama
 	MOVF        _byteRS485+0, 0 
 	XORLW       58
 	BTFSS       STATUS+0, 2 
 	GOTO        L_interrupt55
-;PruebaConfiguracion.c,304 :: 		banRSI = 1;
+;PruebaConfiguracion.c,319 :: 		banRSI = 1;
 	MOVLW       1
 	MOVWF       _banRSI+0 
-;PruebaConfiguracion.c,305 :: 		i_rs485 = 0;
+;PruebaConfiguracion.c,320 :: 		i_rs485 = 0;
 	CLRF        _i_rs485+0 
 	CLRF        _i_rs485+1 
-;PruebaConfiguracion.c,306 :: 		}
+;PruebaConfiguracion.c,321 :: 		}
 L_interrupt55:
-;PruebaConfiguracion.c,307 :: 		}
+;PruebaConfiguracion.c,322 :: 		}
 L_interrupt54:
-;PruebaConfiguracion.c,308 :: 		if ((banRSI==1)&&(byteRS485!=0x3A)&&(i_rs485<4)){
+;PruebaConfiguracion.c,323 :: 		if ((banRSI==1)&&(byteRS485!=0x3A)&&(i_rs485<4)){
 	MOVF        _banRSI+0, 0 
 	XORLW       1
 	BTFSS       STATUS+0, 2 
@@ -816,14 +820,14 @@ L_interrupt54:
 	MOVLW       0
 	SUBWF       _i_rs485+1, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__interrupt90
+	GOTO        L__interrupt86
 	MOVLW       4
 	SUBWF       _i_rs485+0, 0 
-L__interrupt90:
+L__interrupt86:
 	BTFSC       STATUS+0, 0 
 	GOTO        L_interrupt58
-L__interrupt71:
-;PruebaConfiguracion.c,309 :: 		tramaCabeceraRS485[i_rs485] = byteRS485;                              //Recupera los datos de cabecera de la trama UART: [Direccion, Funcion, Subfuncion, NumeroDatos]
+L__interrupt67:
+;PruebaConfiguracion.c,324 :: 		tramaCabeceraRS485[i_rs485] = byteRS485;                              //Recupera los datos de cabecera de la trama UART: [Direccion, Funcion, Subfuncion, NumeroDatos]
 	MOVLW       _tramaCabeceraRS485+0
 	ADDWF       _i_rs485+0, 0 
 	MOVWF       FSR1 
@@ -832,12 +836,12 @@ L__interrupt71:
 	MOVWF       FSR1H 
 	MOVF        _byteRS485+0, 0 
 	MOVWF       POSTINC1+0 
-;PruebaConfiguracion.c,310 :: 		i_rs485++;
+;PruebaConfiguracion.c,325 :: 		i_rs485++;
 	INFSNZ      _i_rs485+0, 1 
 	INCF        _i_rs485+1, 1 
-;PruebaConfiguracion.c,311 :: 		}
+;PruebaConfiguracion.c,326 :: 		}
 L_interrupt58:
-;PruebaConfiguracion.c,312 :: 		if ((banRSI==1)&&(i_rs485==4)){
+;PruebaConfiguracion.c,327 :: 		if ((banRSI==1)&&(i_rs485==4)){
 	MOVF        _banRSI+0, 0 
 	XORLW       1
 	BTFSS       STATUS+0, 2 
@@ -845,116 +849,71 @@ L_interrupt58:
 	MOVLW       0
 	XORWF       _i_rs485+1, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__interrupt91
+	GOTO        L__interrupt87
 	MOVLW       4
 	XORWF       _i_rs485+0, 0 
-L__interrupt91:
+L__interrupt87:
 	BTFSS       STATUS+0, 2 
 	GOTO        L_interrupt61
-L__interrupt70:
-;PruebaConfiguracion.c,314 :: 		if (tramaCabeceraRS485[0]==idSolicitud){
+L__interrupt66:
+;PruebaConfiguracion.c,329 :: 		if (tramaCabeceraRS485[0]==idSolicitud){
 	MOVF        _tramaCabeceraRS485+0, 0 
 	XORWF       _idSolicitud+0, 0 
 	BTFSS       STATUS+0, 2 
 	GOTO        L_interrupt62
-;PruebaConfiguracion.c,316 :: 		funcionRS485 = tramaCabeceraRS485[1];
+;PruebaConfiguracion.c,331 :: 		funcionRS485 = tramaCabeceraRS485[1];
 	MOVF        _tramaCabeceraRS485+1, 0 
 	MOVWF       _funcionRS485+0 
-;PruebaConfiguracion.c,317 :: 		subFuncionRS485 = tramaCabeceraRS485[2];
+;PruebaConfiguracion.c,332 :: 		subFuncionRS485 = tramaCabeceraRS485[2];
 	MOVF        _tramaCabeceraRS485+2, 0 
 	MOVWF       _subFuncionRS485+0 
-;PruebaConfiguracion.c,318 :: 		numDatosRS485 = tramaCabeceraRS485[3];
+;PruebaConfiguracion.c,333 :: 		numDatosRS485 = tramaCabeceraRS485[3];
 	MOVF        _tramaCabeceraRS485+3, 0 
 	MOVWF       _numDatosRS485+0 
-;PruebaConfiguracion.c,319 :: 		banRSI = 2;
+;PruebaConfiguracion.c,334 :: 		idSolicitud = 0;                                                   //Encera el idSolicitud
+	CLRF        _idSolicitud+0 
+;PruebaConfiguracion.c,335 :: 		i_rs485 = 0;                                                       //Encera el subindice para almacenar el payload
+	CLRF        _i_rs485+0 
+	CLRF        _i_rs485+1 
+;PruebaConfiguracion.c,336 :: 		banRSI = 2;                                                        //Cambia el valor de la bandera para salir del bucle
 	MOVLW       2
 	MOVWF       _banRSI+0 
-;PruebaConfiguracion.c,320 :: 		i_rs485 = 0;
-	CLRF        _i_rs485+0 
-	CLRF        _i_rs485+1 
-;PruebaConfiguracion.c,321 :: 		} else {
+;PruebaConfiguracion.c,338 :: 		} else {
 	GOTO        L_interrupt63
 L_interrupt62:
-;PruebaConfiguracion.c,322 :: 		banRSI = 0;
+;PruebaConfiguracion.c,339 :: 		banRSI = 0;
 	CLRF        _banRSI+0 
-;PruebaConfiguracion.c,323 :: 		banRSC = 0;
+;PruebaConfiguracion.c,340 :: 		banRSC = 0;
 	CLRF        _banRSC+0 
-;PruebaConfiguracion.c,324 :: 		i_rs485 = 0;
+;PruebaConfiguracion.c,341 :: 		i_rs485 = 0;
 	CLRF        _i_rs485+0 
 	CLRF        _i_rs485+1 
-;PruebaConfiguracion.c,325 :: 		}
+;PruebaConfiguracion.c,342 :: 		}
 L_interrupt63:
-;PruebaConfiguracion.c,326 :: 		}
+;PruebaConfiguracion.c,343 :: 		}
 L_interrupt61:
-;PruebaConfiguracion.c,329 :: 		if (banRSC==1){
+;PruebaConfiguracion.c,346 :: 		if (banRSC==1){
 	MOVF        _banRSC+0, 0 
 	XORLW       1
 	BTFSS       STATUS+0, 2 
 	GOTO        L_interrupt64
-;PruebaConfiguracion.c,330 :: 		TEST = ~TEST;
+;PruebaConfiguracion.c,347 :: 		TEST = ~TEST;
 	BTG         RB2_bit+0, BitPos(RB2_bit+0) 
-;PruebaConfiguracion.c,332 :: 		for (i=0;i<10;i++){
-	CLRF        _i+0 
-	CLRF        _i+1 
-L_interrupt65:
-	MOVLW       0
-	SUBWF       _i+1, 0 
-	BTFSS       STATUS+0, 2 
-	GOTO        L__interrupt92
-	MOVLW       10
-	SUBWF       _i+0, 0 
-L__interrupt92:
-	BTFSC       STATUS+0, 0 
-	GOTO        L_interrupt66
-;PruebaConfiguracion.c,333 :: 		sumValidacion = sumValidacion+inputPyloadRS485[i];
-	MOVLW       _inputPyloadRS485+0
-	ADDWF       _i+0, 0 
-	MOVWF       FSR2 
-	MOVLW       hi_addr(_inputPyloadRS485+0)
-	ADDWFC      _i+1, 0 
-	MOVWF       FSR2H 
-	MOVF        POSTINC2+0, 0 
-	ADDWF       _sumValidacion+0, 1 
-;PruebaConfiguracion.c,332 :: 		for (i=0;i<10;i++){
-	INFSNZ      _i+0, 1 
-	INCF        _i+1, 1 
-;PruebaConfiguracion.c,334 :: 		}
-	GOTO        L_interrupt65
-L_interrupt66:
-;PruebaConfiguracion.c,335 :: 		if (sumValidacion==145){
-	MOVF        _sumValidacion+0, 0 
-	XORLW       145
-	BTFSS       STATUS+0, 2 
-	GOTO        L_interrupt68
-;PruebaConfiguracion.c,336 :: 		ResponderSPI(tramaCabeceraRS485, inputPyloadRS485);
-	MOVLW       _tramaCabeceraRS485+0
-	MOVWF       FARG_ResponderSPI_cabeceraRespuesta+0 
-	MOVLW       hi_addr(_tramaCabeceraRS485+0)
-	MOVWF       FARG_ResponderSPI_cabeceraRespuesta+1 
-	MOVLW       _inputPyloadRS485+0
-	MOVWF       FARG_ResponderSPI_payloadRespuesta+0 
-	MOVLW       hi_addr(_inputPyloadRS485+0)
-	MOVWF       FARG_ResponderSPI_payloadRespuesta+1 
-	CALL        _ResponderSPI+0, 0
-;PruebaConfiguracion.c,337 :: 		sumValidacion = 0;
-	CLRF        _sumValidacion+0 
-;PruebaConfiguracion.c,338 :: 		}
-L_interrupt68:
-;PruebaConfiguracion.c,339 :: 		banRSC = 0;
+;PruebaConfiguracion.c,360 :: 		banRSC = 0;
 	CLRF        _banRSC+0 
-;PruebaConfiguracion.c,340 :: 		}
+;PruebaConfiguracion.c,361 :: 		}
 L_interrupt64:
-;PruebaConfiguracion.c,342 :: 		}
+;PruebaConfiguracion.c,363 :: 		}
 L_interrupt48:
-;PruebaConfiguracion.c,347 :: 		if (RC2IF_bit==1){
+;PruebaConfiguracion.c,368 :: 		if (RC2IF_bit==1){
 	BTFSS       RC2IF_bit+0, BitPos(RC2IF_bit+0) 
-	GOTO        L_interrupt69
-;PruebaConfiguracion.c,349 :: 		RC2IF_bit = 0;                                                           //Limpia la bandera de interrupcion
+	GOTO        L_interrupt65
+;PruebaConfiguracion.c,370 :: 		RC2IF_bit = 0;                                                           //Limpia la bandera de interrupcion
 	BCF         RC2IF_bit+0, BitPos(RC2IF_bit+0) 
-;PruebaConfiguracion.c,352 :: 		}
-L_interrupt69:
-;PruebaConfiguracion.c,355 :: 		}
+;PruebaConfiguracion.c,373 :: 		}
+L_interrupt65:
+;PruebaConfiguracion.c,376 :: 		}
 L_end_interrupt:
-L__interrupt86:
+L__interrupt82:
 	RETFIE      1
 ; end of _interrupt

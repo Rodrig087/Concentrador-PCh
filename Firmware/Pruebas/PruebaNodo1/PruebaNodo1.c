@@ -18,10 +18,10 @@ Observaciones:
 //Definicion de pines:
 sbit TEST at LATC4_bit;                                                         //Definicion del pin de indicador auxiliar para hacer pruebas
 sbit TEST_Direction at TRISC4_bit;
+sbit MS2RS485 at LATC5_bit;                                                     //**Es importante definir los dos pines MS del RS485
+sbit MS2RS485_Direction at TRISC5_bit;                                          //**Si solo se utiliza uno, se debe sobrescribir al momento de definir el pin
 sbit MS1RS485 at LATC5_bit;                                                     //Definicion del pin MS1 RS485
 sbit MS1RS485_Direction at TRISC5_bit;
-sbit MS2RS485 at LATB5_bit;                                                     //**Es importante definir los dos pines MS del RS485
-sbit MS2RS485_Direction at TRISB5_bit;                                          //**Si solo se utiliza uno, se debe sobrescribir al momento de definir el pin
 //Subindices:
 unsigned int i, j, x, y;
 //Variables para manejo del RS485:
@@ -63,7 +63,7 @@ void main() {
      subFuncionRS485 = 0;
      numDatosRS485 = 0;
      MS1RS485 = 0;
-     MS2RS485 = 0;
+     //MS2RS485 = 0;
 
      //Puertos:
      TEST = 1;

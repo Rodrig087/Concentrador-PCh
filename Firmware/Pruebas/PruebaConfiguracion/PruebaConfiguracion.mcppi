@@ -52,4 +52,5 @@ Count=1
 [LIB_EXPANDED_NODES]
 0=mikroE Libraries
 1=System Libraries
+401=SPI
 Count=3
