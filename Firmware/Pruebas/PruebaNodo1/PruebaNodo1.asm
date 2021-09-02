@@ -306,10 +306,10 @@ _interrupt:
 	MOVLW       0
 	SUBWF       _i_rs485+1, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__interrupt39
+	GOTO        L__interrupt42
 	MOVF        _numDatosRS485+0, 0 
 	SUBWF       _i_rs485+0, 0 
-L__interrupt39:
+L__interrupt42:
 	BTFSC       STATUS+0, 0 
 	GOTO        L_interrupt15
 ;PruebaNodo1.c,134 :: 		inputPyloadRS485[i_rs485] = byteRS485;
@@ -345,7 +345,7 @@ L_interrupt14:
 	XORLW       0
 	BTFSS       STATUS+0, 2 
 	GOTO        L_interrupt19
-L__interrupt33:
+L__interrupt36:
 ;PruebaNodo1.c,144 :: 		if (byteRS485==0x3A){                                                 //Verifica si el primer byte recibido sea el byte de inicio de trama
 	MOVF        _byteRS485+0, 0 
 	XORLW       58
@@ -373,13 +373,13 @@ L_interrupt19:
 	MOVLW       0
 	SUBWF       _i_rs485+1, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__interrupt40
+	GOTO        L__interrupt43
 	MOVLW       4
 	SUBWF       _i_rs485+0, 0 
-L__interrupt40:
+L__interrupt43:
 	BTFSC       STATUS+0, 0 
 	GOTO        L_interrupt23
-L__interrupt32:
+L__interrupt35:
 ;PruebaNodo1.c,150 :: 		tramaCabeceraRS485[i_rs485] = byteRS485;                              //Recupera los datos de cabecera de la trama UART: [Direccion, Funcion, Subfuncion, NumeroDatos]
 	MOVLW       _tramaCabeceraRS485+0
 	ADDWF       _i_rs485+0, 0 
@@ -402,13 +402,13 @@ L_interrupt23:
 	MOVLW       0
 	XORWF       _i_rs485+1, 0 
 	BTFSS       STATUS+0, 2 
-	GOTO        L__interrupt41
+	GOTO        L__interrupt44
 	MOVLW       4
 	XORWF       _i_rs485+0, 0 
-L__interrupt41:
+L__interrupt44:
 	BTFSS       STATUS+0, 2 
 	GOTO        L_interrupt26
-L__interrupt31:
+L__interrupt34:
 ;PruebaNodo1.c,155 :: 		if (tramaCabeceraRS485[0]==IDNODO){
 	MOVF        _tramaCabeceraRS485+0, 0 
 	XORLW       5
@@ -429,28 +429,28 @@ L__interrupt31:
 ;PruebaNodo1.c,161 :: 		i_rs485 = 0;
 	CLRF        _i_rs485+0 
 	CLRF        _i_rs485+1 
-;PruebaNodo1.c,163 :: 		} else {
+;PruebaNodo1.c,162 :: 		} else {
 	GOTO        L_interrupt28
 L_interrupt27:
-;PruebaNodo1.c,164 :: 		banRSI = 0;
+;PruebaNodo1.c,163 :: 		banRSI = 0;
 	CLRF        _banRSI+0 
-;PruebaNodo1.c,165 :: 		banRSC = 0;
+;PruebaNodo1.c,164 :: 		banRSC = 0;
 	CLRF        _banRSC+0 
-;PruebaNodo1.c,166 :: 		i_rs485 = 0;
+;PruebaNodo1.c,165 :: 		i_rs485 = 0;
 	CLRF        _i_rs485+0 
 	CLRF        _i_rs485+1 
-;PruebaNodo1.c,167 :: 		}
+;PruebaNodo1.c,166 :: 		}
 L_interrupt28:
-;PruebaNodo1.c,168 :: 		}
+;PruebaNodo1.c,167 :: 		}
 L_interrupt26:
-;PruebaNodo1.c,171 :: 		if (banRSC==1){
+;PruebaNodo1.c,170 :: 		if (banRSC==1){
 	MOVF        _banRSC+0, 0 
 	XORLW       1
 	BTFSS       STATUS+0, 2 
 	GOTO        L_interrupt29
-;PruebaNodo1.c,173 :: 		TEST = ~TEST;
+;PruebaNodo1.c,172 :: 		TEST = ~TEST;
 	BTG         LATC4_bit+0, BitPos(LATC4_bit+0) 
-;PruebaNodo1.c,174 :: 		Delay_ms(250);
+;PruebaNodo1.c,173 :: 		Delay_ms(250);
 	MOVLW       6
 	MOVWF       R11, 0
 	MOVLW       19
@@ -466,10 +466,35 @@ L_interrupt30:
 	BRA         L_interrupt30
 	NOP
 	NOP
-;PruebaNodo1.c,176 :: 		tramaCabeceraRS485[3] = 10; //Cambia el numero de datos. El resto de la trama permanece igual
+;PruebaNodo1.c,176 :: 		if (funcionRS485!=4){
+	MOVF        _funcionRS485+0, 0 
+	XORLW       4
+	BTFSC       STATUS+0, 2 
+	GOTO        L_interrupt31
+;PruebaNodo1.c,178 :: 		EnviarTramaRS485(1, tramaCabeceraRS485, inputPyloadRS485);
+	MOVLW       1
+	MOVWF       FARG_EnviarTramaRS485_puertoUART+0 
+	MOVLW       _tramaCabeceraRS485+0
+	MOVWF       FARG_EnviarTramaRS485_cabecera+0 
+	MOVLW       hi_addr(_tramaCabeceraRS485+0)
+	MOVWF       FARG_EnviarTramaRS485_cabecera+1 
+	MOVLW       _inputPyloadRS485+0
+	MOVWF       FARG_EnviarTramaRS485_payload+0 
+	MOVLW       hi_addr(_inputPyloadRS485+0)
+	MOVWF       FARG_EnviarTramaRS485_payload+1 
+	CALL        _EnviarTramaRS485+0, 0
+;PruebaNodo1.c,179 :: 		} else {
+	GOTO        L_interrupt32
+L_interrupt31:
+;PruebaNodo1.c,180 :: 		if (subFuncionRS485==2){
+	MOVF        _subFuncionRS485+0, 0 
+	XORLW       2
+	BTFSS       STATUS+0, 2 
+	GOTO        L_interrupt33
+;PruebaNodo1.c,182 :: 		tramaCabeceraRS485[3] = 10;                                     //Actualiza el numero de datos para hacer el test
 	MOVLW       10
 	MOVWF       _tramaCabeceraRS485+3 
-;PruebaNodo1.c,177 :: 		EnviarTramaRS485(1, tramaCabeceraRS485, tramaPruebaRS485);
+;PruebaNodo1.c,183 :: 		EnviarTramaRS485(1, tramaCabeceraRS485, tramaPruebaRS485);
 	MOVLW       1
 	MOVWF       FARG_EnviarTramaRS485_puertoUART+0 
 	MOVLW       _tramaCabeceraRS485+0
@@ -481,14 +506,18 @@ L_interrupt30:
 	MOVLW       hi_addr(_tramaPruebaRS485+0)
 	MOVWF       FARG_EnviarTramaRS485_payload+1 
 	CALL        _EnviarTramaRS485+0, 0
-;PruebaNodo1.c,179 :: 		banRSC = 0;
-	CLRF        _banRSC+0 
-;PruebaNodo1.c,181 :: 		}
-L_interrupt29:
+;PruebaNodo1.c,184 :: 		}
+L_interrupt33:
 ;PruebaNodo1.c,185 :: 		}
+L_interrupt32:
+;PruebaNodo1.c,187 :: 		banRSC = 0;
+	CLRF        _banRSC+0 
+;PruebaNodo1.c,189 :: 		}
+L_interrupt29:
+;PruebaNodo1.c,193 :: 		}
 L_interrupt13:
-;PruebaNodo1.c,188 :: 		}
+;PruebaNodo1.c,196 :: 		}
 L_end_interrupt:
-L__interrupt38:
+L__interrupt41:
 	RETFIE      1
 ; end of _interrupt

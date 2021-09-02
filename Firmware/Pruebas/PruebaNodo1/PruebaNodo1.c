@@ -32,7 +32,7 @@ unsigned char tramaCabeceraRS485[5];                                            
 unsigned char inputPyloadRS485[15];                                            //Vector para almacenar el pyload de la trama RS485 recibida
 unsigned char outputPyloadRS485[15];                                            //Vector para almacenar el pyload de la trama RS485 a enviar
 unsigned short direccionRS485, funcionRS485, subFuncionRS485, numDatosRS485;
-unsigned char tramaPruebaRS485[10]= {10, 11, 12, 13, 14, 15, 16, 17, 18, 19};   //Trama de 10 elementos para probar la comunicacion RS485
+unsigned char tramaPruebaRS485[10]= {0xB0, 0xB1, 0xB2, 0xB3, 0xB4, 0xB5, 0xB6, 0xB7, 0xB8, 0xB9};   //Trama de 10 elementos para probar la comunicacion RS485
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -159,7 +159,6 @@ void interrupt(void){
              numDatosRS485 = tramaCabeceraRS485[3];
              banRSI = 2;
              i_rs485 = 0;
-             //TEST = ~TEST;
           } else {
              banRSI = 0;
              banRSC = 0;
@@ -172,9 +171,18 @@ void interrupt(void){
           
           TEST = ~TEST;
           Delay_ms(250);
-          //Envia la trama de prueba:
-          tramaCabeceraRS485[3] = 10; //Cambia el numero de datos. El resto de la trama permanece igual
-          EnviarTramaRS485(1, tramaCabeceraRS485, tramaPruebaRS485);
+          
+          //Comprueba si se solicito una funcion de testeo:
+          if (funcionRS485!=4){
+             //Renvia la trama de solicitud a traves de RS485:
+             EnviarTramaRS485(1, tramaCabeceraRS485, inputPyloadRS485);
+          } else {
+             if (subFuncionRS485==2){
+                //Realiza el testeo de la comunicacion RS485:
+                tramaCabeceraRS485[3] = 10;                                     //Actualiza el numero de datos para hacer el test
+                EnviarTramaRS485(1, tramaCabeceraRS485, tramaPruebaRS485);
+             }
+          }
 
           banRSC = 0;
 

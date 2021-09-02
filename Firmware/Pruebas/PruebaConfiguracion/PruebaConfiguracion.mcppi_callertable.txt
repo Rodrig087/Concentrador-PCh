@@ -6,5 +6,10 @@ main
 		UART2_Init
 interrupt
 	CambiarEstadoBandera
+	EnviarTramaRS485
+		UART1_Write
+		UART1_Tx_Idle
+		UART2_Write
+		UART2_Tx_Idle
 	ResponderSPI
 	UART1_Read

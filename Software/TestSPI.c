@@ -1,6 +1,18 @@
 //Compilar:
 //gcc TestSPI.c -o testspi -lbcm2835 -lwiringPi 
 
+/*-------------------------------------------------------------------------------------------------------------------------
+Autor: Milton Munoz
+Fecha de creacion: 21/08/03
+Observaciones:
+Funcion 1: Inicio de medicion.
+Funcion 2: Lectura de datos.
+Funcion 3: Escritura de datos.
+Funcion 4: Test comunicacion
+        Subfuncion 1: Test SPI (sumRecibido=1645)
+        Subfuncion 2: Test RS485 (sumRecibido=1805)
+-------------------------------------------------------------------------------------------------------------------------*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <wiringPi.h>
@@ -74,13 +86,13 @@ int main() {
 	//Datos de prueba:
 	idPet = 5;
 	funcionPet = 4;
-	subFuncionPet = 3;
+	subFuncionPet = 2;
 	numDatosPet = 5;
-	payloadPet[0] = 10;
-	payloadPet[1] = 20;
-	payloadPet[2] = 30;
-	payloadPet[3] = 40;
-	payloadPet[4] = 50;
+	payloadPet[0] = 1;
+	payloadPet[1] = 2;
+	payloadPet[2] = 3;
+	payloadPet[3] = 4;
+	payloadPet[4] = 5;
 	
 	sumEnviado = 0;
 	sumRecibido = 0;
@@ -123,17 +135,7 @@ int ConfiguracionPrincipal(){
 	
 	//Enciende el pin LEDTEST:
 	digitalWrite (LEDTEST, HIGH);
-	
-	//Genera un pulso para resetear el PIC:
-    //digitalWrite(MCLR, HIGH);
-    //delay(100);
-    //digitalWrite(MCLR, LOW);
-    //delay(100);
-    //digitalWrite(MCLR, HIGH); 
 		
-	//printf("Configuracion completa\n");
-	//sleep(1);
-	
 }
 //**************************************************************************************************************************************
 
@@ -157,12 +159,26 @@ void ImprimirInformacion(){
         printf("%#02X ", payloadResp[i]);
     }
 	
-	if (sumRecibido==1135){
-		printf("\n Sumatoria control = %d", sumRecibido);
-	}else{
-		printf("\n Sumatoria control = " RED "%d" RESET, sumRecibido);
+	//Comprueba la sumatoria de control en las solicitudes de testeo de comunicacion:
+	if (funcionPet==4){
+		//Test comunicacion SPI
+		if (subFuncionPet==1){
+			if (sumRecibido==1645){
+			printf("\n Sumatoria control = %d", sumRecibido);
+			}else{
+				printf("\n Sumatoria control = " RED "%d" RESET, sumRecibido);
+			}
+		}
+		//Test comunicacion RS485:
+		if (subFuncionPet==2){
+			if (sumRecibido==1805){
+			printf("\n Sumatoria control = %d", sumRecibido);
+			}else{
+				printf("\n Sumatoria control = " RED "%d" RESET, sumRecibido);
+			}		
+		}
 	}
-	
+		
 	Salir();
 	
 }

@@ -2,11 +2,11 @@
 hint: 0	1139	Available RAM: 1515 [bytes], Available ROM: 32768 [bytes]	 
 diagnostics: 0	122	Compilation Started	rs485.c
 warning: 110	1509	Generated baud rate is 19231 bps (error = 0.16 percent)	PruebaNodo1.c
-diagnostics: 188	123	Compiled Successfully	PruebaNodo1.c
-diagnostics: 0	127	All files Compiled in 94 ms	 
+diagnostics: 196	123	Compiled Successfully	PruebaNodo1.c
+diagnostics: 0	127	All files Compiled in 62 ms	 
 hint: 0	1144	Used RAM (bytes): 73 (5%)  Free RAM (bytes): 1442 (95%)	Used RAM (bytes): 73 (5%)  Free RAM (bytes): 1442 (95%)
-hint: 0	1144	Used ROM (bytes): 884 (3%)  Free ROM (bytes): 31884 (97%)	Used ROM (bytes): 884 (3%)  Free ROM (bytes): 31884 (97%)
+hint: 0	1144	Used ROM (bytes): 920 (3%)  Free ROM (bytes): 31848 (97%)	Used ROM (bytes): 920 (3%)  Free ROM (bytes): 31848 (97%)
 diagnostics: 0	125	Project Linked Successfully	PruebaNodo1.mcppi
-diagnostics: 0	128	Linked in 31 ms	 
-diagnostics: 0	129	Project 'PruebaNodo1.mcppi' completed: 141 ms	 
-diagnostics: 0	103	Finished successfully: 30 ago. 2021, 10:01:30	PruebaNodo1.mcppi
+diagnostics: 0	128	Linked in 32 ms	 
+diagnostics: 0	129	Project 'PruebaNodo1.mcppi' completed: 110 ms	 
+diagnostics: 0	103	Finished successfully: 01 sep. 2021, 22:44:57	PruebaNodo1.mcppi

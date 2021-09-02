@@ -56,7 +56,7 @@ void EnviarTramaRS485(unsigned short puertoUART, unsigned char *cabecera, unsign
  }
 
 }
-#line 19 "C:/Users/milto/Milton/RSA/Git/Proyecto Chanlud/Concentrador PCh/Concentrador-PCh/Firmware/Pruebas/PruebaConfiguracion/PruebaConfiguracion.c"
+#line 24 "C:/Users/milto/Milton/RSA/Git/Proyecto Chanlud/Concentrador PCh/Concentrador-PCh/Firmware/Pruebas/PruebaConfiguracion/PruebaConfiguracion.c"
 sbit RP0 at LATC0_bit;
 sbit RP0_Direction at TRISC0_bit;
 sbit TEST at RB2_bit;
@@ -73,10 +73,12 @@ unsigned short banSPI0, banSPI1;
 unsigned char tramaSolicitudSPI[20];
 unsigned char tramaRespuestaSPI[20];
 unsigned short idSolicitud;
-unsigned char tramaPruebaSPI[5]= {0xE1, 0xE2, 0xE3, 0xE4, 0xE5};
-
+unsigned short funcionSolicitud;
+unsigned short subFuncionSolicitud;
 unsigned char cabeceraSolicitud[5];
 unsigned char payloadSolicitud[5];
+unsigned char tramaPruebaSPI[10]= {0xA0, 0xA1, 0xA2, 0xA3, 0xA4, 0xA5, 0xA6, 0xA7, 0xA8, 0xA9};
+
 unsigned short banRSI, banRSC;
 unsigned char byteRS485;
 unsigned int i_rs485;
@@ -84,7 +86,6 @@ unsigned char tramaCabeceraRS485[5];
 unsigned char inputPyloadRS485[15];
 unsigned char outputPyloadRS485[15];
 unsigned short direccionRS485, funcionRS485, subFuncionRS485, numDatosRS485;
-
 unsigned short sumValidacion;
 
 
@@ -96,6 +97,7 @@ void ResponderSPI(unsigned char *cabeceraRespuesta, unsigned char *payloadRespue
 
 
 void main() {
+
 
  ConfiguracionPrincipal();
 
@@ -110,6 +112,8 @@ void main() {
  banSPI1 = 0;
  bufferSPI = 0;
  idSolicitud = 0;
+ funcionSolicitud = 0;
+ subFuncionSolicitud = 0;
 
  banRSI = 0;
  banRSC = 0;
@@ -120,23 +124,12 @@ void main() {
  numDatosRS485 = 0;
  MS1RS485 = 0;
  MS2RS485 = 0;
-
+ sumValidacion = 0;
 
  RP0 = 0;
  TEST = 1;
  MS1RS485 = 0;
  MS2RS485 = 0;
-
- sumValidacion = 0;
-
-
-
-
-
-
-
-
-
 
 }
 
@@ -234,11 +227,6 @@ void ResponderSPI(unsigned char *cabeceraRespuesta, unsigned char *payloadRespue
  }
 
 
-
-
-
-
-
  RP0 = 1;
  Delay_us(100);
  RP0 = 0;
@@ -250,7 +238,7 @@ void ResponderSPI(unsigned char *cabeceraRespuesta, unsigned char *payloadRespue
 
 
 void interrupt(void){
-#line 227 "C:/Users/milto/Milton/RSA/Git/Proyecto Chanlud/Concentrador PCh/Concentrador-PCh/Firmware/Pruebas/PruebaConfiguracion/PruebaConfiguracion.c"
+#line 220 "C:/Users/milto/Milton/RSA/Git/Proyecto Chanlud/Concentrador PCh/Concentrador-PCh/Firmware/Pruebas/PruebaConfiguracion/PruebaConfiguracion.c"
  if (SSP1IF_bit==1){
 
  SSP1IF_bit = 0;
@@ -292,15 +280,29 @@ void interrupt(void){
  payloadSolicitud[j] = tramaSolicitudSPI[4+j];
  }
 
+
  idSolicitud = cabeceraSolicitud[0];
+ funcionSolicitud = cabeceraSolicitud[1];
+ subFuncionSolicitud = cabeceraSolicitud[2];
 
 
+ if (funcionSolicitud!=4){
 
-
+ EnviarTramaRS485(1, cabeceraSolicitud, payloadSolicitud);
+ EnviarTramaRS485(2, cabeceraSolicitud, payloadSolicitud);
+ } else {
+ if (subfuncionSolicitud==1){
 
  TEST = ~TEST;
+ cabeceraSolicitud[3] = 10;
  ResponderSPI(cabeceraSolicitud, tramaPruebaSPI);
-#line 290 "C:/Users/milto/Milton/RSA/Git/Proyecto Chanlud/Concentrador PCh/Concentrador-PCh/Firmware/Pruebas/PruebaConfiguracion/PruebaConfiguracion.c"
+ } else {
+
+ EnviarTramaRS485(1, cabeceraSolicitud, payloadSolicitud);
+ EnviarTramaRS485(2, cabeceraSolicitud, payloadSolicitud);
+ }
+ }
+
  CambiarEstadoBandera(1,0);
 
  }
@@ -359,7 +361,8 @@ void interrupt(void){
 
  if (banRSC==1){
  TEST = ~TEST;
-#line 360 "C:/Users/milto/Milton/RSA/Git/Proyecto Chanlud/Concentrador PCh/Concentrador-PCh/Firmware/Pruebas/PruebaConfiguracion/PruebaConfiguracion.c"
+ ResponderSPI(tramaCabeceraRS485, inputPyloadRS485);
+
  banRSC = 0;
  }
 
@@ -371,8 +374,7 @@ void interrupt(void){
  if (RC2IF_bit==1){
 
  RC2IF_bit = 0;
-
-
+#line 407 "C:/Users/milto/Milton/RSA/Git/Proyecto Chanlud/Concentrador PCh/Concentrador-PCh/Firmware/Pruebas/PruebaConfiguracion/PruebaConfiguracion.c"
  }
 
 

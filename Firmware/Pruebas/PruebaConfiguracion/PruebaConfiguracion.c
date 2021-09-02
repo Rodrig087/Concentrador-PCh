@@ -1,9 +1,14 @@
 /*-------------------------------------------------------------------------------------------------------------------------
 Autor: Milton Munoz
 Fecha de creacion: 21/08/03
-Configuracion: PIC18F25k22 XT=20MHz
+Configuracion: PIC18F25k22 XT=16MHz
 Observaciones:
-
+Funcion 1: Inicio de medicion.
+Funcion 2: Lectura de datos.
+Funcion 3: Escritura de datos.
+Funcion 4: Test comunicacion
+        Subfuncion 1: Test SPI
+        Subfuncion 2: Test RS485
 ---------------------------------------------------------------------------------------------------------------------------*/
 
 ////////////////////////////////////////////////////         Librerias         /////////////////////////////////////////////////////////////
@@ -32,10 +37,12 @@ unsigned short banSPI0, banSPI1;
 unsigned char tramaSolicitudSPI[20];                                            //Vector para almacenar los datos de solicitud que envia la RPi a traves del SPI
 unsigned char tramaRespuestaSPI[20];
 unsigned short idSolicitud;                                                     //Variable para almacenar el id del nodo al que se hizo la solicitud
-unsigned char tramaPruebaSPI[5]= {0xE1, 0xE2, 0xE3, 0xE4, 0xE5};                //Trama de 5 elementos para probar la comunicacion SPI
-//Variables para manejo del RS485:
+unsigned short funcionSolicitud;                                                //Variable para almacenar la funcion solicitada
+unsigned short subFuncionSolicitud;                                             //Variable para almacenar la subfuncion solicitada
 unsigned char cabeceraSolicitud[5];                                             //Vector para almacenar la cabecera de la trama RS485 a enviar
 unsigned char payloadSolicitud[5];                                             //Vector para almacenar el pyload de la trama RS485 a enviar
+unsigned char tramaPruebaSPI[10]= {0xA0, 0xA1, 0xA2, 0xA3, 0xA4, 0xA5, 0xA6, 0xA7, 0xA8, 0xA9};
+//Variables para la comunicacion RS485:
 unsigned short banRSI, banRSC;                                                  //Banderas de control de inicio de trama y trama completa
 unsigned char byteRS485;
 unsigned int i_rs485;                                                           //Subindice
@@ -43,7 +50,6 @@ unsigned char tramaCabeceraRS485[5];                                            
 unsigned char inputPyloadRS485[15];                                             //Vector para almacenar el pyload de la trama RS485 recibida
 unsigned char outputPyloadRS485[15];                                            //Vector para almacenar el pyload de la trama RS485 a enviar
 unsigned short direccionRS485, funcionRS485, subFuncionRS485, numDatosRS485;
-
 unsigned short sumValidacion;
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -56,6 +62,7 @@ void ResponderSPI(unsigned char *cabeceraRespuesta, unsigned char *payloadRespue
 //////////////////////////////////////////////////////////////      Main      ////////////////////////////////////////////////////////////////
 void main() {
 
+    //Inicio de configuracion:
     ConfiguracionPrincipal();
 
     //Inicializacion de variables:
@@ -69,6 +76,8 @@ void main() {
     banSPI1 = 0;
     bufferSPI = 0;
     idSolicitud = 0;
+    funcionSolicitud = 0;
+    subFuncionSolicitud = 0;
     //Comunicacion RS485:
     banRSI = 0;
     banRSC = 0;
@@ -79,23 +88,12 @@ void main() {
     numDatosRS485 = 0;
     MS1RS485 = 0;
     MS2RS485 = 0;
-
+    sumValidacion = 0;
     //Puertos:
     RP0 = 0;
     TEST = 1;
     MS1RS485 = 0;
     MS2RS485 = 0;
-    
-    sumValidacion = 0;
-    
-    //Entra al bucle princial del programa:
-    //while(1){
-             //TEST = ~TEST;
-             //Delay_ms(80);
-    //}
-     
-
-
 
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -191,11 +189,6 @@ void ResponderSPI(unsigned char *cabeceraRespuesta, unsigned char *payloadRespue
      for (j=0;j<(cabeceraRespuesta[3]);j++){
          tramaRespuestaSPI[j+4] = payloadRespuesta[j];
      }
-     
-     //Ejemplo:
-     //tramaRespuestaSPI[3] = 6;   //**Envia un byte mas para control
-     //tramaRespuestaSPI[9] = tramaRespuestaSPI[4] + tramaRespuestaSPI[5] + tramaRespuestaSPI[6] + tramaRespuestaSPI[7] + tramaRespuestaSPI[8];
-     //Fin ejemplo
 
      //Genera el pulso RP0 para producir la interrupcion externa en la RPi:
      RP0 = 1;
@@ -265,28 +258,29 @@ void interrupt(void){
               payloadSolicitud[j] = tramaSolicitudSPI[4+j];
           }
           
+          //Recupera los datos de la cabecera:
           idSolicitud = cabeceraSolicitud[0];
+          funcionSolicitud = cabeceraSolicitud[1];
+          subFuncionSolicitud = cabeceraSolicitud[2];
           
-          //Renvia la trama de solicitud a traves de RS485:
-          //EnviarTramaRS485(1, cabeceraSolicitud, payloadSolicitud);
-          
-          //Prueba SPI:
-          TEST = ~TEST;
-          ResponderSPI(cabeceraSolicitud, tramaPruebaSPI);
-          //Fin prueba
-          
-          /*
-          //Prueba RS485:
-           if ((cabeceraSolicitud[0])==5){
-              TEST = ~TEST;
-              EnviarTramaRS485(1, cabeceraSolicitud, payloadSolicitud);
-              EnviarTramaRS485(2, cabeceraSolicitud, payloadSolicitud);
-           }
-          //Fin Prueba
-          */
-          
+          //Comprueba si se solicito una funcion de testeo:
+          if (funcionSolicitud!=4){
+             //Renvia la trama de solicitud a traves de RS485:
+             EnviarTramaRS485(1, cabeceraSolicitud, payloadSolicitud);
+             EnviarTramaRS485(2, cabeceraSolicitud, payloadSolicitud);
+          } else {
+             if (subfuncionSolicitud==1){
+                //Realiza el testeo de la comunicacion SPI:
+                TEST = ~TEST;
+                cabeceraSolicitud[3] = 10;                                      //Actualiza el numero de datos para hacer el test
+                ResponderSPI(cabeceraSolicitud, tramaPruebaSPI);
+             } else {
+                //Renvia la trama de solicitud a traves de RS485:
+                EnviarTramaRS485(1, cabeceraSolicitud, payloadSolicitud);
+                EnviarTramaRS485(2, cabeceraSolicitud, payloadSolicitud);
+             }
+          }
 
-          
           CambiarEstadoBandera(1,0);                                            //Limpia la bandera
        
        }
@@ -345,17 +339,7 @@ void interrupt(void){
        //Realiza el procesamiento de la informacion del  pyload:                  //Aqui se realiza cualquier accion con el pyload recuperado
        if (banRSC==1){
           TEST = ~TEST;
-          
-          /*Ejemplo:
-          for (i=0;i<10;i++){
-              sumValidacion = sumValidacion+inputPyloadRS485[i];
-          }
-          if (sumValidacion==145){
-             ResponderSPI(tramaCabeceraRS485, inputPyloadRS485);
-             sumValidacion = 0;
-          }
-          */
-          
+          ResponderSPI(tramaCabeceraRS485, inputPyloadRS485);
           //Limpia la bandera de trama completa:
           banRSC = 0;
        }
@@ -368,8 +352,58 @@ void interrupt(void){
     if (RC2IF_bit==1){
     
        RC2IF_bit = 0;                                                           //Limpia la bandera de interrupcion
-    
-    
+       /*
+       byteRS485 = UART2_Read();
+
+       //Recupera el pyload de la trama RS485:                                  //Aqui deberia entrar despues de recuperar la cabecera de trama
+       if (banRSI==2){
+          //Recupera el pyload de final de trama:
+          if (i_rs485<(numDatosRS485)){
+             inputPyloadRS485[i_rs485] = byteRS485;
+             i_rs485++;
+          } else {
+             banRSI = 0;                                                        //Limpia la bandera de inicio de trama
+             banRSC = 1;                                                        //Activa la bandera de trama completa
+          }
+       }
+
+       //Recupera la cabecera de la trama RS485:                                //Aqui deberia entrar primero cada vez que se recibe una trama nueva
+       if ((banRSI==0)&&(banRSC==0)){
+          if (byteRS485==0x3A){                                                 //Verifica si el primer byte recibido sea el byte de inicio de trama
+             banRSI = 1;
+             i_rs485 = 0;
+          }
+       }
+       if ((banRSI==1)&&(byteRS485!=0x3A)&&(i_rs485<4)){
+          tramaCabeceraRS485[i_rs485] = byteRS485;                              //Recupera los datos de cabecera de la trama UART: [Direccion, Funcion, Subfuncion, NumeroDatos]
+          i_rs485++;
+       }
+       if ((banRSI==1)&&(i_rs485==4)){
+          //Comprueba la direccion del nodo solicitado:
+          if (tramaCabeceraRS485[0]==idSolicitud){
+             //Recupera la funcion, la subfuncion y el numero de datos:
+             funcionRS485 = tramaCabeceraRS485[1];
+             subFuncionRS485 = tramaCabeceraRS485[2];
+             numDatosRS485 = tramaCabeceraRS485[3];
+             idSolicitud = 0;                                                   //Encera el idSolicitud
+             i_rs485 = 0;                                                       //Encera el subindice para almacenar el payload
+             banRSI = 2;                                                        //Cambia el valor de la bandera para salir del bucle
+
+          } else {
+             banRSI = 0;
+             banRSC = 0;
+             i_rs485 = 0;
+          }
+       }
+
+       //Realiza el procesamiento de la informacion del  pyload:                  //Aqui se realiza cualquier accion con el pyload recuperado
+       if (banRSC==1){
+          TEST = ~TEST;
+          ResponderSPI(tramaCabeceraRS485, inputPyloadRS485);
+          //Limpia la bandera de trama completa:
+          banRSC = 0;
+       }
+       */
     }
 //********************************************************************************************************************************************
 

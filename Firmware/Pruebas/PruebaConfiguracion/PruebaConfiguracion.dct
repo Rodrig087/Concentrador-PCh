@@ -746,6 +746,7 @@ fsr2h
 fsr2l
 fsr2ptr
 funcionrs485
+funcionsolicitud
 fvrcon
 fvren
 fvren_bit
@@ -1798,6 +1799,7 @@ str3sync
 str3sync_bit
 sub_32x32_fp
 subfuncionrs485
+subfuncionsolicitud
 sumvalidacion
 swap
 swdte
