@@ -43,8 +43,8 @@ void EnviarTramaRS485(unsigned short puertoUART, unsigned char *cabecera, unsign
  UART2_Write(0x3A);
  UART2_Write(direccion);
  UART2_Write(funcion);
- UART1_Write(subfuncion);
- UART1_Write(numDatos);
+ UART2_Write(subfuncion);
+ UART2_Write(numDatos);
  for (iDatos=0;iDatos<numDatos;iDatos++){
  UART2_Write(payload[iDatos]);
  }
@@ -59,8 +59,10 @@ void EnviarTramaRS485(unsigned short puertoUART, unsigned char *cabecera, unsign
 #line 24 "C:/Users/milto/Milton/RSA/Git/Proyecto Chanlud/Concentrador PCh/Concentrador-PCh/Firmware/Pruebas/PruebaConfiguracion/PruebaConfiguracion.c"
 sbit RP0 at LATC0_bit;
 sbit RP0_Direction at TRISC0_bit;
-sbit TEST at RB2_bit;
-sbit TEST_Direction at TRISB2_bit;
+sbit LED1 at RB2_bit;
+sbit LED1_Direction at TRISB2_bit;
+sbit LED2 at RB4_bit;
+sbit LED2_Direction at TRISB4_bit;
 sbit MS1RS485 at LATB3_bit;
 sbit MS1RS485_Direction at TRISB3_bit;
 sbit MS2RS485 at LATB5_bit;
@@ -79,9 +81,9 @@ unsigned char cabeceraSolicitud[5];
 unsigned char payloadSolicitud[5];
 unsigned char tramaPruebaSPI[10]= {0xA0, 0xA1, 0xA2, 0xA3, 0xA4, 0xA5, 0xA6, 0xA7, 0xA8, 0xA9};
 
-unsigned short banRSI, banRSC;
-unsigned char byteRS485;
-unsigned int i_rs485;
+unsigned short banRSI, banRSC, banRSI2, banRSC2;
+unsigned char byteRS485, byteRS4852;
+unsigned int i_rs485, i_rs4852;
 unsigned char tramaCabeceraRS485[5];
 unsigned char inputPyloadRS485[15];
 unsigned char outputPyloadRS485[15];
@@ -116,9 +118,13 @@ void main() {
  subFuncionSolicitud = 0;
 
  banRSI = 0;
+ banRSI2 = 0;
  banRSC = 0;
+ banRSC2 = 0;
  byteRS485 = 0;
+ byteRS4852 = 0;
  i_rs485 = 0;
+ i_rs4852 = 0;
  funcionRS485 = 0;
  subFuncionRS485 = 0;
  numDatosRS485 = 0;
@@ -127,7 +133,8 @@ void main() {
  sumValidacion = 0;
 
  RP0 = 0;
- TEST = 1;
+ LED1 = 0;
+ LED2 = 0;
  MS1RS485 = 0;
  MS2RS485 = 0;
 
@@ -153,7 +160,8 @@ void ConfiguracionPrincipal(){
  ANSELB = 0;
  ANSELC = 0;
 
- TEST_Direction = 0;
+ LED1_Direction = 0;
+ LED2_Direction = 0;
  RP0_Direction = 0;
  MS1RS485_Direction = 0;
  MS2RS485_Direction = 0;
@@ -238,12 +246,12 @@ void ResponderSPI(unsigned char *cabeceraRespuesta, unsigned char *payloadRespue
 
 
 void interrupt(void){
-#line 220 "C:/Users/milto/Milton/RSA/Git/Proyecto Chanlud/Concentrador PCh/Concentrador-PCh/Firmware/Pruebas/PruebaConfiguracion/PruebaConfiguracion.c"
+#line 228 "C:/Users/milto/Milton/RSA/Git/Proyecto Chanlud/Concentrador PCh/Concentrador-PCh/Firmware/Pruebas/PruebaConfiguracion/PruebaConfiguracion.c"
  if (SSP1IF_bit==1){
 
  SSP1IF_bit = 0;
  bufferSPI = SSP1BUF;
- TEST = ~TEST;
+
 
 
 
@@ -255,7 +263,6 @@ void interrupt(void){
  if ((banSPI0==1)&&(bufferSPI!=0xA0)&&(bufferSPI!=0xF0)){
  SSP1BUF = tramaRespuestaSPI[i];
  i++;
-
  }
  if ((banSPI0==1)&&(bufferSPI==0xF0)){
  CambiarEstadoBandera(0,0);
@@ -265,6 +272,8 @@ void interrupt(void){
  if ((banSPI1==0)&&(bufferSPI==0xA1)){
  i = 0;
  CambiarEstadoBandera(1,1);
+ LED1 = 1;
+ LED2 = 1;
  }
  if ((banSPI1==1)&&(bufferSPI!=0xA1)&&(bufferSPI!=0xF1)){
  tramaSolicitudSPI[i] = bufferSPI;
@@ -293,7 +302,6 @@ void interrupt(void){
  } else {
  if (subfuncionSolicitud==1){
 
- TEST = ~TEST;
  cabeceraSolicitud[3] = 10;
  ResponderSPI(cabeceraSolicitud, tramaPruebaSPI);
  } else {
@@ -304,6 +312,8 @@ void interrupt(void){
  }
 
  CambiarEstadoBandera(1,0);
+ LED1 = 0;
+ LED2 = 0;
 
  }
 
@@ -334,6 +344,7 @@ void interrupt(void){
  if (byteRS485==0x3A){
  banRSI = 1;
  i_rs485 = 0;
+ LED1 = 1;
  }
  }
  if ((banRSI==1)&&(byteRS485!=0x3A)&&(i_rs485<4)){
@@ -360,7 +371,7 @@ void interrupt(void){
 
 
  if (banRSC==1){
- TEST = ~TEST;
+ LED1 = 0;
  ResponderSPI(tramaCabeceraRS485, inputPyloadRS485);
 
  banRSC = 0;
@@ -374,7 +385,58 @@ void interrupt(void){
  if (RC2IF_bit==1){
 
  RC2IF_bit = 0;
-#line 407 "C:/Users/milto/Milton/RSA/Git/Proyecto Chanlud/Concentrador PCh/Concentrador-PCh/Firmware/Pruebas/PruebaConfiguracion/PruebaConfiguracion.c"
+ byteRS4852 = UART2_Read();
+
+
+ if (banRSI2==2){
+
+ if (i_rs4852<(numDatosRS485)){
+ inputPyloadRS485[i_rs4852] = byteRS4852;
+ i_rs4852++;
+ } else {
+ banRSI2 = 0;
+ banRSC2 = 1;
+ }
+ }
+
+
+ if ((banRSI2==0)&&(banRSC2==0)){
+ if (byteRS4852==0x3A){
+ banRSI2 = 1;
+ i_rs4852 = 0;
+ LED2 = 1;
+ }
+ }
+ if ((banRSI2==1)&&(byteRS4852!=0x3A)&&(i_rs4852<4)){
+ tramaCabeceraRS485[i_rs4852] = byteRS4852;
+ i_rs4852++;
+ }
+ if ((banRSI2==1)&&(i_rs4852==4)){
+
+ if (tramaCabeceraRS485[0]==idSolicitud){
+
+ funcionRS485 = tramaCabeceraRS485[1];
+ subFuncionRS485 = tramaCabeceraRS485[2];
+ numDatosRS485 = tramaCabeceraRS485[3];
+ idSolicitud = 0;
+ i_rs4852 = 0;
+ banRSI2 = 2;
+
+ } else {
+ banRSI2 = 0;
+ banRSC2 = 0;
+ i_rs4852 = 0;
+ }
+ }
+
+
+ if (banRSC2==1){
+ LED2 = 0;
+ ResponderSPI(tramaCabeceraRS485, inputPyloadRS485);
+
+ banRSC2 = 0;
+ }
+
  }
 
 

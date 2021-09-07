@@ -13,3 +13,4 @@ interrupt
 		UART2_Tx_Idle
 	ResponderSPI
 	UART1_Read
+	UART2_Read

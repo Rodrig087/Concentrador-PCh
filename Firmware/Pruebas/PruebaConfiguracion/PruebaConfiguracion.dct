@@ -176,7 +176,9 @@ b6
 b7
 banked
 banrsc
+banrsc2
 banrsi
+banrsi2
 banspi0
 banspi1
 baud1con
@@ -229,6 +231,7 @@ bsr
 bufferspi
 byte2double
 byters485
+byters4852
 c
 c_bit
 c12in0m
@@ -797,6 +800,7 @@ hlvdl3
 hlvdl3_bit
 i
 i_rs485
+i_rs4852
 ics_auto
 ics_off
 idissen
@@ -963,6 +967,10 @@ latc6
 latc6_bit
 latc7
 latc7_bit
+led1
+led1_direction
+led2
+led2_direction
 lfiofs
 lfiofs_bit
 longint2double
@@ -1986,8 +1994,6 @@ tblptr
 tblptrh
 tblptrl
 tblptru
-test
-test_direction
 tgen
 tgen_bit
 tmr0h

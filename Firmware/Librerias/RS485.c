@@ -20,15 +20,15 @@ extern sfr sbit MS2RS485_Direction;
 void EnviarTramaRS485(unsigned short puertoUART, unsigned char *cabecera, unsigned char *payload){
 
      unsigned short direccion; 
-	 unsigned short funcion; 
-	 unsigned short subfuncion; 
-	 unsigned short numDatos;
-	 unsigned short iDatos;
-	 
-	 direccion = cabecera[0];
-	 funcion = cabecera[1];
-	 subfuncion = cabecera[2];
-	 numDatos = cabecera[3];
+         unsigned short funcion; 
+         unsigned short subfuncion; 
+         unsigned short numDatos;
+         unsigned short iDatos;
+         
+         direccion = cabecera[0];
+         funcion = cabecera[1];
+         subfuncion = cabecera[2];
+         numDatos = cabecera[3];
                      
      if (puertoUART == 1){
         MS1RS485 = 1;                                                            //Establece el Max485 en modo escritura
@@ -44,16 +44,16 @@ void EnviarTramaRS485(unsigned short puertoUART, unsigned char *cabecera, unsign
         UART1_Write(0x0A);                                                      //Envia el segundo delimitador de final de la trama
         UART1_Write(0x00);                                                      //Envia un byte adicional
         while(UART1_Tx_Idle()==0);                                              //Espera hasta que se haya terminado de enviar todo el dato por UART antes de continuar
-        MS1RS485 = 0;                                                            //Establece el Max485 en modo lectura
+        MS1RS485 = 0;                                                           //Establece el Max485 en modo lectura
      }
 
      if (puertoUART == 2){
-		MS2RS485 = 1;                                                            //Establece el Max485 en modo escritura
+                MS2RS485 = 1;                                                            //Establece el Max485 en modo escritura
         UART2_Write(0x3A);                                                      //Envia la cabecera de la trama
         UART2_Write(direccion);                                                 //Envia la direccion del destinatario
         UART2_Write(funcion);                                                   //Envia el codigo de la funcion
-        UART1_Write(subfuncion);                                                //Envia el codigo de la subfuncion
-        UART1_Write(numDatos);                                                  //Envia el numero de datos
+        UART2_Write(subfuncion);                                                //Envia el codigo de la subfuncion
+        UART2_Write(numDatos);                                                  //Envia el numero de datos
         for (iDatos=0;iDatos<numDatos;iDatos++){                                //Envia la carga util de datos
             UART2_Write(payload[iDatos]);
         }
