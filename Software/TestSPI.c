@@ -84,7 +84,7 @@ int main() {
 	ConfiguracionPrincipal();
 	
 	//Datos de prueba:
-	idPet = 5;
+	idPet = 3;
 	funcionPet = 4;
 	subFuncionPet = 2;
 	numDatosPet = 5;
@@ -171,7 +171,8 @@ void ImprimirInformacion(){
 		}
 		//Test comunicacion RS485:
 		if (subFuncionPet==2){
-			if (sumRecibido==1805){
+			//0XB*9=99dec
+			if (sumRecibido==(99+idPet)){
 			printf("\n Sumatoria control = %d", sumRecibido);
 			}else{
 				printf("\n Sumatoria control = " RED "%d" RESET, sumRecibido);
