@@ -8,18 +8,30 @@ extern sfr sbit MS2RS485_Direction;
 
 
 
-void EnviarTramaRS485(unsigned short puertoUART, unsigned char *cabecera, unsigned char *payload){
+void EnviarTramaRS485(unsigned char puertoUART, unsigned char *cabecera, unsigned char *payload){
 
- unsigned short direccion;
- unsigned short funcion;
- unsigned short subfuncion;
- unsigned short numDatos;
- unsigned short iDatos;
+ unsigned char direccion;
+ unsigned char funcion;
+ unsigned char subfuncion;
+ unsigned char lsbNumDatos;
+ unsigned char msbNumDatos;
+ unsigned int iDatos;
+
+
+ unsigned int numDatos;
+ unsigned char *ptrnumDatos;
+ ptrnumDatos = (unsigned char *) & numDatos;
+
 
  direccion = cabecera[0];
  funcion = cabecera[1];
  subfuncion = cabecera[2];
- numDatos = cabecera[3];
+ lsbNumDatos = cabecera[3];
+ msbNumDatos = cabecera[4];
+
+
+ *(ptrnumDatos) = lsbNumDatos;
+ *(ptrnumDatos+1) = msbNumDatos;
 
  if (puertoUART == 1){
  MS1RS485 = 1;
@@ -27,7 +39,8 @@ void EnviarTramaRS485(unsigned short puertoUART, unsigned char *cabecera, unsign
  UART1_Write(direccion);
  UART1_Write(funcion);
  UART1_Write(subfuncion);
- UART1_Write(numDatos);
+ UART1_Write(lsbNumDatos);
+ UART1_Write(msbNumDatos);
  for (iDatos=0;iDatos<numDatos;iDatos++){
  UART1_Write(payload[iDatos]);
  }
@@ -44,7 +57,8 @@ void EnviarTramaRS485(unsigned short puertoUART, unsigned char *cabecera, unsign
  UART2_Write(direccion);
  UART2_Write(funcion);
  UART2_Write(subfuncion);
- UART2_Write(numDatos);
+ UART2_Write(lsbNumDatos);
+ UART2_Write(msbNumDatos);
  for (iDatos=0;iDatos<numDatos;iDatos++){
  UART2_Write(payload[iDatos]);
  }
@@ -56,7 +70,7 @@ void EnviarTramaRS485(unsigned short puertoUART, unsigned char *cabecera, unsign
  }
 
 }
-#line 24 "C:/Users/milto/Milton/RSA/Git/Proyecto Chanlud/Concentrador PCh/Concentrador-PCh/Firmware/Pruebas/PruebaConfiguracion/PruebaConfiguracion.c"
+#line 20 "C:/Users/milto/Milton/RSA/Git/Proyecto Chanlud/Concentrador PCh/Concentrador-PCh/Firmware/Pruebas/PruebaConfiguracion/PruebaConfiguracion.c"
 sbit RP0 at LATC0_bit;
 sbit RP0_Direction at TRISC0_bit;
 sbit LED1 at RB2_bit;
@@ -70,31 +84,33 @@ sbit MS2RS485_Direction at TRISB5_bit;
 
 unsigned int i, j, x, y;
 
-unsigned short bufferSPI;
-unsigned short banSPI0, banSPI1;
+unsigned char bufferSPI;
+unsigned char banSPI0, banSPI1, banSPI2, banSPI3;
 unsigned char tramaSolicitudSPI[20];
-unsigned char tramaRespuestaSPI[20];
-unsigned short idSolicitud;
-unsigned short funcionSolicitud;
-unsigned short subFuncionSolicitud;
-unsigned char cabeceraSolicitud[5];
-unsigned char payloadSolicitud[5];
+unsigned char cabeceraRespuestaSPI[10];
+unsigned char idSolicitud;
+unsigned char funcionSolicitud;
+unsigned char subFuncionSolicitud;
+unsigned char cabeceraSolicitud[10];
+unsigned char payloadSolicitud[10];
 unsigned char tramaPruebaSPI[10]= {0xA0, 0xA1, 0xA2, 0xA3, 0xA4, 0xA5, 0xA6, 0xA7, 0xA8, 0xA9};
 
-unsigned short banRSI, banRSC, banRSI2, banRSC2;
+unsigned char banRSI, banRSC, banRSI2, banRSC2;
 unsigned char byteRS485, byteRS4852;
 unsigned int i_rs485, i_rs4852;
-unsigned char tramaCabeceraRS485[5];
-unsigned char inputPyloadRS485[15];
-unsigned char outputPyloadRS485[15];
-unsigned short direccionRS485, funcionRS485, subFuncionRS485, numDatosRS485;
-unsigned short sumValidacion;
+unsigned char tramaCabeceraRS485[10];
+unsigned char pyloadRS485[770];
+unsigned char direccionRS485, funcionRS485, subFuncionRS485;
+unsigned int numDatosRS485;
+unsigned char *ptrNumDatosRS485;
+
+unsigned char sumValidacion;
 
 
 
 void ConfiguracionPrincipal();
-void CambiarEstadoBandera(unsigned short bandera, unsigned short estado);
-void ResponderSPI(unsigned char *cabeceraRespuesta, unsigned char *payloadRespuesta);
+void CambiarEstadoBandera(unsigned char, unsigned char);
+void ResponderSPI(unsigned char);
 
 
 
@@ -112,6 +128,8 @@ void main() {
 
  banSPI0 = 0;
  banSPI1 = 0;
+ banSPI2 = 0;
+ banSPI3 = 0;
  bufferSPI = 0;
  idSolicitud = 0;
  funcionSolicitud = 0;
@@ -128,6 +146,7 @@ void main() {
  funcionRS485 = 0;
  subFuncionRS485 = 0;
  numDatosRS485 = 0;
+ ptrNumDatosRS485 = (unsigned char *) & numDatosRS485;
  MS1RS485 = 0;
  MS2RS485 = 0;
  sumValidacion = 0;
@@ -197,7 +216,7 @@ void ConfiguracionPrincipal(){
 }
 
 
-void CambiarEstadoBandera(unsigned short bandera, unsigned short estado){
+void CambiarEstadoBandera(unsigned char bandera, unsigned char estado){
 
  if (estado==1){
 
@@ -211,28 +230,32 @@ void CambiarEstadoBandera(unsigned short bandera, unsigned short estado){
  case 1:
  banSPI1 = 1;
  break;
+ case 2:
+ banSPI2 = 1;
+ break;
+ case 3:
+ banSPI3 = 1;
+ break;
  }
  }
 
  if (estado==0){
  banSPI0 = 0;
  banSPI1 = 0;
+ banSPI2 = 0;
+ banSPI3 = 0;
  }
 }
 
 
-void ResponderSPI(unsigned char *cabeceraRespuesta, unsigned char *payloadRespuesta){
+void ResponderSPI(unsigned char *cabeceraRespuesta){
 
 
- tramaRespuestaSPI[0] = cabeceraRespuesta[0];
- tramaRespuestaSPI[1] = cabeceraRespuesta[1];
- tramaRespuestaSPI[2] = cabeceraRespuesta[2];
- tramaRespuestaSPI[3] = cabeceraRespuesta[3];
-
-
- for (j=0;j<(cabeceraRespuesta[3]);j++){
- tramaRespuestaSPI[j+4] = payloadRespuesta[j];
- }
+ cabeceraRespuestaSPI[0] = cabeceraRespuesta[0];
+ cabeceraRespuestaSPI[1] = cabeceraRespuesta[1];
+ cabeceraRespuestaSPI[2] = cabeceraRespuesta[2];
+ cabeceraRespuestaSPI[3] = cabeceraRespuesta[3];
+ cabeceraRespuestaSPI[4] = cabeceraRespuesta[4];
 
 
  RP0 = 1;
@@ -246,7 +269,7 @@ void ResponderSPI(unsigned char *cabeceraRespuesta, unsigned char *payloadRespue
 
 
 void interrupt(void){
-#line 228 "C:/Users/milto/Milton/RSA/Git/Proyecto Chanlud/Concentrador PCh/Concentrador-PCh/Firmware/Pruebas/PruebaConfiguracion/PruebaConfiguracion.c"
+#line 233 "C:/Users/milto/Milton/RSA/Git/Proyecto Chanlud/Concentrador PCh/Concentrador-PCh/Firmware/Pruebas/PruebaConfiguracion/PruebaConfiguracion.c"
  if (SSP1IF_bit==1){
 
  SSP1IF_bit = 0;
@@ -255,67 +278,94 @@ void interrupt(void){
 
 
 
- if ((banSPI0==0)&&(bufferSPI==0xA0)) {
- SSP1BUF = tramaRespuestaSPI[0];
- i = 1;
- CambiarEstadoBandera(0,1);
- }
- if ((banSPI0==1)&&(bufferSPI!=0xA0)&&(bufferSPI!=0xF0)){
- SSP1BUF = tramaRespuestaSPI[i];
- i++;
- }
- if ((banSPI0==1)&&(bufferSPI==0xF0)){
- CambiarEstadoBandera(0,0);
- }
-
-
- if ((banSPI1==0)&&(bufferSPI==0xA1)){
+ if ((banSPI0==0)&&(bufferSPI==0xA0)){
  i = 0;
- CambiarEstadoBandera(1,1);
+ CambiarEstadoBandera(0,1);
  LED1 = 1;
  LED2 = 1;
  }
- if ((banSPI1==1)&&(bufferSPI!=0xA1)&&(bufferSPI!=0xF1)){
+ if ((banSPI0==1)&&(bufferSPI!=0xA0)&&(bufferSPI!=0xF0)){
  tramaSolicitudSPI[i] = bufferSPI;
  i++;
  }
- if ((banSPI1==1)&&(bufferSPI==0xF1)){
+ if ((banSPI0==1)&&(bufferSPI==0xF0)){
 
- for (j=0;j<4;j++){
+ for (j=0;j<5;j++){
  cabeceraSolicitud[j] = tramaSolicitudSPI[j];
  }
-
- for (j=0;j<(cabeceraSolicitud[3]);j++){
- payloadSolicitud[j] = tramaSolicitudSPI[4+j];
- }
-
 
  idSolicitud = cabeceraSolicitud[0];
  funcionSolicitud = cabeceraSolicitud[1];
  subFuncionSolicitud = cabeceraSolicitud[2];
+ *(ptrNumDatosRS485) = cabeceraSolicitud[3];
+ *(ptrNumDatosRS485+1) = cabeceraSolicitud[4];
 
+ for (j=0;j<numDatosRS485;j++){
+ payloadSolicitud[j] = tramaSolicitudSPI[5+j];
+ }
 
- if (funcionSolicitud!=4){
+ if (idSolicitud==0){
+ if (funcionSolicitud==4){
+ numDatosRS485 = 10;
+ cabeceraSolicitud[3] = *(ptrNumDatosRS485);
+ cabeceraSolicitud[4] = *(ptrNumDatosRS485+1);
+ ResponderSPI(cabeceraSolicitud);
+ }
+ } else {
 
  EnviarTramaRS485(1, cabeceraSolicitud, payloadSolicitud);
  EnviarTramaRS485(2, cabeceraSolicitud, payloadSolicitud);
- } else {
- if (subfuncionSolicitud==1){
 
- cabeceraSolicitud[3] = 10;
- ResponderSPI(cabeceraSolicitud, tramaPruebaSPI);
- } else {
-
- EnviarTramaRS485(1, cabeceraSolicitud, payloadSolicitud);
- EnviarTramaRS485(2, cabeceraSolicitud, payloadSolicitud);
  }
- }
-
- CambiarEstadoBandera(1,0);
+ CambiarEstadoBandera(0,0);
  LED1 = 0;
  LED2 = 0;
 
  }
+
+
+
+
+
+ if ((banSPI1==0)&&(bufferSPI==0xA1)) {
+ SSP1BUF = cabeceraRespuestaSPI[0];
+ i = 1;
+ CambiarEstadoBandera(1,1);
+ }
+ if ((banSPI1==1)&&(bufferSPI!=0xA1)&&(bufferSPI!=0xF1)){
+ SSP1BUF = cabeceraRespuestaSPI[i];
+ i++;
+ }
+ if ((banSPI1==1)&&(bufferSPI==0xF1)){
+ CambiarEstadoBandera(1,0);
+ }
+
+ if ((banSPI2==0)&&(bufferSPI==0xA2)){
+ CambiarEstadoBandera(2,1);
+ SSP1BUF = pyloadRS485[0];
+ i = 1;
+ }
+ if ((banSPI2==1)&&(bufferSPI!=0xA2)&&(bufferSPI!=0xF2)){
+ SSP1BUF = pyloadRS485[i];
+ i++;
+ }
+ if ((banSPI2==1)&&(bufferSPI==0xF2)){
+ CambiarEstadoBandera(2,0);
+ }
+
+ if ((banSPI3==0)&&(bufferSPI==0xA3)){
+ CambiarEstadoBandera(3,1);
+ SSP1BUF = tramaPruebaSPI[0];
+ i = 1;
+ }
+ if ((banSPI3==1)&&(bufferSPI!=0xA3)&&(bufferSPI!=0xF3)){
+ SSP1BUF = tramaPruebaSPI[i];
+ i++;
+ }
+ if ((banSPI3==1)&&(bufferSPI==0xF3)){
+ CambiarEstadoBandera(3,0);
+ }
+
 
  }
 
@@ -331,7 +381,7 @@ void interrupt(void){
  if (banRSI==2){
 
  if (i_rs485<(numDatosRS485)){
- inputPyloadRS485[i_rs485] = byteRS485;
+ pyloadRS485[i_rs485] = byteRS485;
  i_rs485++;
  } else {
  banRSI = 0;
@@ -347,17 +397,18 @@ void interrupt(void){
  LED1 = 1;
  }
  }
- if ((banRSI==1)&&(byteRS485!=0x3A)&&(i_rs485<4)){
+ if ((banRSI==1)&&(byteRS485!=0x3A)&&(i_rs485<5)){
  tramaCabeceraRS485[i_rs485] = byteRS485;
  i_rs485++;
  }
- if ((banRSI==1)&&(i_rs485==4)){
+ if ((banRSI==1)&&(i_rs485==5)){
 
  if (tramaCabeceraRS485[0]==idSolicitud){
 
  funcionRS485 = tramaCabeceraRS485[1];
  subFuncionRS485 = tramaCabeceraRS485[2];
- numDatosRS485 = tramaCabeceraRS485[3];
+ *(ptrNumDatosRS485) = tramaCabeceraRS485[3];
+ *(ptrNumDatosRS485+1) = tramaCabeceraRS485[4];
  idSolicitud = 0;
  i_rs485 = 0;
  banRSI = 2;
@@ -372,7 +423,7 @@ void interrupt(void){
 
  if (banRSC==1){
  LED1 = 0;
- ResponderSPI(tramaCabeceraRS485, inputPyloadRS485);
+ ResponderSPI(tramaCabeceraRS485);
 
  banRSC = 0;
  }
@@ -391,7 +442,7 @@ void interrupt(void){
  if (banRSI2==2){
 
  if (i_rs4852<(numDatosRS485)){
- inputPyloadRS485[i_rs4852] = byteRS4852;
+ pyloadRS485[i_rs4852] = byteRS4852;
  i_rs4852++;
  } else {
  banRSI2 = 0;
@@ -407,17 +458,18 @@ void interrupt(void){
  LED2 = 1;
  }
  }
- if ((banRSI2==1)&&(byteRS4852!=0x3A)&&(i_rs4852<4)){
+ if ((banRSI2==1)&&(byteRS4852!=0x3A)&&(i_rs4852<5)){
  tramaCabeceraRS485[i_rs4852] = byteRS4852;
  i_rs4852++;
  }
- if ((banRSI2==1)&&(i_rs4852==4)){
+ if ((banRSI2==1)&&(i_rs4852==5)){
 
  if (tramaCabeceraRS485[0]==idSolicitud){
 
  funcionRS485 = tramaCabeceraRS485[1];
  subFuncionRS485 = tramaCabeceraRS485[2];
- numDatosRS485 = tramaCabeceraRS485[3];
+ *(ptrNumDatosRS485) = tramaCabeceraRS485[3];
+ *(ptrNumDatosRS485+1) = tramaCabeceraRS485[4];
  idSolicitud = 0;
  i_rs4852 = 0;
  banRSI2 = 2;
@@ -432,7 +484,7 @@ void interrupt(void){
 
  if (banRSC2==1){
  LED2 = 0;
- ResponderSPI(tramaCabeceraRS485, inputPyloadRS485);
+ ResponderSPI(tramaCabeceraRS485);
 
  banRSC2 = 0;
  }

@@ -1,13 +1,13 @@
 0	1	mikroCPIC1618.exe -MSF -DBG -pP18F25K22 -DL -O11111114 -fo16 -N"C:\Users\milto\Milton\RSA\Git\Proyecto Chanlud\Concentrador PCh\Concentrador-PCh\Firmware\Pruebas\PruebaConfiguracion\PruebaConfiguracion.mcppi" -SP"C:\Users\Public\Documents\Mikroelektronika\mikroC PRO for PIC\Defs\" -SP"C:\Users\Public\Documents\Mikroelektronika\mikroC PRO for PIC\uses\P18\" -SP"C:\Users\milto\Milton\RSA\Git\Proyecto Chanlud\Concentrador PCh\Concentrador-PCh\Firmware\Pruebas\PruebaConfiguracion\" -SP"C:\Users\milto\Milton\RSA\Git\Proyecto Chanlud\Concentrador PCh\Concentrador-PCh\Firmware\Librerias\" -IP"C:\Users\Public\Documents\Mikroelektronika\mikroC PRO for PIC\uses\P18\" -IP"C:\Users\milto\Milton\RSA\Git\Proyecto Chanlud\Concentrador PCh\Concentrador-PCh\Firmware\Pruebas\PruebaConfiguracion\" -IP"C:\Users\milto\Milton\RSA\Git\Proyecto Chanlud\Concentrador PCh\Concentrador-PCh\Firmware\Librerias\" "PruebaConfiguracion.c" "__Lib_Math.mcl" "__Lib_MathDouble.mcl" "__Lib_System.mcl" "__Lib_Delays.mcl" "__Lib_SPI_c345b123.mcl" "__Lib_UART_c67b67.mcl"	 
 hint: 0	1139	Available RAM: 1515 [bytes], Available ROM: 32768 [bytes]	 
 diagnostics: 0	122	Compilation Started	rs485.c
-warning: 150	1509	Generated baud rate is 19231 bps (error = 0.16 percent)	PruebaConfiguracion.c
 warning: 151	1509	Generated baud rate is 19231 bps (error = 0.16 percent)	PruebaConfiguracion.c
-diagnostics: 421	123	Compiled Successfully	PruebaConfiguracion.c
-diagnostics: 0	127	All files Compiled in 62 ms	 
-hint: 0	1144	Used RAM (bytes): 147 (10%)  Free RAM (bytes): 1368 (90%)	Used RAM (bytes): 147 (10%)  Free RAM (bytes): 1368 (90%)
-hint: 0	1144	Used ROM (bytes): 2020 (6%)  Free ROM (bytes): 30748 (94%)	Used ROM (bytes): 2020 (6%)  Free ROM (bytes): 30748 (94%)
+warning: 152	1509	Generated baud rate is 19231 bps (error = 0.16 percent)	PruebaConfiguracion.c
+diagnostics: 455	123	Compiled Successfully	PruebaConfiguracion.c
+diagnostics: 0	127	All files Compiled in 63 ms	 
+hint: 0	1144	Used RAM (bytes): 918 (61%)  Free RAM (bytes): 597 (39%)	Used RAM (bytes): 918 (61%)  Free RAM (bytes): 597 (39%)
+hint: 0	1144	Used ROM (bytes): 2322 (7%)  Free ROM (bytes): 30446 (93%)	Used ROM (bytes): 2322 (7%)  Free ROM (bytes): 30446 (93%)
 diagnostics: 0	125	Project Linked Successfully	PruebaConfiguracion.mcppi
-diagnostics: 0	128	Linked in 32 ms	 
-diagnostics: 0	129	Project 'PruebaConfiguracion.mcppi' completed: 110 ms	 
-diagnostics: 0	103	Finished successfully: 07 sep. 2021, 17:03:21	PruebaConfiguracion.mcppi
+diagnostics: 0	128	Linked in 31 ms	 
+diagnostics: 0	129	Project 'PruebaConfiguracion.mcppi' completed: 125 ms	 
+diagnostics: 0	103	Finished successfully: 18 oct. 2021, 17:51:06	PruebaConfiguracion.mcppi

@@ -8,18 +8,30 @@ extern sfr sbit MS2RS485_Direction;
 
 
 
-void EnviarTramaRS485(unsigned short puertoUART, unsigned char *cabecera, unsigned char *payload){
+void EnviarTramaRS485(unsigned char puertoUART, unsigned char *cabecera, unsigned char *payload){
 
- unsigned short direccion;
- unsigned short funcion;
- unsigned short subfuncion;
- unsigned short numDatos;
- unsigned short iDatos;
+ unsigned char direccion;
+ unsigned char funcion;
+ unsigned char subfuncion;
+ unsigned char lsbNumDatos;
+ unsigned char msbNumDatos;
+ unsigned int iDatos;
+
+
+ unsigned int numDatos;
+ unsigned char *ptrnumDatos;
+ ptrnumDatos = (unsigned char *) & numDatos;
+
 
  direccion = cabecera[0];
  funcion = cabecera[1];
  subfuncion = cabecera[2];
- numDatos = cabecera[3];
+ lsbNumDatos = cabecera[3];
+ msbNumDatos = cabecera[4];
+
+
+ *(ptrnumDatos) = lsbNumDatos;
+ *(ptrnumDatos+1) = msbNumDatos;
 
  if (puertoUART == 1){
  MS1RS485 = 1;
@@ -27,7 +39,8 @@ void EnviarTramaRS485(unsigned short puertoUART, unsigned char *cabecera, unsign
  UART1_Write(direccion);
  UART1_Write(funcion);
  UART1_Write(subfuncion);
- UART1_Write(numDatos);
+ UART1_Write(lsbNumDatos);
+ UART1_Write(msbNumDatos);
  for (iDatos=0;iDatos<numDatos;iDatos++){
  UART1_Write(payload[iDatos]);
  }
@@ -43,8 +56,9 @@ void EnviarTramaRS485(unsigned short puertoUART, unsigned char *cabecera, unsign
  UART2_Write(0x3A);
  UART2_Write(direccion);
  UART2_Write(funcion);
- UART1_Write(subfuncion);
- UART1_Write(numDatos);
+ UART2_Write(subfuncion);
+ UART2_Write(lsbNumDatos);
+ UART2_Write(msbNumDatos);
  for (iDatos=0;iDatos<numDatos;iDatos++){
  UART2_Write(payload[iDatos]);
  }
@@ -66,20 +80,23 @@ sbit MS1RS485_Direction at TRISC5_bit;
 
 unsigned int i, j, x, y;
 
-unsigned short banRSI, banRSC;
+unsigned char banRSI, banRSC;
 unsigned char byteRS485;
 unsigned int i_rs485;
 unsigned char tramaCabeceraRS485[5];
 unsigned char inputPyloadRS485[15];
-unsigned char outputPyloadRS485[15];
-unsigned short direccionRS485, funcionRS485, subFuncionRS485, numDatosRS485;
-unsigned char tramaPruebaRS485[10]= {0xB0, 0xB1, 0xB2, 0xB3, 0xB4, 0xB5, 0xB6, 0xB7, 0xB8, 0xB9};
+unsigned char outputPyloadRS485[710];
+unsigned char direccionRS485, funcionRS485, subFuncionRS485;
+unsigned int numDatosRS485;
+unsigned char *ptrNumDatosRS485;
+unsigned char tramaPruebaRS485[10]= {0xB, 0xB, 0xB, 0xB, 0xB, 0xB, 0xB, 0xB, 0xB,  5 };
 
 
 
 
 void ConfiguracionPrincipal();
 void interrupt(void);
+void GenerarTramaPrueba(unsigned int, unsigned char);
 
 
 
@@ -103,12 +120,13 @@ void main() {
  funcionRS485 = 0;
  subFuncionRS485 = 0;
  numDatosRS485 = 0;
+ ptrNumDatosRS485 = (unsigned char *) & numDatosRS485;
  MS1RS485 = 0;
 
 
 
  TEST = 1;
-#line 78 "C:/Users/milto/Milton/RSA/Git/Proyecto Chanlud/Concentrador PCh/Concentrador-PCh/Firmware/Pruebas/PruebaNodo1/PruebaNodo1.c"
+#line 82 "C:/Users/milto/Milton/RSA/Git/Proyecto Chanlud/Concentrador PCh/Concentrador-PCh/Firmware/Pruebas/PruebaNodo1/PruebaNodo1.c"
 }
 
 
@@ -149,6 +167,27 @@ void ConfiguracionPrincipal(){
 
 
 
+void GenerarTramaPrueba(unsigned int numDatosResp, unsigned char *cabeceraRespuesta){
+
+ unsigned int contadorMuestras = 0;
+
+
+ for (j=0;j<numDatosResp;j++){
+ outputPyloadRS485[j] = contadorMuestras;
+ contadorMuestras++;
+ if (contadorMuestras>255) {
+ contadorMuestras = 0;
+ }
+ }
+
+ EnviarTramaRS485(1, cabeceraRespuesta, outputPyloadRS485);
+
+
+}
+
+
+
+
 
 
 
@@ -180,17 +219,18 @@ void interrupt(void){
  i_rs485 = 0;
  }
  }
- if ((banRSI==1)&&(byteRS485!=0x3A)&&(i_rs485<4)){
+ if ((banRSI==1)&&(byteRS485!=0x3A)&&(i_rs485<5)){
  tramaCabeceraRS485[i_rs485] = byteRS485;
  i_rs485++;
  }
- if ((banRSI==1)&&(i_rs485==4)){
+ if ((banRSI==1)&&(i_rs485==5)){
 
  if (tramaCabeceraRS485[0]== 5 ){
 
  funcionRS485 = tramaCabeceraRS485[1];
  subFuncionRS485 = tramaCabeceraRS485[2];
- numDatosRS485 = tramaCabeceraRS485[3];
+ *(ptrNumDatosRS485) = tramaCabeceraRS485[3];
+ *(ptrNumDatosRS485+1) = tramaCabeceraRS485[4];
  banRSI = 2;
  i_rs485 = 0;
  } else {
@@ -207,14 +247,29 @@ void interrupt(void){
  Delay_ms(250);
 
 
- if (funcionRS485!=4){
+ if (funcionRS485==2){
+
+
+ numDatosRS485 = 5;
+ tramaCabeceraRS485[3] = *(ptrNumDatosRS485);
+ tramaCabeceraRS485[4] = *(ptrNumDatosRS485+1);
 
  EnviarTramaRS485(1, tramaCabeceraRS485, inputPyloadRS485);
- } else {
+ }
+ if (funcionRS485==4){
  if (subFuncionRS485==2){
 
- tramaCabeceraRS485[3] = 10;
+ numDatosRS485 = 10;
+ tramaCabeceraRS485[3] = *(ptrNumDatosRS485);
+ tramaCabeceraRS485[4] = *(ptrNumDatosRS485+1);
  EnviarTramaRS485(1, tramaCabeceraRS485, tramaPruebaRS485);
+ }
+ if (subFuncionRS485==3){
+
+ numDatosRS485 = 700;
+ tramaCabeceraRS485[3] = *(ptrNumDatosRS485);
+ tramaCabeceraRS485[4] = *(ptrNumDatosRS485+1);
+ GenerarTramaPrueba(numDatosRS485, tramaCabeceraRS485);
  }
  }
 

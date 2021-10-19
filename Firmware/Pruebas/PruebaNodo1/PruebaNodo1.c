@@ -25,20 +25,23 @@ sbit MS1RS485_Direction at TRISC5_bit;
 //Subindices:
 unsigned int i, j, x, y;
 //Variables para manejo del RS485:
-unsigned short banRSI, banRSC;                                                  //Banderas de control de inicio de trama y trama completa
+unsigned char banRSI, banRSC;                                                  //Banderas de control de inicio de trama y trama completa
 unsigned char byteRS485;
 unsigned int i_rs485;                                                           //Indice
 unsigned char tramaCabeceraRS485[5];                                            //Vector para almacenar los datos de cabecera de la trama RS485: [0x3A, Direccion, Funcion, NumeroDatos]
-unsigned char inputPyloadRS485[15];                                            //Vector para almacenar el pyload de la trama RS485 recibida
-unsigned char outputPyloadRS485[15];                                            //Vector para almacenar el pyload de la trama RS485 a enviar
-unsigned short direccionRS485, funcionRS485, subFuncionRS485, numDatosRS485;
-unsigned char tramaPruebaRS485[10]= {0xB0, 0xB1, 0xB2, 0xB3, 0xB4, 0xB5, 0xB6, 0xB7, 0xB8, 0xB9};   //Trama de 10 elementos para probar la comunicacion RS485
-
+unsigned char inputPyloadRS485[15];                                             //Vector para almacenar el pyload de la trama RS485 recibida
+unsigned char outputPyloadRS485[710];                                           //Vector para almacenar el pyload de la trama RS485 a enviar
+unsigned char direccionRS485, funcionRS485, subFuncionRS485;
+unsigned int numDatosRS485;
+unsigned char *ptrNumDatosRS485;
+unsigned char tramaPruebaRS485[10]= {0xB, 0xB, 0xB, 0xB, 0xB, 0xB, 0xB, 0xB, 0xB, IDNODO};   //Trama de 10 elementos para probar la comunicacion RS485
+//unsigned char tramaPruebaRS485[10];
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /////////////////////////////////////////////////////////  Declaracion de funciones  /////////////////////////////////////////////////////////
 void ConfiguracionPrincipal();
 void interrupt(void);
+void GenerarTramaPrueba(unsigned int, unsigned char);
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -62,6 +65,7 @@ void main() {
      funcionRS485 = 0;
      subFuncionRS485 = 0;
      numDatosRS485 = 0;
+     ptrNumDatosRS485 = (unsigned char *) & numDatosRS485;
      MS1RS485 = 0;
      //MS2RS485 = 0;
 
@@ -112,6 +116,27 @@ void ConfiguracionPrincipal(){
      Delay_ms(100);                                     //Espera hasta que se estabilicen los cambios
 
 }
+
+//*****************************************************************************************************************************************
+// Funcion para realizar la configuracion principal
+void GenerarTramaPrueba(unsigned int numDatosResp, unsigned char *cabeceraRespuesta){
+
+     unsigned int contadorMuestras = 0;
+
+     //Llena la trama de respuesta con los datos del payload:
+     for (j=0;j<numDatosResp;j++){
+         outputPyloadRS485[j] = contadorMuestras;
+         contadorMuestras++;
+         if (contadorMuestras>255) {
+           contadorMuestras = 0;
+         }
+     }
+
+     EnviarTramaRS485(1, cabeceraRespuesta, outputPyloadRS485);
+
+
+}
+
 //************************************************************************************************************************************
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -146,17 +171,18 @@ void interrupt(void){
              i_rs485 = 0;
           }
        }
-       if ((banRSI==1)&&(byteRS485!=0x3A)&&(i_rs485<4)){
+       if ((banRSI==1)&&(byteRS485!=0x3A)&&(i_rs485<5)){
           tramaCabeceraRS485[i_rs485] = byteRS485;                              //Recupera los datos de cabecera de la trama UART: [Direccion, Funcion, Subfuncion, NumeroDatos]
           i_rs485++;
        }
-       if ((banRSI==1)&&(i_rs485==4)){
+       if ((banRSI==1)&&(i_rs485==5)){
           //Comprueba la direccion del solicitado:
           if (tramaCabeceraRS485[0]==IDNODO){
              //Recupera la funcion, la subfuncion y el numero de datos:
              funcionRS485 = tramaCabeceraRS485[1];
              subFuncionRS485 = tramaCabeceraRS485[2];
-             numDatosRS485 = tramaCabeceraRS485[3];
+             *(ptrNumDatosRS485) = tramaCabeceraRS485[3];
+             *(ptrNumDatosRS485+1) = tramaCabeceraRS485[4];
              banRSI = 2;
              i_rs485 = 0;
           } else {
@@ -173,14 +199,29 @@ void interrupt(void){
           Delay_ms(250);
           
           //Comprueba si se solicito una funcion de testeo:
-          if (funcionRS485!=4){
+          if (funcionRS485==2){
              //Renvia la trama de solicitud a traves de RS485:
+             //Prueba
+             numDatosRS485 = 5;
+             tramaCabeceraRS485[3] = *(ptrNumDatosRS485);
+             tramaCabeceraRS485[4] = *(ptrNumDatosRS485+1);
+             //Fin prueba
              EnviarTramaRS485(1, tramaCabeceraRS485, inputPyloadRS485);
-          } else {
+          } 
+          if (funcionRS485==4){
              if (subFuncionRS485==2){
                 //Realiza el testeo de la comunicacion RS485:
-                tramaCabeceraRS485[3] = 10;                                     //Actualiza el numero de datos para hacer el test
+                numDatosRS485 = 10;
+                tramaCabeceraRS485[3] = *(ptrNumDatosRS485);
+                tramaCabeceraRS485[4] = *(ptrNumDatosRS485+1);
                 EnviarTramaRS485(1, tramaCabeceraRS485, tramaPruebaRS485);
+             }
+             if (subFuncionRS485==3){
+                //Envia una trama de respuesta con N numeros des muestras:
+                numDatosRS485 = 700;
+                tramaCabeceraRS485[3] = *(ptrNumDatosRS485);
+                tramaCabeceraRS485[4] = *(ptrNumDatosRS485+1);
+                GenerarTramaPrueba(numDatosRS485, tramaCabeceraRS485);
              }
           }
 

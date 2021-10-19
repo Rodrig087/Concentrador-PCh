@@ -9,3 +9,9 @@ interrupt
 		UART1_Tx_Idle
 		UART2_Write
 		UART2_Tx_Idle
+	GenerarTramaPrueba
+		EnviarTramaRS485
+			UART1_Write
+			UART1_Tx_Idle
+			UART2_Write
+			UART2_Tx_Idle
