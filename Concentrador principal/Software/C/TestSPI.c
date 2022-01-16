@@ -60,8 +60,9 @@ FILE *fp;
 //Declaracion de funciones
 int ConfiguracionPrincipal();													
 void EnviarSolicitud(unsigned char id, unsigned char funcion, unsigned char subFuncion, unsigned char numDatos, unsigned char* payload);
-void RecibirRespuesta();
-void RecibirPyloadRespuesta(unsigned int numBytesPyload, unsigned char* pyloadRS485);
+void RecibirCabeceraRespuesta();
+void RecibirPayloadNodos(unsigned int numBytesPyload, unsigned char* pyloadRS485);
+void RecibirPayloadConcentrador(unsigned int numBytesPyload, unsigned char* pyloadConcentrador);
 void TestComunicacionSPI(unsigned char* pyloadRS485);	
 void CrearArchivo(unsigned short idConc, unsigned short idNodo);
 void GuardarTrama(unsigned char* tramaRS485, unsigned int longitudTrama); 										
@@ -69,6 +70,9 @@ void ImprimirInformacion();
 void Salir();						
 
 
+//**************************************************************************************************************************************
+//************************************************************** Principal *************************************************************
+//**************************************************************************************************************************************
 int main() {
 
 	//printf("Iniciando...\n");
@@ -91,9 +95,9 @@ int main() {
 	ConfiguracionPrincipal();
 	
 	//Datos de prueba:
-	idPet = 5;
+	idPet = 0;
 	funcionPet = 4;
-	subFuncionPet = 3;
+	subFuncionPet = 1;
 	numDatosPet = 5;
 	payloadPet[0] = 1;
 	payloadPet[1] = 2;
@@ -110,10 +114,15 @@ int main() {
 	//Salir();	
 
 }
+//**************************************************************************************************************************************
+
+
+//**************************************************************************************************************************************
+//************************************************************** Funciones *************************************************************
+//**************************************************************************************************************************************
 
 //**************************************************************************************************************************************
 //Configuracion:
-
 int ConfiguracionPrincipal(){
 	
     //Configuracion libreria bcm2835:
@@ -138,7 +147,7 @@ int ConfiguracionPrincipal(){
     pinMode(P0, INPUT);
 	pinMode(MCLR, OUTPUT);
 	pinMode(LEDTEST, OUTPUT);
-	wiringPiISR (P0, INT_EDGE_RISING, RecibirRespuesta);
+	wiringPiISR (P0, INT_EDGE_RISING, RecibirCabeceraRespuesta);
 	
 	//Enciende el pin LEDTEST:
 	digitalWrite (LEDTEST, HIGH);
@@ -146,7 +155,8 @@ int ConfiguracionPrincipal(){
 }
 //**************************************************************************************************************************************
 
-//Imprimir en pantalla los datos relevantes
+//**************************************************************************************************************************************
+//Funcion para imprimir en pantalla los datos relevantes
 void ImprimirInformacion(){
 	
 	//Imprime la solicitud:
@@ -162,14 +172,13 @@ void ImprimirInformacion(){
 	printf("\nTrama recibida:");
 	printf("\n Cabecera: %d %d %d %d", idResp, funcionResp, subFuncionResp, numDatosResp);
 	printf("\n Payload: ");
+	for (i=0;i<numDatosResp;i++){
+		printf("%#02X ", payloadResp[i]);
+	}
 		
 	//Comprueba la sumatoria de control en las solicitudes de testeo de comunicacion:
 	if (funcionPet==4){
-		
-		for (i=0;i<numDatosResp;i++){
-			printf("%#02X ", payloadResp[i]);
-		}
-		
+				
 		//Test comunicacion SPI
 		if (subFuncionPet==1){
 			if (sumRecibido==1645){
@@ -192,10 +201,9 @@ void ImprimirInformacion(){
 	Salir();
 	
 }
+//**************************************************************************************************************************************
 
 //**************************************************************************************************************************************
-//Comunicacion RPi-dsPIC:
-
 //Funcion para enviar la solicitud (C:0xA0 F:0xF0):
 void EnviarSolicitud(unsigned char id, unsigned char funcion, unsigned char subFuncion, unsigned char numDatos, unsigned char* payload){
 	
@@ -236,10 +244,11 @@ void EnviarSolicitud(unsigned char id, unsigned char funcion, unsigned char subF
 	digitalWrite (LEDTEST, HIGH);
 	
 }
+//**************************************************************************************************************************************
 
-
+//**************************************************************************************************************************************
 //Funcion para resibir la cabecera de respuesta C:0xA1 F:0xF1
-void RecibirRespuesta(){
+void RecibirCabeceraRespuesta(){
 	
 	bcm2835_delayMicroseconds(200);
 	
@@ -263,11 +272,12 @@ void RecibirRespuesta(){
 	//Se recupera el payload de la respuesta:
 	if (idResp==0){
 		//Recupera el payload para tetear la comunicacion SPI con el concentrador:
-		TestComunicacionSPI(payloadResp); 
+		//TestComunicacionSPI(payloadResp); 
+		RecibirPayloadConcentrador(numDatosResp, payloadResp);	
 		//Por ahora solo hay una opcion disponible en el concentrador. Si se desea agregar mas se puede agregar un switch case o un if.
 	} else {
 		//Recupera el payload enviado por los nodos.
-		RecibirPyloadRespuesta(numDatosResp, payloadResp);	
+		RecibirPayloadNodos(numDatosResp, payloadResp);	
 		CrearArchivo(IDConcentrador, idResp);
 		GuardarTrama(payloadResp, numDatosResp);
 	}
@@ -291,9 +301,11 @@ void RecibirRespuesta(){
 	Salir();
 		
 }
+//**************************************************************************************************************************************
 
-//Funcion para recibir el pyload de respuesta (C:0xA2 F:0xF2):
-void RecibirPyloadRespuesta(unsigned int numBytesPyload, unsigned char* pyloadRS485){
+//**************************************************************************************************************************************
+//Funcion para recibir el pyload de respuesta de los nodos (C:0xA2 F:0xF2):
+void RecibirPayloadNodos(unsigned int numBytesPyload, unsigned char* pyloadRS485){
 	
 	//printf("\nRecuperando pyload...\n");
 	bcm2835_spi_transfer(0xA2);
@@ -307,28 +319,27 @@ void RecibirPyloadRespuesta(unsigned int numBytesPyload, unsigned char* pyloadRS
 	bcm2835_delayMicroseconds(TIEMPO_SPI);
 	
 }	
+//**************************************************************************************************************************************
 
+//**************************************************************************************************************************************
 //Funcion para testear la comunicacion SPI con el concentrador (C:0xA3 F:0xF3):
-void TestComunicacionSPI(unsigned char* pyloadRS485){
+void RecibirPayloadConcentrador(unsigned int numBytesPyload, unsigned char* pyloadConcentrador){
 	
 	//printf("\nRecuperando pyload...\n");
 	bcm2835_spi_transfer(0xA3);
 	bcm2835_delayMicroseconds(TIEMPO_SPI);
-	for (i=0;i<10;i++){
+	for (i=0;i<numBytesPyload;i++){
         bufferSPI = bcm2835_spi_transfer(0x00);
-        pyloadRS485[i] = bufferSPI;
+        pyloadConcentrador[i] = bufferSPI;
         bcm2835_delayMicroseconds(TIEMPO_SPI);
     }
 	bcm2835_spi_transfer(0xF3);
 	bcm2835_delayMicroseconds(TIEMPO_SPI);
 	
 }
-
 //**************************************************************************************************************************************
 
 //**************************************************************************************************************************************
-//Manejo de archivos binarios:
-
 void CrearArchivo(unsigned short idConc, unsigned short idNodo){
 
 	char nombreArchivo[50];
@@ -345,10 +356,12 @@ void CrearArchivo(unsigned short idConc, unsigned short idNodo){
 	
 	//Crea el archivo binario:
 	printf("Se ha creado el archivo: %s\n", nombreArchivo);
-	fp = fopen (nombreArchivo, "ab+");
+	fp = fopen (nombreArchivo, "wb+");
 	
 }
+//**************************************************************************************************************************************
 
+//**************************************************************************************************************************************
 void GuardarTrama(unsigned char* tramaRS485, unsigned int longitudTrama){
 		
 	unsigned int outFwrite;
@@ -364,12 +377,9 @@ void GuardarTrama(unsigned char* tramaRS485, unsigned int longitudTrama){
 	}
 		
 }
-
 //**************************************************************************************************************************************
 
 //**************************************************************************************************************************************
-//Procesos locales:
-
 void Salir(){
 	
 	bcm2835_spi_end();
@@ -377,7 +387,6 @@ void Salir(){
 	printf("\nAdios...\n");
 	exit (-1);
 }
-
 //**************************************************************************************************************************************
 
 
