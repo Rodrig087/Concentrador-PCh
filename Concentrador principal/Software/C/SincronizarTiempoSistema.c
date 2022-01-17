@@ -24,6 +24,7 @@ uso: ./sincronizartiemposistema [opcion] [0: (L)Consultar hora actural dsPIC, 1:
 #include <time.h>
 #include <string.h>
 #include <unistd.h>
+#include <sys/time.h>
 
 //Declaracion de constantes
 #define P1 0																	//Pin 11 GPIO
@@ -52,15 +53,12 @@ unsigned char payloadPet[20];
 unsigned char payloadResp[2600];
 
 unsigned char tiempoPIC[8];
-unsigned char tiempoLocal[8];
 char fuenteRelojPIC;
 int fuenteTiempo;
-
-unsigned int tiempoInicial;
-unsigned int tiempoFinal;
-unsigned int duracionPrueba;
-unsigned char banPrueba;
 unsigned char errorSinc;
+
+struct timeval  tv1, tv2;
+double tiempoEjecucion;
 
 //Declaracion de funciones
 int ConfiguracionPrincipal();
@@ -69,7 +67,8 @@ void RecibirRespuesta();
 void RecibirPayloadConcentrador(unsigned int numBytesPyload, unsigned char* pyloadConcentrador);
 void EnviarTiempoRPi();														
 void SincronizarTiempo(short fuenteTiempoPIC);
-void ObetenerTiempoPIC();
+void ObtenerTiempoPIC();
+void SetRelojLocal(unsigned char* tramaTiempo);
 void Salir();
 
 //**************************************************************************************************************************************
@@ -191,11 +190,11 @@ void EnviarSolicitud(unsigned char id, unsigned char funcion, unsigned char subF
 //**************************************************************************************************************************************
 
 //**************************************************************************************************************************************
-//Funcion para recibir la cabecera de respuesta C:0xA1 F:0xF1
+//Funcion para recibir la cabecera de respuesta (C:0xA1 F:0xF1):
 void RecibirRespuesta(){
-	
+		
 	bcm2835_delayMicroseconds(200);
-	
+		
 	//Recupera la cabecera de la respuesta: [id, funcion, subfuncion, lsbNumDatos, msbNumDatos]:
 	bcm2835_spi_transfer(0xA1);
 	bcm2835_delayMicroseconds(TIEMPO_SPI);
@@ -223,7 +222,7 @@ void RecibirRespuesta(){
 	digitalWrite (LEDTEST, LOW);
 		
 	//Imprime fecha/hora del dsPIC:
-	ObetenerTiempoPIC();
+	ObtenerTiempoPIC();
 	
 	Salir();
 		
@@ -233,8 +232,7 @@ void RecibirRespuesta(){
 //**************************************************************************************************************************************
 //Funcion para testear la comunicacion SPI con el concentrador (C:0xA3 F:0xF3):
 void RecibirPayloadConcentrador(unsigned int numBytesPyload, unsigned char* pyloadConcentrador){
-	
-	//printf("\nRecuperando pyload...\n");
+		
 	bcm2835_spi_transfer(0xA3);
 	bcm2835_delayMicroseconds(TIEMPO_SPI);
 	for (i=0;i<numBytesPyload;i++){
@@ -244,49 +242,14 @@ void RecibirPayloadConcentrador(unsigned int numBytesPyload, unsigned char* pylo
     }
 	bcm2835_spi_transfer(0xF3);
 	bcm2835_delayMicroseconds(TIEMPO_SPI);
-	
+		
 }
 //**************************************************************************************************************************************
 
 //**************************************************************************************************************************************
-void EnviarTiempoRPi(){
-	
-	//Obtiene la hora y la fecha del sistema:
-	//printf("Tiempo RPi: ");
-	time_t t;
-	struct tm *tm;
-	t=time(NULL);
-	tm=localtime(&t);
-	
-	payloadPet[0] = tm->tm_year-100;		//Anio (contado desde 1900)
-	payloadPet[1] = tm->tm_mon+1;			//Mes desde Enero (0-11)
-	payloadPet[2] = tm->tm_mday;			//Dia del mes (0-31)
-	payloadPet[3] = tm->tm_hour;			//Hora
-	payloadPet[4] = tm->tm_min;				//Minuto
-	payloadPet[5] = tm->tm_sec;				//Segundo 
-		
-	/* printf("%0.2d/",payloadPet[0]);			//aa
-	printf("%0.2d/",payloadPet[1]);			//MM
-	printf("%0.2d ",payloadPet[2]);			//dd
-	printf("%0.2d:",payloadPet[3]);			//hh
-	printf("%0.2d:",payloadPet[4]);			//mm
-	printf("%0.2d\n",payloadPet[5]);		//ss */
-		
-	idPet = 0;
-	funcionPet = 3;
-	subFuncionPet = 1;
-	numDatosPet = 6;
-	EnviarSolicitud(idPet, funcionPet, subFuncionPet, numDatosPet, payloadPet);
-	
-}
-//**************************************************************************************************************************************
-
-//**************************************************************************************************************************************
+//Funcion para procesar sincronizar el tiempo de la RPi y el del dsPIC
 void SincronizarTiempo(short fuenteTiempoPIC){
-	
-	//Obtiene la hora y la fecha del sistema:
-	//printf("\nObteniendo referencia de tiempo del dsPIC...");
-	
+		
 	if (fuenteTiempoPIC==1){
 		printf("\nEnviando referencia de tiempo de la RPi...");
 	} else {
@@ -342,8 +305,35 @@ void SincronizarTiempo(short fuenteTiempoPIC){
 //**************************************************************************************************************************************
 
 //**************************************************************************************************************************************
-//Funcion para imprimir el tiempo recuperado del dsPIC
-void ObetenerTiempoPIC(){
+//Funcion para obtener la hora/fecha de la RPi y enviarla al dsPIC:
+void EnviarTiempoRPi(){
+	
+	//Obtiene la hora y la fecha del sistema:
+	//printf("Tiempo RPi: ");
+	time_t t;
+	struct tm *tm;
+	t=time(NULL);
+	tm=localtime(&t);
+	
+	payloadPet[0] = tm->tm_year-100;		//Anio (contado desde 1900)
+	payloadPet[1] = tm->tm_mon+1;			//Mes desde Enero (0-11)
+	payloadPet[2] = tm->tm_mday;			//Dia del mes (0-31)
+	payloadPet[3] = tm->tm_hour;			//Hora
+	payloadPet[4] = tm->tm_min;				//Minuto
+	payloadPet[5] = tm->tm_sec;				//Segundo 
+				
+	idPet = 0;
+	funcionPet = 3;
+	subFuncionPet = 1;
+	numDatosPet = 6;
+	EnviarSolicitud(idPet, funcionPet, subFuncionPet, numDatosPet, payloadPet);
+	
+}
+//**************************************************************************************************************************************
+
+//**************************************************************************************************************************************
+//Funcion para visualizar y procesar el tiempo recuperado del dsPIC
+void ObtenerTiempoPIC(){
 	
 	//Imprime la trama de solicitud:
 	printf("\nTrama enviada:");
@@ -359,7 +349,6 @@ void ObetenerTiempoPIC(){
 	for (i=0;i<numDatosResp;i++){
 		printf("%#02X ", payloadResp[i]);
 	}
-	
 	
 	if (funcionPet==3&&subFuncionPet==1){
 		
@@ -382,7 +371,7 @@ void ObetenerTiempoPIC(){
 		printf("%0.2d\n",payloadResp[5]);			//ss
 				
 	
-	} else {
+	}else{
 		
 		//Imprime la hora recuperada del dsPIC:
 		printf("\n");
@@ -427,173 +416,17 @@ void ObetenerTiempoPIC(){
 		}
 	
 	}	
-				
+	
+	
+	//tiempoEjecucion = ((double)(tv2.tv_usec - tv1.tv_usec));
+	//printf ("\nTiempo de descarga = %0.3f us", tiempoEjecucion);
+		
 	Salir();
 	
 }
 //**************************************************************************************************************************************
 
 //**************************************************************************************************************************************
-void Salir(){
-	
-	bcm2835_spi_end();
-	bcm2835_close();
-	//printf("\nAdios...\n");
-	printf("\n");
-	exit (-1);
-}
-//**************************************************************************************************************************************
-
-/*
-//C:0xA0    F:0xF0
-void ObtenerOperacion(){
-	
-	bcm2835_delayMicroseconds(200);
-	
-	unsigned short funcionSPI;
-	unsigned short subFuncionSPI;
-	unsigned short numBytesMSB;
-	unsigned short numBytesLSB;
-	unsigned int numBytesSPI; 
-    unsigned char *ptrnumBytesSPI;
-	ptrnumBytesSPI = (unsigned char *) & numBytesSPI;
-	
-	//Recupera: [operacion, byteLSB, byteMSB]
-	bcm2835_spi_transfer(0xA0);
-	bcm2835_delayMicroseconds(TIEMPO_SPI);
-	funcionSPI = bcm2835_spi_transfer(0x00);
-	bcm2835_delayMicroseconds(TIEMPO_SPI);
-	subFuncionSPI = bcm2835_spi_transfer(0x00);
-	bcm2835_delayMicroseconds(TIEMPO_SPI);
-	numBytesLSB = bcm2835_spi_transfer(0x00);
-	bcm2835_delayMicroseconds(TIEMPO_SPI);
-	numBytesMSB = bcm2835_spi_transfer(0x00);
-	bcm2835_delayMicroseconds(TIEMPO_SPI);
-	bcm2835_spi_transfer(0xF0);	
-
-	*ptrnumBytesSPI = numBytesLSB;
-	*(ptrnumBytesSPI+1) = numBytesMSB;
-	
-	//printf("Funcion: %X\n", funcionSPI);
-	//printf("Subfuncion: %X\n", subFuncionSPI);
-	//printf("Numero de bytes: %d\n", numBytesSPI);
-	
-	switch (funcionSPI){                                                                     
-          case 0xB1:
-		       //Respuesta de la sincronizacion:
-			   if (subFuncionSPI==0xD1){
-			       ObtenerTiempoMaster(); 
-			   }
-			   //Tiempo del nodo:
-			   if (subFuncionSPI==0xD2){
-				   
-			   }
-			   break;
-          case 0xB2:
-		       printf("Opcion no disponible");			   
-               break;
-		  case 0xB3:
-		       printf("Opcion no disponible");  
-               break;
-          default:
-               printf("Error: Operacion invalida\n");  
-               break;
-    }
-	
-	digitalWrite (TEST, LOW);	
-	delay (500);
-	digitalWrite (TEST, HIGH);
-	
-}
-
-
-//C:0xA5	F:0xF5 
-void ObtenerTiempoMaster(){
-	
-	printf("Hora dsPIC: ");	
-	bcm2835_spi_transfer(0xA5);                                                 //Envia el delimitador de final de trama
-    bcm2835_delayMicroseconds(TIEMPO_SPI);
-	
-	fuenteTiempoPic = bcm2835_spi_transfer(0x00);								//Recibe el byte que indica la fuente de tiempo del PIC
-	bcm2835_delayMicroseconds(TIEMPO_SPI);
-	
-	for (i=0;i<6;i++){
-        buffer = bcm2835_spi_transfer(0x00);
-        tiempoPIC[i] = buffer;													//Guarda la hora y fecha devuelta por el dsPIC
-        bcm2835_delayMicroseconds(TIEMPO_SPI);
-    }
-
-	bcm2835_spi_transfer(0xF5);                                                 //Envia el delimitador de final de trama
-    bcm2835_delayMicroseconds(TIEMPO_SPI);
-	
-	switch (fuenteTiempoPic){
-			case 0: 
-					printf("RPi ");
-					break;
-			case 1:
-					printf("GPS ");
-					break;
-			case 2:
-					printf("RTC ");
-					break;			
-			default:
-					errorSinc = fuenteTiempoPic;
-					printf("E%d ", errorSinc);
-					break;
-	}
-		
-	printf("%0.2d/",tiempoPIC[0]);		//aa
-	printf("%0.2d/",tiempoPIC[1]);		//MM
-	printf("%0.2d ",tiempoPIC[2]);		//dd
-	printf("%0.2d:",tiempoPIC[3]);		//hh
-	printf("%0.2d:",tiempoPIC[4]);		//mm
-	printf("%0.2d\n",tiempoPIC[5]);		//ss
-	
-	if (errorSinc!=0){
-		switch (errorSinc){
-				case 5: 
-						printf("**Error 5: Problemas al recuperar la trama GPRMC del GPS\n");
-						break;
-				case 6:
-						printf("**Error 6: La hora del GPS no esta comprobada\n");//Corregir en el concentrador//
-						break;
-				case 7:
-						printf("**Error 7: El GPS tarda en responder\n");
-						break;			
-		}
-	}
-		
-	//Configura el tiempo local si se escogio la opcion GPS:
-	if (fuenteTiempoPic==1){
-		SetRelojLocal(tiempoPIC);		
-	}
-
-	exit (-1);
-	
-}
-
-//C:0xA6	F:0xF6
-void ObtenerReferenciaTiempo(unsigned short referencia){ 
-	//referencia = 1 -> GPS
-	//referencia = 2 -> RTC
-	if (referencia==1){
-		printf("Obteniendo hora del GPS...\n");	
-	} else {
-		printf("Obteniendo hora del RTC...\n");	
-	}
-	
-	bcm2835_spi_transfer(0xA6);
-	bcm2835_delayMicroseconds(TIEMPO_SPI);
-	bcm2835_spi_transfer(referencia);								
-	bcm2835_delayMicroseconds(TIEMPO_SPI);
-	bcm2835_spi_transfer(0xF6);
-	bcm2835_delayMicroseconds(TIEMPO_SPI);
-}
-//**************************************************************************************************************************************
-
-//**************************************************************************************************************************************
-//Procesos locales:
-
 void SetRelojLocal(unsigned char* tramaTiempo){
 	
 	printf("Sincronizando hora local...\n");
@@ -631,20 +464,35 @@ void SetRelojLocal(unsigned char* tramaTiempo){
 	system("date");
 	
 }
+//**************************************************************************************************************************************
 
 //**************************************************************************************************************************************
-*/
+void Salir(){
+	
+	bcm2835_spi_end();
+	bcm2835_close();
+	//printf("\nAdios...\n");
+	printf("\n");
+	exit (-1);
+}
+//**************************************************************************************************************************************
 
 //Fuentes de reloj: 
-//0->Red, 1->GPS, 2->RTC
-
+//1->RPi, 2->GPS, 3->RTC
 //Errores:
 //Error E5: Problemas al recuperar la trama GPRMC del GPS
 //Error E6: La hora del GPS es invalida
 //Error E7: El GPS tarda en responder
-
 //Configurar reloj RPi: 
 //sudo date --set '2020-09-08 16:10:00'
+
+//Medir tiempo de ejecucion:
+//#include <sys/time.h>
+//struct tv1, tv2;
+//double tiempoEjecucion;
+//gettimeofday(&tv1, NULL);
+//gettimeofday(&tv2, NULL);
+//tiempoEjecucion = (double)(tv2.tv_sec - tv1.tv_sec)+((double)(tv2.tv_usec - tv1.tv_usec)/1000000);
 
 
 
