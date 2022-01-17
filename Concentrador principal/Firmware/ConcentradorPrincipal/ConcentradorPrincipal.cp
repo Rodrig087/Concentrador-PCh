@@ -548,14 +548,12 @@ void main() {
  MS1RS485 = 0;
 
 
+ banGPSI = 1;
+ banGPSC = 0;
+ U1MODE.UARTEN = 1;
 
-
- horaSistema = RecuperarHoraRTC();
- fechaSistema = RecuperarFechaRTC();
- AjustarTiempoSistema(horaSistema, fechaSistema, tiempo);
-
- banSetReloj = 1;
-
+ T1CON.TON = 1;
+ TMR1 = 0;
 
  while(1){
  asm CLRWDT;
@@ -720,6 +718,8 @@ void ProcesarSolicitudConcentrador(unsigned char* cabeceraSolicitudCon, unsigned
  case 2:
 
 
+
+
  numDatosPayload = 7;
  cabeceraSolicitud[3] = *(ptrNumDatosPayload);
  cabeceraSolicitud[4] = *(ptrNumDatosPayload+1);
@@ -730,6 +730,7 @@ void ProcesarSolicitudConcentrador(unsigned char* cabeceraSolicitudCon, unsigned
  payloadConcentrador[6] = fuenteReloj;
 
  EnviarCabeceraRespuesta(cabeceraSolicitud);
+
  break;
  case 3:
  switch (cabeceraSolicitudCon[2]){
@@ -745,19 +746,22 @@ void ProcesarSolicitudConcentrador(unsigned char* cabeceraSolicitudCon, unsigned
  banSetReloj = 1;
  banRespuestaPi = 1;
 
+
+ if (banRespuestaPi==1){
  numDatosPayload = 7;
  cabeceraSolicitud[3] = *(ptrNumDatosPayload);
  cabeceraSolicitud[4] = *(ptrNumDatosPayload+1);
-
  for (x=0;x<6;x++){
- payloadConcentrador[x] = payloadSolicitudCon[x];
+ payloadConcentrador[x] = tiempo[x];
  }
  payloadConcentrador[6] = fuenteReloj;
-
  EnviarCabeceraRespuesta(cabeceraSolicitud);
+ }
+
  break;
  case 2:
 
+ banRespuestaPi = 1;
  banGPSI = 1;
  banGPSC = 0;
  U1MODE.UARTEN = 1;
@@ -772,17 +776,20 @@ void ProcesarSolicitudConcentrador(unsigned char* cabeceraSolicitudCon, unsigned
  AjustarTiempoSistema(horaSistema, fechaSistema, tiempo);
  fuenteReloj = 3;
  banSetReloj = 1;
+ banRespuestaPi = 1;
 
+
+ if (banRespuestaPi==1){
  numDatosPayload = 7;
  cabeceraSolicitud[3] = *(ptrNumDatosPayload);
  cabeceraSolicitud[4] = *(ptrNumDatosPayload+1);
-
  for (x=0;x<6;x++){
  payloadConcentrador[x] = tiempo[x];
  }
  payloadConcentrador[6] = fuenteReloj;
-
  EnviarCabeceraRespuesta(cabeceraSolicitud);
+ }
+
  break;
  }
  break;
@@ -966,6 +973,18 @@ void Timer1Int() org IVT_ADDR_T1INTERRUPT{
  AjustarTiempoSistema(horaSistema, fechaSistema, tiempo);
  fuenteReloj = 7;
 
+
+ if (banRespuestaPi==1){
+ numDatosPayload = 7;
+ cabeceraSolicitud[3] = *(ptrNumDatosPayload);
+ cabeceraSolicitud[4] = *(ptrNumDatosPayload+1);
+ for (x=0;x<6;x++){
+ payloadConcentrador[x] = tiempo[x];
+ }
+ payloadConcentrador[6] = fuenteReloj;
+ EnviarCabeceraRespuesta(cabeceraSolicitud);
+ }
+
  }
 
 }
@@ -988,7 +1007,7 @@ void Timer2Int() org IVT_ADDR_T2INTERRUPT{
 
 
  numDatosPayload = 3;
-#line 598 "C:/Users/milto/Milton/RSA/Git/Proyecto Chanlud/Concentrador PCh/Concentrador-PCh/Concentrador principal/Firmware/ConcentradorPrincipal/ConcentradorPrincipal.c"
+#line 617 "C:/Users/milto/Milton/RSA/Git/Proyecto Chanlud/Concentrador PCh/Concentrador-PCh/Concentrador principal/Firmware/ConcentradorPrincipal/ConcentradorPrincipal.c"
 }
 
 
@@ -1040,11 +1059,23 @@ void urx_1() org IVT_ADDR_U1RXINTERRUPT {
  fechaSistema = RecuperarFechaRTC();
  AjustarTiempoSistema(horaSistema, fechaSistema, tiempo);
  fuenteReloj = 5;
-
  banGPSI = 0;
  banGPSC = 0;
  i_gps = 0;
  U1MODE.UARTEN = 0;
+
+
+ if (banRespuestaPi==1){
+ numDatosPayload = 7;
+ cabeceraSolicitud[3] = *(ptrNumDatosPayload);
+ cabeceraSolicitud[4] = *(ptrNumDatosPayload+1);
+ for (x=0;x<6;x++){
+ payloadConcentrador[x] = tiempo[x];
+ }
+ payloadConcentrador[6] = fuenteReloj;
+ EnviarCabeceraRespuesta(cabeceraSolicitud);
+ }
+
  }
  }
 
@@ -1069,12 +1100,37 @@ void urx_1() org IVT_ADDR_U1RXINTERRUPT {
  fuenteReloj = 2;
  banSyncReloj = 1;
  banSetReloj = 0;
+
+
+ if (banRespuestaPi==1){
+ numDatosPayload = 7;
+ cabeceraSolicitud[3] = *(ptrNumDatosPayload);
+ cabeceraSolicitud[4] = *(ptrNumDatosPayload+1);
+ for (x=0;x<6;x++){
+ payloadConcentrador[x] = tiempo[x];
+ }
+ payloadConcentrador[6] = fuenteReloj;
+ EnviarCabeceraRespuesta(cabeceraSolicitud);
+ }
+
  } else {
 
  horaSistema = RecuperarHoraRTC();
  fechaSistema = RecuperarFechaRTC();
  AjustarTiempoSistema(horaSistema, fechaSistema, tiempo);
  fuenteReloj = 6;
+
+
+ if (banRespuestaPi==1){
+ numDatosPayload = 7;
+ cabeceraSolicitud[3] = *(ptrNumDatosPayload);
+ cabeceraSolicitud[4] = *(ptrNumDatosPayload+1);
+ for (x=0;x<6;x++){
+ payloadConcentrador[x] = tiempo[x];
+ }
+ payloadConcentrador[6] = fuenteReloj;
+ EnviarCabeceraRespuesta(cabeceraSolicitud);
+ }
 
  }
 

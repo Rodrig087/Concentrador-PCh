@@ -26,6 +26,23 @@ main
 			SPI2_Write
 				SPI2_Read
 		SPI2_Init
+urx_2
+	EnviarCabeceraRespuesta
+int_2
+	AjustarTiempoSistema
+		_Divide_32x32
+		_Modulus_32x32
+	DS3234_setDate
+		SPI2_Init_Advanced
+		Dec2Bcd
+		DS3234_write_byte
+		SPI2_Init
+		_Divide_32x32
+		_Modulus_32x32
+int_1
+	AjustarTiempoSistema
+	_Modulus_32x32
+urx_1
 	RecuperarHoraRTC
 		SPI2_Init_Advanced
 		DS3234_read_byte
@@ -41,26 +58,7 @@ main
 		SPI2_Init
 		_Multiply_32x32
 	AjustarTiempoSistema
-		_Divide_32x32
-		_Modulus_32x32
-urx_2
 	EnviarCabeceraRespuesta
-int_2
-	AjustarTiempoSistema
-	DS3234_setDate
-		SPI2_Init_Advanced
-		Dec2Bcd
-		DS3234_write_byte
-		SPI2_Init
-		_Divide_32x32
-		_Modulus_32x32
-int_1
-	AjustarTiempoSistema
-	_Modulus_32x32
-urx_1
-	RecuperarHoraRTC
-	RecuperarFechaRTC
-	AjustarTiempoSistema
 	RecuperarHoraGPS
 		atoi
 			isdigit
@@ -88,3 +86,4 @@ Timer1Int
 	RecuperarHoraRTC
 	RecuperarFechaRTC
 	AjustarTiempoSistema
+	EnviarCabeceraRespuesta

@@ -461,9 +461,9 @@ _IncrementarFecha:
 ;tiempo_rtc.c,198 :: 		if (dia<28){
 	CP	W0, #28
 	CPB	W1, #0
-	BRA LTU	L__IncrementarFecha263
+	BRA LTU	L__IncrementarFecha281
 	GOTO	L_IncrementarFecha0
-L__IncrementarFecha263:
+L__IncrementarFecha281:
 ;tiempo_rtc.c,199 :: 		dia++;
 ; dia start address is: 16 (W8)
 	ADD	W6, #1, W8
@@ -478,9 +478,9 @@ L_IncrementarFecha0:
 ; dia start address is: 12 (W6)
 	CP	W4, #2
 	CPB	W5, #0
-	BRA Z	L__IncrementarFecha264
+	BRA Z	L__IncrementarFecha282
 	GOTO	L_IncrementarFecha2
-L__IncrementarFecha264:
+L__IncrementarFecha282:
 ;tiempo_rtc.c,203 :: 		if (((anio-16)%4)==0){
 	SUB	W2, #16, W0
 	SUBB	W3, #0, W1
@@ -488,15 +488,15 @@ L__IncrementarFecha264:
 	AND	W1, #0, W1
 	CP	W0, #0
 	CPB	W1, #0
-	BRA Z	L__IncrementarFecha265
+	BRA Z	L__IncrementarFecha283
 	GOTO	L_IncrementarFecha3
-L__IncrementarFecha265:
+L__IncrementarFecha283:
 ;tiempo_rtc.c,204 :: 		if (dia==29){
 	CP	W6, #29
 	CPB	W7, #0
-	BRA Z	L__IncrementarFecha266
+	BRA Z	L__IncrementarFecha284
 	GOTO	L_IncrementarFecha4
-L__IncrementarFecha266:
+L__IncrementarFecha284:
 ; dia end address is: 12 (W6)
 ;tiempo_rtc.c,205 :: 		dia = 1;
 ; dia start address is: 0 (W0)
@@ -552,9 +552,9 @@ L_IncrementarFecha2:
 ; dia start address is: 12 (W6)
 	CP	W6, #30
 	CPB	W7, #0
-	BRA LTU	L__IncrementarFecha267
+	BRA LTU	L__IncrementarFecha285
 	GOTO	L_IncrementarFecha8
-L__IncrementarFecha267:
+L__IncrementarFecha285:
 ;tiempo_rtc.c,216 :: 		dia++;
 ; dia start address is: 0 (W0)
 	ADD	W6, #1, W0
@@ -572,37 +572,37 @@ L_IncrementarFecha8:
 ; dia start address is: 12 (W6)
 	CP	W4, #4
 	CPB	W5, #0
-	BRA NZ	L__IncrementarFecha268
-	GOTO	L__IncrementarFecha178
-L__IncrementarFecha268:
+	BRA NZ	L__IncrementarFecha286
+	GOTO	L__IncrementarFecha196
+L__IncrementarFecha286:
 	CP	W4, #6
 	CPB	W5, #0
-	BRA NZ	L__IncrementarFecha269
-	GOTO	L__IncrementarFecha177
-L__IncrementarFecha269:
+	BRA NZ	L__IncrementarFecha287
+	GOTO	L__IncrementarFecha195
+L__IncrementarFecha287:
 	CP	W4, #9
 	CPB	W5, #0
-	BRA NZ	L__IncrementarFecha270
-	GOTO	L__IncrementarFecha176
-L__IncrementarFecha270:
+	BRA NZ	L__IncrementarFecha288
+	GOTO	L__IncrementarFecha194
+L__IncrementarFecha288:
 	CP	W4, #11
 	CPB	W5, #0
-	BRA NZ	L__IncrementarFecha271
-	GOTO	L__IncrementarFecha175
-L__IncrementarFecha271:
+	BRA NZ	L__IncrementarFecha289
+	GOTO	L__IncrementarFecha193
+L__IncrementarFecha289:
 	MOV.D	W4, W0
 	MOV.D	W6, W4
 	GOTO	L_IncrementarFecha12
-L__IncrementarFecha178:
-L__IncrementarFecha177:
-L__IncrementarFecha176:
-L__IncrementarFecha175:
+L__IncrementarFecha196:
+L__IncrementarFecha195:
+L__IncrementarFecha194:
+L__IncrementarFecha193:
 ;tiempo_rtc.c,219 :: 		if (dia==30){
 	CP	W6, #30
 	CPB	W7, #0
-	BRA Z	L__IncrementarFecha272
+	BRA Z	L__IncrementarFecha290
 	GOTO	L_IncrementarFecha13
-L__IncrementarFecha272:
+L__IncrementarFecha290:
 ; dia end address is: 12 (W6)
 ;tiempo_rtc.c,220 :: 		dia = 1;
 ; dia start address is: 0 (W0)
@@ -642,53 +642,53 @@ L_IncrementarFecha12:
 ; dia start address is: 8 (W4)
 	CP	W4, #1
 	CPB	W5, #0
-	BRA NZ	L__IncrementarFecha273
-	GOTO	L__IncrementarFecha188
-L__IncrementarFecha273:
+	BRA NZ	L__IncrementarFecha291
+	GOTO	L__IncrementarFecha206
+L__IncrementarFecha291:
 	CP	W0, #1
 	CPB	W1, #0
-	BRA NZ	L__IncrementarFecha274
-	GOTO	L__IncrementarFecha184
-L__IncrementarFecha274:
+	BRA NZ	L__IncrementarFecha292
+	GOTO	L__IncrementarFecha202
+L__IncrementarFecha292:
 	CP	W0, #3
 	CPB	W1, #0
-	BRA NZ	L__IncrementarFecha275
-	GOTO	L__IncrementarFecha183
-L__IncrementarFecha275:
+	BRA NZ	L__IncrementarFecha293
+	GOTO	L__IncrementarFecha201
+L__IncrementarFecha293:
 	CP	W0, #5
 	CPB	W1, #0
-	BRA NZ	L__IncrementarFecha276
-	GOTO	L__IncrementarFecha182
-L__IncrementarFecha276:
+	BRA NZ	L__IncrementarFecha294
+	GOTO	L__IncrementarFecha200
+L__IncrementarFecha294:
 	CP	W0, #7
 	CPB	W1, #0
-	BRA NZ	L__IncrementarFecha277
-	GOTO	L__IncrementarFecha181
-L__IncrementarFecha277:
+	BRA NZ	L__IncrementarFecha295
+	GOTO	L__IncrementarFecha199
+L__IncrementarFecha295:
 	CP	W0, #8
 	CPB	W1, #0
-	BRA NZ	L__IncrementarFecha278
-	GOTO	L__IncrementarFecha180
-L__IncrementarFecha278:
+	BRA NZ	L__IncrementarFecha296
+	GOTO	L__IncrementarFecha198
+L__IncrementarFecha296:
 	CP	W0, #10
 	CPB	W1, #0
-	BRA NZ	L__IncrementarFecha279
-	GOTO	L__IncrementarFecha179
-L__IncrementarFecha279:
+	BRA NZ	L__IncrementarFecha297
+	GOTO	L__IncrementarFecha197
+L__IncrementarFecha297:
 	GOTO	L_IncrementarFecha19
-L__IncrementarFecha184:
-L__IncrementarFecha183:
-L__IncrementarFecha182:
-L__IncrementarFecha181:
-L__IncrementarFecha180:
-L__IncrementarFecha179:
-L__IncrementarFecha172:
+L__IncrementarFecha202:
+L__IncrementarFecha201:
+L__IncrementarFecha200:
+L__IncrementarFecha199:
+L__IncrementarFecha198:
+L__IncrementarFecha197:
+L__IncrementarFecha190:
 ;tiempo_rtc.c,227 :: 		if (dia==31){
 	CP	W4, #31
 	CPB	W5, #0
-	BRA Z	L__IncrementarFecha280
+	BRA Z	L__IncrementarFecha298
 	GOTO	L_IncrementarFecha20
-L__IncrementarFecha280:
+L__IncrementarFecha298:
 ;tiempo_rtc.c,228 :: 		dia = 1;
 	MOV	#1, W4
 	MOV	#0, W5
@@ -716,29 +716,29 @@ L_IncrementarFecha19:
 ; dia start address is: 8 (W4)
 ; dia end address is: 8 (W4)
 ; mes end address is: 0 (W0)
-	GOTO	L__IncrementarFecha185
-L__IncrementarFecha188:
-L__IncrementarFecha185:
+	GOTO	L__IncrementarFecha203
+L__IncrementarFecha206:
+L__IncrementarFecha203:
 ;tiempo_rtc.c,234 :: 		if ((dia!=1)&&(mes==12)){
 ; dia start address is: 8 (W4)
 ; mes start address is: 0 (W0)
 	CP	W4, #1
 	CPB	W5, #0
-	BRA NZ	L__IncrementarFecha281
-	GOTO	L__IncrementarFecha189
-L__IncrementarFecha281:
+	BRA NZ	L__IncrementarFecha299
+	GOTO	L__IncrementarFecha207
+L__IncrementarFecha299:
 	CP	W0, #12
 	CPB	W1, #0
-	BRA Z	L__IncrementarFecha282
-	GOTO	L__IncrementarFecha190
-L__IncrementarFecha282:
-L__IncrementarFecha171:
+	BRA Z	L__IncrementarFecha300
+	GOTO	L__IncrementarFecha208
+L__IncrementarFecha300:
+L__IncrementarFecha189:
 ;tiempo_rtc.c,235 :: 		if (dia==31){
 	CP	W4, #31
 	CPB	W5, #0
-	BRA Z	L__IncrementarFecha283
+	BRA Z	L__IncrementarFecha301
 	GOTO	L_IncrementarFecha25
-L__IncrementarFecha283:
+L__IncrementarFecha301:
 ; mes end address is: 0 (W0)
 ;tiempo_rtc.c,236 :: 		dia = 1;
 	MOV	#1, W4
@@ -768,18 +768,18 @@ L_IncrementarFecha26:
 ; dia end address is: 8 (W4)
 ; mes end address is: 0 (W0)
 ; anio end address is: 4 (W2)
-	GOTO	L__IncrementarFecha187
-L__IncrementarFecha189:
-L__IncrementarFecha187:
+	GOTO	L__IncrementarFecha205
+L__IncrementarFecha207:
+L__IncrementarFecha205:
 ; mes start address is: 0 (W0)
 ; anio start address is: 4 (W2)
 ; dia start address is: 8 (W4)
 ; dia end address is: 8 (W4)
 ; mes end address is: 0 (W0)
 ; anio end address is: 4 (W2)
-	GOTO	L__IncrementarFecha186
-L__IncrementarFecha190:
-L__IncrementarFecha186:
+	GOTO	L__IncrementarFecha204
+L__IncrementarFecha208:
+L__IncrementarFecha204:
 ;tiempo_rtc.c,243 :: 		}
 ; dia start address is: 8 (W4)
 ; anio start address is: 4 (W2)
@@ -1333,9 +1333,9 @@ _EnviarTramaRS485:
 	MOV.B	W8, [W0]
 ;rs485.c,43 :: 		if (puertoUART == 1){
 	CP.B	W10, #1
-	BRA Z	L__EnviarTramaRS485291
+	BRA Z	L__EnviarTramaRS485309
 	GOTO	L_EnviarTramaRS48531
-L__EnviarTramaRS485291:
+L__EnviarTramaRS485309:
 ;rs485.c,44 :: 		MS1RS485 = 1;                                                            //Establece el Max485 en modo escritura
 	BSET	MS1RS485, BitPos(MS1RS485+0)
 ;rs485.c,45 :: 		UART1_Write(0x3A);                                                      //Envia la cabecera de la trama
@@ -1369,9 +1369,9 @@ L_EnviarTramaRS48532:
 ; iDatos start address is: 2 (W1)
 	ADD	W14, #0, W0
 	CP	W1, [W0]
-	BRA LTU	L__EnviarTramaRS485292
+	BRA LTU	L__EnviarTramaRS485310
 	GOTO	L_EnviarTramaRS48533
-L__EnviarTramaRS485292:
+L__EnviarTramaRS485310:
 ;rs485.c,52 :: 		UART1_Write(payload[iDatos]);
 	ADD	W12, W1, W0
 	PUSH	W10
@@ -1399,9 +1399,9 @@ L_EnviarTramaRS48533:
 L_EnviarTramaRS48535:
 	CALL	_UART1_Tx_Idle
 	CP	W0, #0
-	BRA Z	L__EnviarTramaRS485293
+	BRA Z	L__EnviarTramaRS485311
 	GOTO	L_EnviarTramaRS48536
-L__EnviarTramaRS485293:
+L__EnviarTramaRS485311:
 	GOTO	L_EnviarTramaRS48535
 L_EnviarTramaRS48536:
 ;rs485.c,58 :: 		MS1RS485 = 0;                                                           //Establece el Max485 en modo lectura
@@ -1428,8 +1428,6 @@ _main:
 ;ConcentradorPrincipal.c,91 :: 		ConfiguracionPrincipal();
 	PUSH	W10
 	PUSH	W11
-	PUSH	W12
-	PUSH	W13
 	CALL	_ConfiguracionPrincipal
 ;ConcentradorPrincipal.c,92 :: 		GPS_init(1,1);
 	MOV.B	#1, W11
@@ -1587,31 +1585,25 @@ _main:
 	BCLR	LATA1_bit, BitPos(LATA1_bit+0)
 ;ConcentradorPrincipal.c,150 :: 		MS1RS485 = 0;                                                              //Establece el Max485 en modo de lectura;
 	BCLR	LATB11_bit, BitPos(LATB11_bit+0)
-;ConcentradorPrincipal.c,155 :: 		horaSistema = RecuperarHoraRTC();                                          //Recupera la hora del RTC
-	CALL	_RecuperarHoraRTC
-	MOV	W0, _horaSistema
-	MOV	W1, _horaSistema+2
-;ConcentradorPrincipal.c,156 :: 		fechaSistema = RecuperarFechaRTC();                                        //Recupera la fecha del RTC
-	CALL	_RecuperarFechaRTC
-	MOV	W0, _fechaSistema
-	MOV	W1, _fechaSistema+2
-;ConcentradorPrincipal.c,157 :: 		AjustarTiempoSistema(horaSistema, fechaSistema, tiempo);                   //Actualiza los datos de la trama tiempo con la hora y fecha recuperadas
-	MOV.D	W0, W12
-	MOV	_horaSistema, W10
-	MOV	_horaSistema+2, W11
-	MOV	#lo_addr(_tiempo), W0
-	PUSH	W0
-	CALL	_AjustarTiempoSistema
-	SUB	#2, W15
-;ConcentradorPrincipal.c,159 :: 		banSetReloj = 1;                                                           //Activa esta bandera para usar la hora/fecha recuperada
-	MOV	#lo_addr(_banSetReloj), W1
+;ConcentradorPrincipal.c,153 :: 		banGPSI = 1;                                                               //Activa la bandera de inicio de trama  del GPS
+	MOV	#lo_addr(_banGPSI), W1
 	MOV.B	#1, W0
 	MOV.B	W0, [W1]
-;ConcentradorPrincipal.c,162 :: 		while(1){
+;ConcentradorPrincipal.c,154 :: 		banGPSC = 0;                                                               //Limpia la bandera de trama completa
+	MOV	#lo_addr(_banGPSC), W1
+	CLR	W0
+	MOV.B	W0, [W1]
+;ConcentradorPrincipal.c,155 :: 		U1MODE.UARTEN = 1;                                                         //Inicializa el UART1
+	BSET	U1MODE, #15
+;ConcentradorPrincipal.c,157 :: 		T1CON.TON = 1;
+	BSET	T1CON, #15
+;ConcentradorPrincipal.c,158 :: 		TMR1 = 0;
+	CLR	TMR1
+;ConcentradorPrincipal.c,160 :: 		while(1){
 L_main37:
-;ConcentradorPrincipal.c,163 :: 		asm CLRWDT;         //Clear the watchdog timer
+;ConcentradorPrincipal.c,161 :: 		asm CLRWDT;         //Clear the watchdog timer
 	CLRWDT
-;ConcentradorPrincipal.c,164 :: 		Delay_ms(100);
+;ConcentradorPrincipal.c,162 :: 		Delay_ms(100);
 	MOV	#13, W8
 	MOV	#13575, W7
 L_main39:
@@ -1619,12 +1611,10 @@ L_main39:
 	BRA NZ	L_main39
 	DEC	W8
 	BRA NZ	L_main39
-;ConcentradorPrincipal.c,165 :: 		}
+;ConcentradorPrincipal.c,163 :: 		}
 	GOTO	L_main37
-;ConcentradorPrincipal.c,167 :: 		}
+;ConcentradorPrincipal.c,165 :: 		}
 L_end_main:
-	POP	W13
-	POP	W12
 	POP	W11
 	POP	W10
 L__main_end_loop:
@@ -1633,8 +1623,8 @@ L__main_end_loop:
 
 _ConfiguracionPrincipal:
 
-;ConcentradorPrincipal.c,176 :: 		void ConfiguracionPrincipal(){
-;ConcentradorPrincipal.c,179 :: 		CLKDIVbits.FRCDIV = 0;                                                     //FIN=FRC/1
+;ConcentradorPrincipal.c,174 :: 		void ConfiguracionPrincipal(){
+;ConcentradorPrincipal.c,177 :: 		CLKDIVbits.FRCDIV = 0;                                                     //FIN=FRC/1
 	PUSH	W10
 	PUSH	W11
 	PUSH	W12
@@ -1643,14 +1633,14 @@ _ConfiguracionPrincipal:
 	MOV	#63743, W0
 	AND	W1, W0, W0
 	MOV	WREG, CLKDIVbits
-;ConcentradorPrincipal.c,180 :: 		CLKDIVbits.PLLPOST = 0;                                                    //N2=2
+;ConcentradorPrincipal.c,178 :: 		CLKDIVbits.PLLPOST = 0;                                                    //N2=2
 	MOV	#lo_addr(CLKDIVbits), W0
 	MOV.B	[W0], W1
 	MOV.B	#63, W0
 	AND.B	W1, W0, W1
 	MOV	#lo_addr(CLKDIVbits), W0
 	MOV.B	W1, [W0]
-;ConcentradorPrincipal.c,181 :: 		CLKDIVbits.PLLPRE = 5;                                                     //N1=7
+;ConcentradorPrincipal.c,179 :: 		CLKDIVbits.PLLPRE = 5;                                                     //N1=7
 	MOV.B	#5, W0
 	MOV.B	W0, W1
 	MOV	#lo_addr(CLKDIVbits), W0
@@ -1660,7 +1650,7 @@ _ConfiguracionPrincipal:
 	XOR.B	W1, [W0], W1
 	MOV	#lo_addr(CLKDIVbits), W0
 	MOV.B	W1, [W0]
-;ConcentradorPrincipal.c,182 :: 		PLLFBDbits.PLLDIV = 150;                                                   //M=152
+;ConcentradorPrincipal.c,180 :: 		PLLFBDbits.PLLDIV = 150;                                                   //M=152
 	MOV	#150, W0
 	MOV	W0, W1
 	MOV	#lo_addr(PLLFBDbits), W0
@@ -1670,25 +1660,25 @@ _ConfiguracionPrincipal:
 	MOV	#lo_addr(PLLFBDbits), W0
 	XOR	W1, [W0], W1
 	MOV	W1, PLLFBDbits
-;ConcentradorPrincipal.c,185 :: 		ANSELA = 0;                                                                //Configura PORTA como digital     *
+;ConcentradorPrincipal.c,183 :: 		ANSELA = 0;                                                                //Configura PORTA como digital     *
 	CLR	ANSELA
-;ConcentradorPrincipal.c,186 :: 		ANSELB = 0;                                                                //Configura PORTB como digital     *
+;ConcentradorPrincipal.c,184 :: 		ANSELB = 0;                                                                //Configura PORTB como digital     *
 	CLR	ANSELB
-;ConcentradorPrincipal.c,188 :: 		TRISA2_bit = 0;                                                            //RTC_CS
+;ConcentradorPrincipal.c,186 :: 		TRISA2_bit = 0;                                                            //RTC_CS
 	BCLR	TRISA2_bit, BitPos(TRISA2_bit+0)
-;ConcentradorPrincipal.c,189 :: 		LED1_Direction = 0;                                                        //INT_SINC
+;ConcentradorPrincipal.c,187 :: 		LED1_Direction = 0;                                                        //INT_SINC
 	BCLR	TRISA1_bit, BitPos(TRISA1_bit+0)
-;ConcentradorPrincipal.c,190 :: 		RP1_Direction = 0;                                                         //RP1
+;ConcentradorPrincipal.c,188 :: 		RP1_Direction = 0;                                                         //RP1
 	BCLR	TRISA4_bit, BitPos(TRISA4_bit+0)
-;ConcentradorPrincipal.c,191 :: 		MS1RS485_Direction = 0;                                                    //MSRS485
+;ConcentradorPrincipal.c,189 :: 		MS1RS485_Direction = 0;                                                    //MSRS485
 	BCLR	TRISB11_bit, BitPos(TRISB11_bit+0)
-;ConcentradorPrincipal.c,192 :: 		TRISB13_bit = 1;                                                           //SQW
+;ConcentradorPrincipal.c,190 :: 		TRISB13_bit = 1;                                                           //SQW
 	BSET	TRISB13_bit, BitPos(TRISB13_bit+0)
-;ConcentradorPrincipal.c,193 :: 		TRISB14_bit = 1;                                                           //PPS
+;ConcentradorPrincipal.c,191 :: 		TRISB14_bit = 1;                                                           //PPS
 	BSET	TRISB14_bit, BitPos(TRISB14_bit+0)
-;ConcentradorPrincipal.c,195 :: 		INTCON2.GIE = 1;                                                           //Habilita las interrupciones globales *
+;ConcentradorPrincipal.c,193 :: 		INTCON2.GIE = 1;                                                           //Habilita las interrupciones globales *
 	BSET	INTCON2, #15
-;ConcentradorPrincipal.c,198 :: 		RPINR18bits.U1RXR = 0x22;                                                  //Configura el pin RB2/RPI34 como Rx1
+;ConcentradorPrincipal.c,196 :: 		RPINR18bits.U1RXR = 0x22;                                                  //Configura el pin RB2/RPI34 como Rx1
 	MOV.B	#34, W0
 	MOV.B	W0, W1
 	MOV	#lo_addr(RPINR18bits), W0
@@ -1699,7 +1689,7 @@ _ConfiguracionPrincipal:
 	XOR.B	W1, [W0], W1
 	MOV	#lo_addr(RPINR18bits), W0
 	MOV.B	W1, [W0]
-;ConcentradorPrincipal.c,199 :: 		RPOR0bits.RP35R = 0x01;                                                    //Configura el Tx1 en el pin RB3/RP35
+;ConcentradorPrincipal.c,197 :: 		RPOR0bits.RP35R = 0x01;                                                    //Configura el Tx1 en el pin RB3/RP35
 	MOV	#256, W0
 	MOV	W0, W1
 	MOV	#lo_addr(RPOR0bits), W0
@@ -1709,9 +1699,9 @@ _ConfiguracionPrincipal:
 	MOV	#lo_addr(RPOR0bits), W0
 	XOR	W1, [W0], W1
 	MOV	W1, RPOR0bits
-;ConcentradorPrincipal.c,200 :: 		U1RXIE_bit = 1;                                                            //Habilita la interrupcion UART1 RX
+;ConcentradorPrincipal.c,198 :: 		U1RXIE_bit = 1;                                                            //Habilita la interrupcion UART1 RX
 	BSET	U1RXIE_bit, BitPos(U1RXIE_bit+0)
-;ConcentradorPrincipal.c,201 :: 		IPC2bits.U1RXIP = 0x04;                                                    //Prioridad de la interrupcion UART1 RX
+;ConcentradorPrincipal.c,199 :: 		IPC2bits.U1RXIP = 0x04;                                                    //Prioridad de la interrupcion UART1 RX
 	MOV	#16384, W0
 	MOV	W0, W1
 	MOV	#lo_addr(IPC2bits), W0
@@ -1721,18 +1711,18 @@ _ConfiguracionPrincipal:
 	MOV	#lo_addr(IPC2bits), W0
 	XOR	W1, [W0], W1
 	MOV	W1, IPC2bits
-;ConcentradorPrincipal.c,202 :: 		U1STAbits.URXISEL = 0x00;                                                  //Interrupt is set when any character is received and transferred from the UxRSR to the receive buffer; receive buffer has one or more characters
+;ConcentradorPrincipal.c,200 :: 		U1STAbits.URXISEL = 0x00;                                                  //Interrupt is set when any character is received and transferred from the UxRSR to the receive buffer; receive buffer has one or more characters
 	MOV	#lo_addr(U1STAbits), W0
 	MOV.B	[W0], W1
 	MOV.B	#63, W0
 	AND.B	W1, W0, W1
 	MOV	#lo_addr(U1STAbits), W0
 	MOV.B	W1, [W0]
-;ConcentradorPrincipal.c,203 :: 		UART1_Init(9600);                                                          //Inicializa el UART1 con una velocidad de 9600 baudios
+;ConcentradorPrincipal.c,201 :: 		UART1_Init(9600);                                                          //Inicializa el UART1 con una velocidad de 9600 baudios
 	MOV	#9600, W10
 	MOV	#0, W11
 	CALL	_UART1_Init
-;ConcentradorPrincipal.c,206 :: 		RPINR19bits.U2RXR = 0x2F;                                                  //Configura el pin RB15/RPI47 como Rx2
+;ConcentradorPrincipal.c,204 :: 		RPINR19bits.U2RXR = 0x2F;                                                  //Configura el pin RB15/RPI47 como Rx2
 	MOV.B	#47, W0
 	MOV.B	W0, W1
 	MOV	#lo_addr(RPINR19bits), W0
@@ -1743,7 +1733,7 @@ _ConfiguracionPrincipal:
 	XOR.B	W1, [W0], W1
 	MOV	#lo_addr(RPINR19bits), W0
 	MOV.B	W1, [W0]
-;ConcentradorPrincipal.c,207 :: 		RPOR1bits.RP36R = 0x03;                                                    //Configura el Tx2 en el pin RB4/RP36
+;ConcentradorPrincipal.c,205 :: 		RPOR1bits.RP36R = 0x03;                                                    //Configura el Tx2 en el pin RB4/RP36
 	MOV.B	#3, W0
 	MOV.B	W0, W1
 	MOV	#lo_addr(RPOR1bits), W0
@@ -1754,9 +1744,9 @@ _ConfiguracionPrincipal:
 	XOR.B	W1, [W0], W1
 	MOV	#lo_addr(RPOR1bits), W0
 	MOV.B	W1, [W0]
-;ConcentradorPrincipal.c,208 :: 		U2RXIE_bit = 1;                                                            //Habilita la interrupcion UART2 RX
+;ConcentradorPrincipal.c,206 :: 		U2RXIE_bit = 1;                                                            //Habilita la interrupcion UART2 RX
 	BSET	U2RXIE_bit, BitPos(U2RXIE_bit+0)
-;ConcentradorPrincipal.c,209 :: 		IPC7bits.U2RXIP = 0x04;                                                    //Prioridad de la interrupcion UART1 RX
+;ConcentradorPrincipal.c,207 :: 		IPC7bits.U2RXIP = 0x04;                                                    //Prioridad de la interrupcion UART1 RX
 	MOV	#1024, W0
 	MOV	W0, W1
 	MOV	#lo_addr(IPC7bits), W0
@@ -1766,20 +1756,20 @@ _ConfiguracionPrincipal:
 	MOV	#lo_addr(IPC7bits), W0
 	XOR	W1, [W0], W1
 	MOV	W1, IPC7bits
-;ConcentradorPrincipal.c,210 :: 		U2STAbits.URXISEL = 0x00;
+;ConcentradorPrincipal.c,208 :: 		U2STAbits.URXISEL = 0x00;
 	MOV	#lo_addr(U2STAbits), W0
 	MOV.B	[W0], W1
 	MOV.B	#63, W0
 	AND.B	W1, W0, W1
 	MOV	#lo_addr(U2STAbits), W0
 	MOV.B	W1, [W0]
-;ConcentradorPrincipal.c,211 :: 		UART2_Init(19200);                                                         //Inicializa el UART2 a 19200 bps
+;ConcentradorPrincipal.c,209 :: 		UART2_Init(19200);                                                         //Inicializa el UART2 a 19200 bps
 	MOV	#19200, W10
 	MOV	#0, W11
 	CALL	_UART2_Init
-;ConcentradorPrincipal.c,214 :: 		SPI1STAT.SPIEN = 1;                                                        //Habilita el SPI1 *
+;ConcentradorPrincipal.c,212 :: 		SPI1STAT.SPIEN = 1;                                                        //Habilita el SPI1 *
 	BSET	SPI1STAT, #15
-;ConcentradorPrincipal.c,215 :: 		SPI1_Init_Advanced(_SPI_SLAVE, _SPI_8_BIT, _SPI_PRESCALE_SEC_1, _SPI_PRESCALE_PRI_1, _SPI_SS_ENABLE, _SPI_DATA_SAMPLE_END, _SPI_CLK_IDLE_HIGH, _SPI_ACTIVE_2_IDLE);
+;ConcentradorPrincipal.c,213 :: 		SPI1_Init_Advanced(_SPI_SLAVE, _SPI_8_BIT, _SPI_PRESCALE_SEC_1, _SPI_PRESCALE_PRI_1, _SPI_SS_ENABLE, _SPI_DATA_SAMPLE_END, _SPI_CLK_IDLE_HIGH, _SPI_ACTIVE_2_IDLE);
 	MOV	#3, W13
 	MOV	#28, W12
 	CLR	W11
@@ -1794,9 +1784,9 @@ _ConfiguracionPrincipal:
 	PUSH	W0
 	CALL	_SPI1_Init_Advanced
 	SUB	#8, W15
-;ConcentradorPrincipal.c,216 :: 		SPI1IF_bit = 0;                                                            //Limpia la bandera de interrupcion por SPI *
+;ConcentradorPrincipal.c,214 :: 		SPI1IF_bit = 0;                                                            //Limpia la bandera de interrupcion por SPI *
 	BCLR	SPI1IF_bit, BitPos(SPI1IF_bit+0)
-;ConcentradorPrincipal.c,217 :: 		IPC2bits.SPI1IP = 0x03;                                                    //Prioridad de la interrupcion SPI1
+;ConcentradorPrincipal.c,215 :: 		IPC2bits.SPI1IP = 0x03;                                                    //Prioridad de la interrupcion SPI1
 	MOV	#768, W0
 	MOV	W0, W1
 	MOV	#lo_addr(IPC2bits), W0
@@ -1806,7 +1796,7 @@ _ConfiguracionPrincipal:
 	MOV	#lo_addr(IPC2bits), W0
 	XOR	W1, [W0], W1
 	MOV	W1, IPC2bits
-;ConcentradorPrincipal.c,220 :: 		RPINR22bits.SDI2R = 0x21;                                                  //Configura el pin RB1/RPI33 como SDI2 *
+;ConcentradorPrincipal.c,218 :: 		RPINR22bits.SDI2R = 0x21;                                                  //Configura el pin RB1/RPI33 como SDI2 *
 	MOV.B	#33, W0
 	MOV.B	W0, W1
 	MOV	#lo_addr(RPINR22bits), W0
@@ -1817,7 +1807,7 @@ _ConfiguracionPrincipal:
 	XOR.B	W1, [W0], W1
 	MOV	#lo_addr(RPINR22bits), W0
 	MOV.B	W1, [W0]
-;ConcentradorPrincipal.c,221 :: 		RPOR2bits.RP38R = 0x08;                                                    //Configura el SDO2 en el pin RB6/RP38 *
+;ConcentradorPrincipal.c,219 :: 		RPOR2bits.RP38R = 0x08;                                                    //Configura el SDO2 en el pin RB6/RP38 *
 	MOV.B	#8, W0
 	MOV.B	W0, W1
 	MOV	#lo_addr(RPOR2bits), W0
@@ -1828,7 +1818,7 @@ _ConfiguracionPrincipal:
 	XOR.B	W1, [W0], W1
 	MOV	#lo_addr(RPOR2bits), W0
 	MOV.B	W1, [W0]
-;ConcentradorPrincipal.c,222 :: 		RPOR1bits.RP37R = 0x09;                                                    //Configura el SCK2 en el pin RB5/RP37 *
+;ConcentradorPrincipal.c,220 :: 		RPOR1bits.RP37R = 0x09;                                                    //Configura el SCK2 en el pin RB5/RP37 *
 	MOV	#2304, W0
 	MOV	W0, W1
 	MOV	#lo_addr(RPOR1bits), W0
@@ -1838,23 +1828,23 @@ _ConfiguracionPrincipal:
 	MOV	#lo_addr(RPOR1bits), W0
 	XOR	W1, [W0], W1
 	MOV	W1, RPOR1bits
-;ConcentradorPrincipal.c,223 :: 		SPI2STAT.SPIEN = 1;                                                        //Habilita el SPI2 *
+;ConcentradorPrincipal.c,221 :: 		SPI2STAT.SPIEN = 1;                                                        //Habilita el SPI2 *
 	BSET	SPI2STAT, #15
-;ConcentradorPrincipal.c,224 :: 		SPI2_Init();                                                               //Inicializa el modulo SPI2
+;ConcentradorPrincipal.c,222 :: 		SPI2_Init();                                                               //Inicializa el modulo SPI2
 	CALL	_SPI2_Init
-;ConcentradorPrincipal.c,225 :: 		CS_DS3234 = 1;                                                             //Pone en alto el CS del RTC
+;ConcentradorPrincipal.c,223 :: 		CS_DS3234 = 1;                                                             //Pone en alto el CS del RTC
 	BSET	LATA2_bit, BitPos(LATA2_bit+0)
-;ConcentradorPrincipal.c,228 :: 		RPINR0 = 0x2D00;                                                           //Asigna INT1 al RB13/RPI45 (SQW)
+;ConcentradorPrincipal.c,226 :: 		RPINR0 = 0x2D00;                                                           //Asigna INT1 al RB13/RPI45 (SQW)
 	MOV	#11520, W0
 	MOV	WREG, RPINR0
-;ConcentradorPrincipal.c,229 :: 		RPINR1 = 0x002E;                                                           //Asigna INT2 al RB14/RPI46 (PPS)
+;ConcentradorPrincipal.c,227 :: 		RPINR1 = 0x002E;                                                           //Asigna INT2 al RB14/RPI46 (PPS)
 	MOV	#46, W0
 	MOV	WREG, RPINR1
-;ConcentradorPrincipal.c,230 :: 		INT1IF_bit = 0;                                                            //Limpia la bandera de interrupcion externa INT1
+;ConcentradorPrincipal.c,228 :: 		INT1IF_bit = 0;                                                            //Limpia la bandera de interrupcion externa INT1
 	BCLR	INT1IF_bit, BitPos(INT1IF_bit+0)
-;ConcentradorPrincipal.c,231 :: 		INT2IF_bit = 0;                                                            //Limpia la bandera de interrupcion externa INT2
+;ConcentradorPrincipal.c,229 :: 		INT2IF_bit = 0;                                                            //Limpia la bandera de interrupcion externa INT2
 	BCLR	INT2IF_bit, BitPos(INT2IF_bit+0)
-;ConcentradorPrincipal.c,232 :: 		IPC5bits.INT1IP = 0x02;                                                    //Prioridad en la interrupocion externa INT1
+;ConcentradorPrincipal.c,230 :: 		IPC5bits.INT1IP = 0x02;                                                    //Prioridad en la interrupocion externa INT1
 	MOV.B	#2, W0
 	MOV.B	W0, W1
 	MOV	#lo_addr(IPC5bits), W0
@@ -1864,7 +1854,7 @@ _ConfiguracionPrincipal:
 	XOR.B	W1, [W0], W1
 	MOV	#lo_addr(IPC5bits), W0
 	MOV.B	W1, [W0]
-;ConcentradorPrincipal.c,233 :: 		IPC7bits.INT2IP = 0x01;                                                    //Prioridad en la interrupocion externa INT2
+;ConcentradorPrincipal.c,231 :: 		IPC7bits.INT2IP = 0x01;                                                    //Prioridad en la interrupocion externa INT2
 	MOV.B	#16, W0
 	MOV.B	W0, W1
 	MOV	#lo_addr(IPC7bits), W0
@@ -1875,19 +1865,19 @@ _ConfiguracionPrincipal:
 	XOR.B	W1, [W0], W1
 	MOV	#lo_addr(IPC7bits), W0
 	MOV.B	W1, [W0]
-;ConcentradorPrincipal.c,236 :: 		T1CON = 0x30;                                                              //Prescalador
+;ConcentradorPrincipal.c,234 :: 		T1CON = 0x30;                                                              //Prescalador
 	MOV	#48, W0
 	MOV	WREG, T1CON
-;ConcentradorPrincipal.c,237 :: 		T1CON.TON = 0;                                                             //Apaga el Timer1
+;ConcentradorPrincipal.c,235 :: 		T1CON.TON = 0;                                                             //Apaga el Timer1
 	BCLR	T1CON, #15
-;ConcentradorPrincipal.c,238 :: 		T1IE_bit = 1;                                                              //Habilita la interrupción de desbordamiento TMR1
+;ConcentradorPrincipal.c,236 :: 		T1IE_bit = 1;                                                              //Habilita la interrupción de desbordamiento TMR1
 	BSET	T1IE_bit, BitPos(T1IE_bit+0)
-;ConcentradorPrincipal.c,239 :: 		T1IF_bit = 0;                                                              //Limpia la bandera de interrupcion del TMR1
+;ConcentradorPrincipal.c,237 :: 		T1IF_bit = 0;                                                              //Limpia la bandera de interrupcion del TMR1
 	BCLR	T1IF_bit, BitPos(T1IF_bit+0)
-;ConcentradorPrincipal.c,240 :: 		PR1 = 46875;                                                               //Carga el preload para un tiempo de 300ms
+;ConcentradorPrincipal.c,238 :: 		PR1 = 46875;                                                               //Carga el preload para un tiempo de 300ms
 	MOV	#46875, W0
 	MOV	WREG, PR1
-;ConcentradorPrincipal.c,241 :: 		IPC0bits.T1IP = 0x02;                                                      //Prioridad de la interrupcion por desbordamiento del TMR1
+;ConcentradorPrincipal.c,239 :: 		IPC0bits.T1IP = 0x02;                                                      //Prioridad de la interrupcion por desbordamiento del TMR1
 	MOV	#8192, W0
 	MOV	W0, W1
 	MOV	#lo_addr(IPC0bits), W0
@@ -1897,19 +1887,19 @@ _ConfiguracionPrincipal:
 	MOV	#lo_addr(IPC0bits), W0
 	XOR	W1, [W0], W1
 	MOV	W1, IPC0bits
-;ConcentradorPrincipal.c,244 :: 		T2CON = 0x30;                                                              //Prescalador
+;ConcentradorPrincipal.c,242 :: 		T2CON = 0x30;                                                              //Prescalador
 	MOV	#48, W0
 	MOV	WREG, T2CON
-;ConcentradorPrincipal.c,245 :: 		T2CON.TON = 0;                                                             //Apaga el Timer2
+;ConcentradorPrincipal.c,243 :: 		T2CON.TON = 0;                                                             //Apaga el Timer2
 	BCLR	T2CON, #15
-;ConcentradorPrincipal.c,246 :: 		T2IE_bit = 1;                                                              //Habilita la interrupción de desbordamiento TMR2
+;ConcentradorPrincipal.c,244 :: 		T2IE_bit = 1;                                                              //Habilita la interrupción de desbordamiento TMR2
 	BSET	T2IE_bit, BitPos(T2IE_bit+0)
-;ConcentradorPrincipal.c,247 :: 		T2IF_bit = 0;                                                              //Limpia la bandera de interrupcion del TMR2
+;ConcentradorPrincipal.c,245 :: 		T2IF_bit = 0;                                                              //Limpia la bandera de interrupcion del TMR2
 	BCLR	T2IF_bit, BitPos(T2IF_bit+0)
-;ConcentradorPrincipal.c,248 :: 		PR2 = 46875;                                                               //Carga el preload para un tiempo de 300ms
+;ConcentradorPrincipal.c,246 :: 		PR2 = 46875;                                                               //Carga el preload para un tiempo de 300ms
 	MOV	#46875, W0
 	MOV	WREG, PR2
-;ConcentradorPrincipal.c,249 :: 		IPC1bits.T2IP = 0x02;                                                      //Prioridad de la interrupcion por desbordamiento del TMR2
+;ConcentradorPrincipal.c,247 :: 		IPC1bits.T2IP = 0x02;                                                      //Prioridad de la interrupcion por desbordamiento del TMR2
 	MOV	#8192, W0
 	MOV	W0, W1
 	MOV	#lo_addr(IPC1bits), W0
@@ -1919,13 +1909,13 @@ _ConfiguracionPrincipal:
 	MOV	#lo_addr(IPC1bits), W0
 	XOR	W1, [W0], W1
 	MOV	W1, IPC1bits
-;ConcentradorPrincipal.c,252 :: 		SPI1IE_bit = 1;                                                            //SPI1
+;ConcentradorPrincipal.c,250 :: 		SPI1IE_bit = 1;                                                            //SPI1
 	BSET	SPI1IE_bit, BitPos(SPI1IE_bit+0)
-;ConcentradorPrincipal.c,253 :: 		INT1IE_bit = 1;                                                            //INT1
+;ConcentradorPrincipal.c,251 :: 		INT1IE_bit = 1;                                                            //INT1
 	BSET	INT1IE_bit, BitPos(INT1IE_bit+0)
-;ConcentradorPrincipal.c,254 :: 		INT2IE_bit = 1;                                                            //INT2
+;ConcentradorPrincipal.c,252 :: 		INT2IE_bit = 1;                                                            //INT2
 	BSET	INT2IE_bit, BitPos(INT2IE_bit+0)
-;ConcentradorPrincipal.c,256 :: 		Delay_ms(200);                                                             //Espera hasta que se estabilicen los cambios
+;ConcentradorPrincipal.c,254 :: 		Delay_ms(200);                                                             //Espera hasta que se estabilicen los cambios
 	MOV	#25, W8
 	MOV	#27150, W7
 L_ConfiguracionPrincipal41:
@@ -1934,7 +1924,7 @@ L_ConfiguracionPrincipal41:
 	DEC	W8
 	BRA NZ	L_ConfiguracionPrincipal41
 	NOP
-;ConcentradorPrincipal.c,258 :: 		}
+;ConcentradorPrincipal.c,256 :: 		}
 L_end_ConfiguracionPrincipal:
 	POP	W13
 	POP	W12
@@ -1945,142 +1935,142 @@ L_end_ConfiguracionPrincipal:
 
 _EnviarCabeceraRespuesta:
 
-;ConcentradorPrincipal.c,263 :: 		void EnviarCabeceraRespuesta(unsigned char *cabeceraRespuesta){
-;ConcentradorPrincipal.c,266 :: 		cabeceraRespuestaSPI[0] = cabeceraRespuesta[0];
+;ConcentradorPrincipal.c,261 :: 		void EnviarCabeceraRespuesta(unsigned char *cabeceraRespuesta){
+;ConcentradorPrincipal.c,264 :: 		cabeceraRespuestaSPI[0] = cabeceraRespuesta[0];
 	MOV.B	[W10], W1
 	MOV	#lo_addr(_cabeceraRespuestaSPI), W0
 	MOV.B	W1, [W0]
-;ConcentradorPrincipal.c,267 :: 		cabeceraRespuestaSPI[1] = cabeceraRespuesta[1];
+;ConcentradorPrincipal.c,265 :: 		cabeceraRespuestaSPI[1] = cabeceraRespuesta[1];
 	ADD	W10, #1, W0
 	MOV.B	[W0], W1
 	MOV	#lo_addr(_cabeceraRespuestaSPI+1), W0
 	MOV.B	W1, [W0]
-;ConcentradorPrincipal.c,268 :: 		cabeceraRespuestaSPI[2] = cabeceraRespuesta[2];
+;ConcentradorPrincipal.c,266 :: 		cabeceraRespuestaSPI[2] = cabeceraRespuesta[2];
 	ADD	W10, #2, W0
 	MOV.B	[W0], W1
 	MOV	#lo_addr(_cabeceraRespuestaSPI+2), W0
 	MOV.B	W1, [W0]
-;ConcentradorPrincipal.c,269 :: 		cabeceraRespuestaSPI[3] = cabeceraRespuesta[3];
+;ConcentradorPrincipal.c,267 :: 		cabeceraRespuestaSPI[3] = cabeceraRespuesta[3];
 	ADD	W10, #3, W0
 	MOV.B	[W0], W1
 	MOV	#lo_addr(_cabeceraRespuestaSPI+3), W0
 	MOV.B	W1, [W0]
-;ConcentradorPrincipal.c,270 :: 		cabeceraRespuestaSPI[4] = cabeceraRespuesta[4];
+;ConcentradorPrincipal.c,268 :: 		cabeceraRespuestaSPI[4] = cabeceraRespuesta[4];
 	ADD	W10, #4, W0
 	MOV.B	[W0], W1
 	MOV	#lo_addr(_cabeceraRespuestaSPI+4), W0
 	MOV.B	W1, [W0]
-;ConcentradorPrincipal.c,273 :: 		RP1 = 1;
+;ConcentradorPrincipal.c,271 :: 		RP1 = 1;
 	BSET	LATA4_bit, BitPos(LATA4_bit+0)
-;ConcentradorPrincipal.c,274 :: 		Delay_us(100);
+;ConcentradorPrincipal.c,272 :: 		Delay_us(100);
 	MOV	#800, W7
 L_EnviarCabeceraRespuesta43:
 	DEC	W7
 	BRA NZ	L_EnviarCabeceraRespuesta43
 	NOP
 	NOP
-;ConcentradorPrincipal.c,275 :: 		RP1 = 0;
+;ConcentradorPrincipal.c,273 :: 		RP1 = 0;
 	BCLR	LATA4_bit, BitPos(LATA4_bit+0)
-;ConcentradorPrincipal.c,277 :: 		}
+;ConcentradorPrincipal.c,275 :: 		}
 L_end_EnviarCabeceraRespuesta:
 	RETURN
 ; end of _EnviarCabeceraRespuesta
 
 _CambiarEstadoBandera:
 
-;ConcentradorPrincipal.c,282 :: 		void CambiarEstadoBandera(unsigned char bandera, unsigned char estado){
-;ConcentradorPrincipal.c,283 :: 		if (estado==1){
+;ConcentradorPrincipal.c,280 :: 		void CambiarEstadoBandera(unsigned char bandera, unsigned char estado){
+;ConcentradorPrincipal.c,281 :: 		if (estado==1){
 	CP.B	W11, #1
-	BRA Z	L__CambiarEstadoBandera299
+	BRA Z	L__CambiarEstadoBandera317
 	GOTO	L_CambiarEstadoBandera45
-L__CambiarEstadoBandera299:
-;ConcentradorPrincipal.c,285 :: 		banSPI0 = 3;
+L__CambiarEstadoBandera317:
+;ConcentradorPrincipal.c,283 :: 		banSPI0 = 3;
 	MOV	#lo_addr(_banSPI0), W1
 	MOV.B	#3, W0
 	MOV.B	W0, [W1]
-;ConcentradorPrincipal.c,286 :: 		banSPI1 = 3;
+;ConcentradorPrincipal.c,284 :: 		banSPI1 = 3;
 	MOV	#lo_addr(_banSPI1), W1
 	MOV.B	#3, W0
 	MOV.B	W0, [W1]
-;ConcentradorPrincipal.c,288 :: 		switch (bandera){
+;ConcentradorPrincipal.c,286 :: 		switch (bandera){
 	GOTO	L_CambiarEstadoBandera46
-;ConcentradorPrincipal.c,289 :: 		case 0:
+;ConcentradorPrincipal.c,287 :: 		case 0:
 L_CambiarEstadoBandera48:
-;ConcentradorPrincipal.c,290 :: 		banSPI0 = 1;
+;ConcentradorPrincipal.c,288 :: 		banSPI0 = 1;
 	MOV	#lo_addr(_banSPI0), W1
 	MOV.B	#1, W0
 	MOV.B	W0, [W1]
-;ConcentradorPrincipal.c,291 :: 		break;
+;ConcentradorPrincipal.c,289 :: 		break;
 	GOTO	L_CambiarEstadoBandera47
-;ConcentradorPrincipal.c,292 :: 		case 1:
+;ConcentradorPrincipal.c,290 :: 		case 1:
 L_CambiarEstadoBandera49:
-;ConcentradorPrincipal.c,293 :: 		banSPI1 = 1;
+;ConcentradorPrincipal.c,291 :: 		banSPI1 = 1;
 	MOV	#lo_addr(_banSPI1), W1
 	MOV.B	#1, W0
 	MOV.B	W0, [W1]
-;ConcentradorPrincipal.c,294 :: 		break;
+;ConcentradorPrincipal.c,292 :: 		break;
 	GOTO	L_CambiarEstadoBandera47
-;ConcentradorPrincipal.c,295 :: 		case 2:
+;ConcentradorPrincipal.c,293 :: 		case 2:
 L_CambiarEstadoBandera50:
-;ConcentradorPrincipal.c,296 :: 		banSPI2 = 1;
+;ConcentradorPrincipal.c,294 :: 		banSPI2 = 1;
 	MOV	#lo_addr(_banSPI2), W1
 	MOV.B	#1, W0
 	MOV.B	W0, [W1]
-;ConcentradorPrincipal.c,297 :: 		break;
+;ConcentradorPrincipal.c,295 :: 		break;
 	GOTO	L_CambiarEstadoBandera47
-;ConcentradorPrincipal.c,298 :: 		case 3:
+;ConcentradorPrincipal.c,296 :: 		case 3:
 L_CambiarEstadoBandera51:
-;ConcentradorPrincipal.c,299 :: 		banSPI3 = 1;
+;ConcentradorPrincipal.c,297 :: 		banSPI3 = 1;
 	MOV	#lo_addr(_banSPI3), W1
 	MOV.B	#1, W0
 	MOV.B	W0, [W1]
-;ConcentradorPrincipal.c,300 :: 		break;
+;ConcentradorPrincipal.c,298 :: 		break;
 	GOTO	L_CambiarEstadoBandera47
-;ConcentradorPrincipal.c,301 :: 		}
+;ConcentradorPrincipal.c,299 :: 		}
 L_CambiarEstadoBandera46:
 	CP.B	W10, #0
-	BRA NZ	L__CambiarEstadoBandera300
+	BRA NZ	L__CambiarEstadoBandera318
 	GOTO	L_CambiarEstadoBandera48
-L__CambiarEstadoBandera300:
+L__CambiarEstadoBandera318:
 	CP.B	W10, #1
-	BRA NZ	L__CambiarEstadoBandera301
+	BRA NZ	L__CambiarEstadoBandera319
 	GOTO	L_CambiarEstadoBandera49
-L__CambiarEstadoBandera301:
+L__CambiarEstadoBandera319:
 	CP.B	W10, #2
-	BRA NZ	L__CambiarEstadoBandera302
+	BRA NZ	L__CambiarEstadoBandera320
 	GOTO	L_CambiarEstadoBandera50
-L__CambiarEstadoBandera302:
+L__CambiarEstadoBandera320:
 	CP.B	W10, #3
-	BRA NZ	L__CambiarEstadoBandera303
+	BRA NZ	L__CambiarEstadoBandera321
 	GOTO	L_CambiarEstadoBandera51
-L__CambiarEstadoBandera303:
+L__CambiarEstadoBandera321:
 L_CambiarEstadoBandera47:
-;ConcentradorPrincipal.c,302 :: 		}
+;ConcentradorPrincipal.c,300 :: 		}
 L_CambiarEstadoBandera45:
-;ConcentradorPrincipal.c,304 :: 		if (estado==0){
+;ConcentradorPrincipal.c,302 :: 		if (estado==0){
 	CP.B	W11, #0
-	BRA Z	L__CambiarEstadoBandera304
+	BRA Z	L__CambiarEstadoBandera322
 	GOTO	L_CambiarEstadoBandera52
-L__CambiarEstadoBandera304:
-;ConcentradorPrincipal.c,305 :: 		banSPI0 = 0;
+L__CambiarEstadoBandera322:
+;ConcentradorPrincipal.c,303 :: 		banSPI0 = 0;
 	MOV	#lo_addr(_banSPI0), W1
 	CLR	W0
 	MOV.B	W0, [W1]
-;ConcentradorPrincipal.c,306 :: 		banSPI1 = 0;
+;ConcentradorPrincipal.c,304 :: 		banSPI1 = 0;
 	MOV	#lo_addr(_banSPI1), W1
 	CLR	W0
 	MOV.B	W0, [W1]
-;ConcentradorPrincipal.c,307 :: 		banSPI2 = 0;
+;ConcentradorPrincipal.c,305 :: 		banSPI2 = 0;
 	MOV	#lo_addr(_banSPI2), W1
 	CLR	W0
 	MOV.B	W0, [W1]
-;ConcentradorPrincipal.c,308 :: 		banSPI3 = 0;
+;ConcentradorPrincipal.c,306 :: 		banSPI3 = 0;
 	MOV	#lo_addr(_banSPI3), W1
 	CLR	W0
 	MOV.B	W0, [W1]
-;ConcentradorPrincipal.c,309 :: 		}
+;ConcentradorPrincipal.c,307 :: 		}
 L_CambiarEstadoBandera52:
-;ConcentradorPrincipal.c,310 :: 		}
+;ConcentradorPrincipal.c,308 :: 		}
 L_end_CambiarEstadoBandera:
 	RETURN
 ; end of _CambiarEstadoBandera
@@ -2088,8 +2078,8 @@ L_end_CambiarEstadoBandera:
 _ProcesarSolicitudConcentrador:
 	LNK	#4
 
-;ConcentradorPrincipal.c,315 :: 		void ProcesarSolicitudConcentrador(unsigned char* cabeceraSolicitudCon, unsigned char* payloadSolicitudCon){
-;ConcentradorPrincipal.c,321 :: 		switch (cabeceraSolicitudCon[1]){
+;ConcentradorPrincipal.c,313 :: 		void ProcesarSolicitudConcentrador(unsigned char* cabeceraSolicitudCon, unsigned char* payloadSolicitudCon){
+;ConcentradorPrincipal.c,319 :: 		switch (cabeceraSolicitudCon[1]){
 	PUSH	W10
 	PUSH	W11
 	PUSH	W12
@@ -2097,7 +2087,7 @@ _ProcesarSolicitudConcentrador:
 	ADD	W10, #1, W0
 	MOV	W0, [W14+2]
 	GOTO	L_ProcesarSolicitudConcentrador53
-;ConcentradorPrincipal.c,322 :: 		case 2:
+;ConcentradorPrincipal.c,320 :: 		case 2:
 L_ProcesarSolicitudConcentrador55:
 ;ConcentradorPrincipal.c,325 :: 		numDatosPayload = 7;
 	MOV	#7, W0
@@ -2119,9 +2109,9 @@ L_ProcesarSolicitudConcentrador55:
 L_ProcesarSolicitudConcentrador56:
 	MOV	_x, W0
 	CP	W0, #6
-	BRA LTU	L__ProcesarSolicitudConcentrador306
+	BRA LTU	L__ProcesarSolicitudConcentrador324
 	GOTO	L_ProcesarSolicitudConcentrador57
-L__ProcesarSolicitudConcentrador306:
+L__ProcesarSolicitudConcentrador324:
 ;ConcentradorPrincipal.c,330 :: 		payloadConcentrador[x] = tiempo[x];
 	MOV	#lo_addr(_payloadConcentrador), W1
 	MOV	#lo_addr(_x), W0
@@ -2146,43 +2136,40 @@ L_ProcesarSolicitudConcentrador57:
 	MOV	#lo_addr(_cabeceraSolicitud), W10
 	CALL	_EnviarCabeceraRespuesta
 	POP	W10
-;ConcentradorPrincipal.c,335 :: 		break;
+;ConcentradorPrincipal.c,336 :: 		break;
 	GOTO	L_ProcesarSolicitudConcentrador54
-;ConcentradorPrincipal.c,336 :: 		case 3:
+;ConcentradorPrincipal.c,337 :: 		case 3:
 L_ProcesarSolicitudConcentrador59:
-;ConcentradorPrincipal.c,337 :: 		switch (cabeceraSolicitudCon[2]){
+;ConcentradorPrincipal.c,338 :: 		switch (cabeceraSolicitudCon[2]){
 	ADD	W10, #2, W0
 	MOV	W0, [W14+0]
 	GOTO	L_ProcesarSolicitudConcentrador60
-;ConcentradorPrincipal.c,338 :: 		case 1:
+;ConcentradorPrincipal.c,339 :: 		case 1:
 L_ProcesarSolicitudConcentrador62:
-;ConcentradorPrincipal.c,340 :: 		horaSistema = RecuperarHoraRPI(payloadSolicitudCon);        //Recupera la hora de la RPi
+;ConcentradorPrincipal.c,341 :: 		horaSistema = RecuperarHoraRPI(payloadSolicitudCon);        //Recupera la hora de la RPi
 	MOV	W11, W10
 	CALL	_RecuperarHoraRPI
 	MOV	W0, _horaSistema
 	MOV	W1, _horaSistema+2
-;ConcentradorPrincipal.c,341 :: 		fechaSistema = RecuperarFechaRPI(payloadSolicitudCon);      //Recupera la fecha de la RPi
+;ConcentradorPrincipal.c,342 :: 		fechaSistema = RecuperarFechaRPI(payloadSolicitudCon);      //Recupera la fecha de la RPi
 	MOV	W11, W10
 	CALL	_RecuperarFechaRPI
 	MOV	W0, _fechaSistema
 	MOV	W1, _fechaSistema+2
-;ConcentradorPrincipal.c,342 :: 		DS3234_setDate(horaSistema, fechaSistema);                  //Configura la hora en el RTC
-	PUSH	W11
+;ConcentradorPrincipal.c,343 :: 		DS3234_setDate(horaSistema, fechaSistema);                  //Configura la hora en el RTC
 	MOV.D	W0, W12
 	MOV	_horaSistema, W10
 	MOV	_horaSistema+2, W11
 	CALL	_DS3234_setDate
-	POP	W11
-;ConcentradorPrincipal.c,343 :: 		horaSistema = RecuperarHoraRTC();                           //Recupera la hora del RTC
+;ConcentradorPrincipal.c,344 :: 		horaSistema = RecuperarHoraRTC();                           //Recupera la hora del RTC
 	CALL	_RecuperarHoraRTC
 	MOV	W0, _horaSistema
 	MOV	W1, _horaSistema+2
-;ConcentradorPrincipal.c,344 :: 		fechaSistema = RecuperarFechaRTC();                         //Recupera la fecha del RTC
+;ConcentradorPrincipal.c,345 :: 		fechaSistema = RecuperarFechaRTC();                         //Recupera la fecha del RTC
 	CALL	_RecuperarFechaRTC
 	MOV	W0, _fechaSistema
 	MOV	W1, _fechaSistema+2
-;ConcentradorPrincipal.c,345 :: 		AjustarTiempoSistema(horaSistema, fechaSistema, tiempo);    //Actualiza los datos de la trama tiempo con la hora y fecha recuperadas
-	PUSH	W11
+;ConcentradorPrincipal.c,346 :: 		AjustarTiempoSistema(horaSistema, fechaSistema, tiempo);    //Actualiza los datos de la trama tiempo con la hora y fecha recuperadas
 	MOV.D	W0, W12
 	MOV	_horaSistema, W10
 	MOV	_horaSistema+2, W11
@@ -2190,135 +2177,42 @@ L_ProcesarSolicitudConcentrador62:
 	PUSH	W0
 	CALL	_AjustarTiempoSistema
 	SUB	#2, W15
-	POP	W11
-;ConcentradorPrincipal.c,346 :: 		fuenteReloj = 1;                                            //Fuente de reloj = RED
+;ConcentradorPrincipal.c,347 :: 		fuenteReloj = 1;                                            //Fuente de reloj = RED
 	MOV	#lo_addr(_fuenteReloj), W1
 	MOV.B	#1, W0
 	MOV.B	W0, [W1]
-;ConcentradorPrincipal.c,347 :: 		banSetReloj = 1;                                            //Activa esta bandera para usar la hora/fecha recuperada
+;ConcentradorPrincipal.c,348 :: 		banSetReloj = 1;                                            //Activa esta bandera para usar la hora/fecha recuperada
 	MOV	#lo_addr(_banSetReloj), W1
 	MOV.B	#1, W0
 	MOV.B	W0, [W1]
-;ConcentradorPrincipal.c,348 :: 		banRespuestaPi = 1;
+;ConcentradorPrincipal.c,349 :: 		banRespuestaPi = 1;                                         //Activa esta bandera para enviar la trama de tiempo a la RPi
 	MOV	#lo_addr(_banRespuestaPi), W1
 	MOV.B	#1, W0
 	MOV.B	W0, [W1]
-;ConcentradorPrincipal.c,350 :: 		numDatosPayload = 7;
+;ConcentradorPrincipal.c,353 :: 		numDatosPayload = 7;
 	MOV	#7, W0
 	MOV	W0, _numDatosPayload
-;ConcentradorPrincipal.c,351 :: 		cabeceraSolicitud[3] = *(ptrNumDatosPayload);
+;ConcentradorPrincipal.c,354 :: 		cabeceraSolicitud[3] = *(ptrNumDatosPayload);
 	MOV	_ptrNumDatosPayload, W0
 	MOV.B	[W0], W1
 	MOV	#lo_addr(_cabeceraSolicitud+3), W0
 	MOV.B	W1, [W0]
-;ConcentradorPrincipal.c,352 :: 		cabeceraSolicitud[4] = *(ptrNumDatosPayload+1);
+;ConcentradorPrincipal.c,355 :: 		cabeceraSolicitud[4] = *(ptrNumDatosPayload+1);
 	MOV	_ptrNumDatosPayload, W0
 	INC	W0
 	MOV.B	[W0], W1
 	MOV	#lo_addr(_cabeceraSolicitud+4), W0
 	MOV.B	W1, [W0]
-;ConcentradorPrincipal.c,354 :: 		for (x=0;x<6;x++){
+;ConcentradorPrincipal.c,356 :: 		for (x=0;x<6;x++){
 	CLR	W0
 	MOV	W0, _x
-L_ProcesarSolicitudConcentrador63:
-	MOV	_x, W0
-	CP	W0, #6
-	BRA LTU	L__ProcesarSolicitudConcentrador307
-	GOTO	L_ProcesarSolicitudConcentrador64
-L__ProcesarSolicitudConcentrador307:
-;ConcentradorPrincipal.c,355 :: 		payloadConcentrador[x] = payloadSolicitudCon[x];
-	MOV	#lo_addr(_payloadConcentrador), W1
-	MOV	#lo_addr(_x), W0
-	ADD	W1, [W0], W1
-	MOV	#lo_addr(_x), W0
-	ADD	W11, [W0], W0
-	MOV.B	[W0], [W1]
-;ConcentradorPrincipal.c,354 :: 		for (x=0;x<6;x++){
-	MOV	#1, W1
-	MOV	#lo_addr(_x), W0
-	ADD	W1, [W0], [W0]
-;ConcentradorPrincipal.c,356 :: 		}
-	GOTO	L_ProcesarSolicitudConcentrador63
 L_ProcesarSolicitudConcentrador64:
-;ConcentradorPrincipal.c,357 :: 		payloadConcentrador[6] = fuenteReloj;
-	MOV	#lo_addr(_payloadConcentrador+6), W1
-	MOV	#lo_addr(_fuenteReloj), W0
-	MOV.B	[W0], [W1]
-;ConcentradorPrincipal.c,359 :: 		EnviarCabeceraRespuesta(cabeceraSolicitud);
-	PUSH	W10
-	MOV	#lo_addr(_cabeceraSolicitud), W10
-	CALL	_EnviarCabeceraRespuesta
-	POP	W10
-;ConcentradorPrincipal.c,360 :: 		break;
-	GOTO	L_ProcesarSolicitudConcentrador61
-;ConcentradorPrincipal.c,361 :: 		case 2:
-L_ProcesarSolicitudConcentrador66:
-;ConcentradorPrincipal.c,363 :: 		banGPSI = 1;                                                //Activa la bandera de inicio de trama  del GPS
-	MOV	#lo_addr(_banGPSI), W1
-	MOV.B	#1, W0
-	MOV.B	W0, [W1]
-;ConcentradorPrincipal.c,364 :: 		banGPSC = 0;                                                //Limpia la bandera de trama completa
-	MOV	#lo_addr(_banGPSC), W1
-	CLR	W0
-	MOV.B	W0, [W1]
-;ConcentradorPrincipal.c,365 :: 		U1MODE.UARTEN = 1;                                          //Inicializa el UART1
-	BSET	U1MODE, #15
-;ConcentradorPrincipal.c,367 :: 		T1CON.TON = 1;
-	BSET	T1CON, #15
-;ConcentradorPrincipal.c,368 :: 		TMR1 = 0;
-	CLR	TMR1
-;ConcentradorPrincipal.c,369 :: 		break;
-	GOTO	L_ProcesarSolicitudConcentrador61
-;ConcentradorPrincipal.c,370 :: 		case 3:
-L_ProcesarSolicitudConcentrador67:
-;ConcentradorPrincipal.c,372 :: 		horaSistema = RecuperarHoraRTC();                          //Recupera la hora del RTC
-	CALL	_RecuperarHoraRTC
-	MOV	W0, _horaSistema
-	MOV	W1, _horaSistema+2
-;ConcentradorPrincipal.c,373 :: 		fechaSistema = RecuperarFechaRTC();                        //Recupera la fecha del RTC
-	CALL	_RecuperarFechaRTC
-	MOV	W0, _fechaSistema
-	MOV	W1, _fechaSistema+2
-;ConcentradorPrincipal.c,374 :: 		AjustarTiempoSistema(horaSistema, fechaSistema, tiempo);   //Actualiza los datos de la trama tiempo con la hora y fecha recuperadas
-	MOV.D	W0, W12
-	MOV	_horaSistema, W10
-	MOV	_horaSistema+2, W11
-	MOV	#lo_addr(_tiempo), W0
-	PUSH	W0
-	CALL	_AjustarTiempoSistema
-	SUB	#2, W15
-;ConcentradorPrincipal.c,375 :: 		fuenteReloj = 3;                                           //Fuente de reloj = RTC
-	MOV	#lo_addr(_fuenteReloj), W1
-	MOV.B	#3, W0
-	MOV.B	W0, [W1]
-;ConcentradorPrincipal.c,376 :: 		banSetReloj = 1;                                           //Activa esta bandera para usar la hora/fecha recuperada del RTC
-	MOV	#lo_addr(_banSetReloj), W1
-	MOV.B	#1, W0
-	MOV.B	W0, [W1]
-;ConcentradorPrincipal.c,378 :: 		numDatosPayload = 7;
-	MOV	#7, W0
-	MOV	W0, _numDatosPayload
-;ConcentradorPrincipal.c,379 :: 		cabeceraSolicitud[3] = *(ptrNumDatosPayload);
-	MOV	_ptrNumDatosPayload, W0
-	MOV.B	[W0], W1
-	MOV	#lo_addr(_cabeceraSolicitud+3), W0
-	MOV.B	W1, [W0]
-;ConcentradorPrincipal.c,380 :: 		cabeceraSolicitud[4] = *(ptrNumDatosPayload+1);
-	MOV	_ptrNumDatosPayload, W0
-	INC	W0
-	MOV.B	[W0], W1
-	MOV	#lo_addr(_cabeceraSolicitud+4), W0
-	MOV.B	W1, [W0]
-;ConcentradorPrincipal.c,382 :: 		for (x=0;x<6;x++){
-	CLR	W0
-	MOV	W0, _x
-L_ProcesarSolicitudConcentrador68:
 	MOV	_x, W0
 	CP	W0, #6
-	BRA LTU	L__ProcesarSolicitudConcentrador308
-	GOTO	L_ProcesarSolicitudConcentrador69
-L__ProcesarSolicitudConcentrador308:
-;ConcentradorPrincipal.c,383 :: 		payloadConcentrador[x] = tiempo[x];
+	BRA LTU	L__ProcesarSolicitudConcentrador325
+	GOTO	L_ProcesarSolicitudConcentrador65
+L__ProcesarSolicitudConcentrador325:
+;ConcentradorPrincipal.c,357 :: 		payloadConcentrador[x] = tiempo[x];
 	MOV	#lo_addr(_payloadConcentrador), W1
 	MOV	#lo_addr(_x), W0
 	ADD	W1, [W0], W2
@@ -2326,72 +2220,173 @@ L__ProcesarSolicitudConcentrador308:
 	MOV	#lo_addr(_x), W0
 	ADD	W1, [W0], W0
 	MOV.B	[W0], [W2]
-;ConcentradorPrincipal.c,382 :: 		for (x=0;x<6;x++){
+;ConcentradorPrincipal.c,356 :: 		for (x=0;x<6;x++){
 	MOV	#1, W1
 	MOV	#lo_addr(_x), W0
 	ADD	W1, [W0], [W0]
-;ConcentradorPrincipal.c,384 :: 		}
-	GOTO	L_ProcesarSolicitudConcentrador68
-L_ProcesarSolicitudConcentrador69:
-;ConcentradorPrincipal.c,385 :: 		payloadConcentrador[6] = fuenteReloj;
+;ConcentradorPrincipal.c,358 :: 		}
+	GOTO	L_ProcesarSolicitudConcentrador64
+L_ProcesarSolicitudConcentrador65:
+;ConcentradorPrincipal.c,359 :: 		payloadConcentrador[6] = fuenteReloj;
 	MOV	#lo_addr(_payloadConcentrador+6), W1
 	MOV	#lo_addr(_fuenteReloj), W0
 	MOV.B	[W0], [W1]
-;ConcentradorPrincipal.c,387 :: 		EnviarCabeceraRespuesta(cabeceraSolicitud);
+;ConcentradorPrincipal.c,360 :: 		EnviarCabeceraRespuesta(cabeceraSolicitud);
 	PUSH	W10
 	MOV	#lo_addr(_cabeceraSolicitud), W10
 	CALL	_EnviarCabeceraRespuesta
 	POP	W10
-;ConcentradorPrincipal.c,388 :: 		break;
+;ConcentradorPrincipal.c,363 :: 		break;
 	GOTO	L_ProcesarSolicitudConcentrador61
-;ConcentradorPrincipal.c,389 :: 		}
-L_ProcesarSolicitudConcentrador60:
-	MOV	[W14+0], W1
-	MOV.B	[W1], W0
-	CP.B	W0, #1
-	BRA NZ	L__ProcesarSolicitudConcentrador309
-	GOTO	L_ProcesarSolicitudConcentrador62
-L__ProcesarSolicitudConcentrador309:
-	MOV.B	[W1], W0
-	CP.B	W0, #2
-	BRA NZ	L__ProcesarSolicitudConcentrador310
-	GOTO	L_ProcesarSolicitudConcentrador66
-L__ProcesarSolicitudConcentrador310:
-	MOV.B	[W1], W0
-	CP.B	W0, #3
-	BRA NZ	L__ProcesarSolicitudConcentrador311
-	GOTO	L_ProcesarSolicitudConcentrador67
-L__ProcesarSolicitudConcentrador311:
-L_ProcesarSolicitudConcentrador61:
-;ConcentradorPrincipal.c,390 :: 		break;
-	GOTO	L_ProcesarSolicitudConcentrador54
-;ConcentradorPrincipal.c,391 :: 		case 4:
-L_ProcesarSolicitudConcentrador71:
-;ConcentradorPrincipal.c,393 :: 		numDatosPayload = 10;
-	MOV	#10, W0
+;ConcentradorPrincipal.c,364 :: 		case 2:
+L_ProcesarSolicitudConcentrador67:
+;ConcentradorPrincipal.c,366 :: 		banRespuestaPi = 1;
+	MOV	#lo_addr(_banRespuestaPi), W1
+	MOV.B	#1, W0
+	MOV.B	W0, [W1]
+;ConcentradorPrincipal.c,367 :: 		banGPSI = 1;                                                //Activa la bandera de inicio de trama  del GPS
+	MOV	#lo_addr(_banGPSI), W1
+	MOV.B	#1, W0
+	MOV.B	W0, [W1]
+;ConcentradorPrincipal.c,368 :: 		banGPSC = 0;                                                //Limpia la bandera de trama completa
+	MOV	#lo_addr(_banGPSC), W1
+	CLR	W0
+	MOV.B	W0, [W1]
+;ConcentradorPrincipal.c,369 :: 		U1MODE.UARTEN = 1;                                          //Inicializa el UART1
+	BSET	U1MODE, #15
+;ConcentradorPrincipal.c,371 :: 		T1CON.TON = 1;
+	BSET	T1CON, #15
+;ConcentradorPrincipal.c,372 :: 		TMR1 = 0;
+	CLR	TMR1
+;ConcentradorPrincipal.c,373 :: 		break;
+	GOTO	L_ProcesarSolicitudConcentrador61
+;ConcentradorPrincipal.c,374 :: 		case 3:
+L_ProcesarSolicitudConcentrador68:
+;ConcentradorPrincipal.c,376 :: 		horaSistema = RecuperarHoraRTC();                          //Recupera la hora del RTC
+	CALL	_RecuperarHoraRTC
+	MOV	W0, _horaSistema
+	MOV	W1, _horaSistema+2
+;ConcentradorPrincipal.c,377 :: 		fechaSistema = RecuperarFechaRTC();                        //Recupera la fecha del RTC
+	CALL	_RecuperarFechaRTC
+	MOV	W0, _fechaSistema
+	MOV	W1, _fechaSistema+2
+;ConcentradorPrincipal.c,378 :: 		AjustarTiempoSistema(horaSistema, fechaSistema, tiempo);   //Actualiza los datos de la trama tiempo con la hora y fecha recuperadas
+	MOV.D	W0, W12
+	MOV	_horaSistema, W10
+	MOV	_horaSistema+2, W11
+	MOV	#lo_addr(_tiempo), W0
+	PUSH	W0
+	CALL	_AjustarTiempoSistema
+	SUB	#2, W15
+;ConcentradorPrincipal.c,379 :: 		fuenteReloj = 3;                                           //Fuente de reloj = RTC
+	MOV	#lo_addr(_fuenteReloj), W1
+	MOV.B	#3, W0
+	MOV.B	W0, [W1]
+;ConcentradorPrincipal.c,380 :: 		banSetReloj = 1;                                           //Activa esta bandera para usar la hora/fecha recuperada del RTC
+	MOV	#lo_addr(_banSetReloj), W1
+	MOV.B	#1, W0
+	MOV.B	W0, [W1]
+;ConcentradorPrincipal.c,381 :: 		banRespuestaPi = 1;
+	MOV	#lo_addr(_banRespuestaPi), W1
+	MOV.B	#1, W0
+	MOV.B	W0, [W1]
+;ConcentradorPrincipal.c,385 :: 		numDatosPayload = 7;
+	MOV	#7, W0
 	MOV	W0, _numDatosPayload
-;ConcentradorPrincipal.c,394 :: 		cabeceraSolicitud[3] = *(ptrNumDatosPayload);
+;ConcentradorPrincipal.c,386 :: 		cabeceraSolicitud[3] = *(ptrNumDatosPayload);
 	MOV	_ptrNumDatosPayload, W0
 	MOV.B	[W0], W1
 	MOV	#lo_addr(_cabeceraSolicitud+3), W0
 	MOV.B	W1, [W0]
-;ConcentradorPrincipal.c,395 :: 		cabeceraSolicitud[4] = *(ptrNumDatosPayload+1);
+;ConcentradorPrincipal.c,387 :: 		cabeceraSolicitud[4] = *(ptrNumDatosPayload+1);
 	MOV	_ptrNumDatosPayload, W0
 	INC	W0
 	MOV.B	[W0], W1
 	MOV	#lo_addr(_cabeceraSolicitud+4), W0
 	MOV.B	W1, [W0]
-;ConcentradorPrincipal.c,397 :: 		for (x=0;x<numDatosPayload;x++){
+;ConcentradorPrincipal.c,388 :: 		for (x=0;x<6;x++){
 	CLR	W0
 	MOV	W0, _x
-L_ProcesarSolicitudConcentrador72:
+L_ProcesarSolicitudConcentrador70:
+	MOV	_x, W0
+	CP	W0, #6
+	BRA LTU	L__ProcesarSolicitudConcentrador326
+	GOTO	L_ProcesarSolicitudConcentrador71
+L__ProcesarSolicitudConcentrador326:
+;ConcentradorPrincipal.c,389 :: 		payloadConcentrador[x] = tiempo[x];
+	MOV	#lo_addr(_payloadConcentrador), W1
+	MOV	#lo_addr(_x), W0
+	ADD	W1, [W0], W2
+	MOV	#lo_addr(_tiempo), W1
+	MOV	#lo_addr(_x), W0
+	ADD	W1, [W0], W0
+	MOV.B	[W0], [W2]
+;ConcentradorPrincipal.c,388 :: 		for (x=0;x<6;x++){
+	MOV	#1, W1
+	MOV	#lo_addr(_x), W0
+	ADD	W1, [W0], [W0]
+;ConcentradorPrincipal.c,390 :: 		}
+	GOTO	L_ProcesarSolicitudConcentrador70
+L_ProcesarSolicitudConcentrador71:
+;ConcentradorPrincipal.c,391 :: 		payloadConcentrador[6] = fuenteReloj;
+	MOV	#lo_addr(_payloadConcentrador+6), W1
+	MOV	#lo_addr(_fuenteReloj), W0
+	MOV.B	[W0], [W1]
+;ConcentradorPrincipal.c,392 :: 		EnviarCabeceraRespuesta(cabeceraSolicitud);
+	PUSH	W10
+	MOV	#lo_addr(_cabeceraSolicitud), W10
+	CALL	_EnviarCabeceraRespuesta
+	POP	W10
+;ConcentradorPrincipal.c,395 :: 		break;
+	GOTO	L_ProcesarSolicitudConcentrador61
+;ConcentradorPrincipal.c,396 :: 		}
+L_ProcesarSolicitudConcentrador60:
+	MOV	[W14+0], W1
+	MOV.B	[W1], W0
+	CP.B	W0, #1
+	BRA NZ	L__ProcesarSolicitudConcentrador327
+	GOTO	L_ProcesarSolicitudConcentrador62
+L__ProcesarSolicitudConcentrador327:
+	MOV.B	[W1], W0
+	CP.B	W0, #2
+	BRA NZ	L__ProcesarSolicitudConcentrador328
+	GOTO	L_ProcesarSolicitudConcentrador67
+L__ProcesarSolicitudConcentrador328:
+	MOV.B	[W1], W0
+	CP.B	W0, #3
+	BRA NZ	L__ProcesarSolicitudConcentrador329
+	GOTO	L_ProcesarSolicitudConcentrador68
+L__ProcesarSolicitudConcentrador329:
+L_ProcesarSolicitudConcentrador61:
+;ConcentradorPrincipal.c,397 :: 		break;
+	GOTO	L_ProcesarSolicitudConcentrador54
+;ConcentradorPrincipal.c,398 :: 		case 4:
+L_ProcesarSolicitudConcentrador73:
+;ConcentradorPrincipal.c,400 :: 		numDatosPayload = 10;
+	MOV	#10, W0
+	MOV	W0, _numDatosPayload
+;ConcentradorPrincipal.c,401 :: 		cabeceraSolicitud[3] = *(ptrNumDatosPayload);
+	MOV	_ptrNumDatosPayload, W0
+	MOV.B	[W0], W1
+	MOV	#lo_addr(_cabeceraSolicitud+3), W0
+	MOV.B	W1, [W0]
+;ConcentradorPrincipal.c,402 :: 		cabeceraSolicitud[4] = *(ptrNumDatosPayload+1);
+	MOV	_ptrNumDatosPayload, W0
+	INC	W0
+	MOV.B	[W0], W1
+	MOV	#lo_addr(_cabeceraSolicitud+4), W0
+	MOV.B	W1, [W0]
+;ConcentradorPrincipal.c,404 :: 		for (x=0;x<numDatosPayload;x++){
+	CLR	W0
+	MOV	W0, _x
+L_ProcesarSolicitudConcentrador74:
 	MOV	_x, W1
 	MOV	#lo_addr(_numDatosPayload), W0
 	CP	W1, [W0]
-	BRA LTU	L__ProcesarSolicitudConcentrador312
-	GOTO	L_ProcesarSolicitudConcentrador73
-L__ProcesarSolicitudConcentrador312:
-;ConcentradorPrincipal.c,398 :: 		payloadConcentrador[x] = tramaPruebaSPI[x];
+	BRA LTU	L__ProcesarSolicitudConcentrador330
+	GOTO	L_ProcesarSolicitudConcentrador75
+L__ProcesarSolicitudConcentrador330:
+;ConcentradorPrincipal.c,405 :: 		payloadConcentrador[x] = tramaPruebaSPI[x];
 	MOV	#lo_addr(_payloadConcentrador), W1
 	MOV	#lo_addr(_x), W0
 	ADD	W1, [W0], W2
@@ -2399,40 +2394,40 @@ L__ProcesarSolicitudConcentrador312:
 	MOV	#lo_addr(_x), W0
 	ADD	W1, [W0], W0
 	MOV.B	[W0], [W2]
-;ConcentradorPrincipal.c,397 :: 		for (x=0;x<numDatosPayload;x++){
+;ConcentradorPrincipal.c,404 :: 		for (x=0;x<numDatosPayload;x++){
 	MOV	#1, W1
 	MOV	#lo_addr(_x), W0
 	ADD	W1, [W0], [W0]
-;ConcentradorPrincipal.c,399 :: 		}
-	GOTO	L_ProcesarSolicitudConcentrador72
-L_ProcesarSolicitudConcentrador73:
-;ConcentradorPrincipal.c,401 :: 		EnviarCabeceraRespuesta(cabeceraSolicitud);
+;ConcentradorPrincipal.c,406 :: 		}
+	GOTO	L_ProcesarSolicitudConcentrador74
+L_ProcesarSolicitudConcentrador75:
+;ConcentradorPrincipal.c,408 :: 		EnviarCabeceraRespuesta(cabeceraSolicitud);
 	PUSH	W10
 	MOV	#lo_addr(_cabeceraSolicitud), W10
 	CALL	_EnviarCabeceraRespuesta
 	POP	W10
-;ConcentradorPrincipal.c,402 :: 		break;
+;ConcentradorPrincipal.c,409 :: 		break;
 	GOTO	L_ProcesarSolicitudConcentrador54
-;ConcentradorPrincipal.c,403 :: 		}
+;ConcentradorPrincipal.c,410 :: 		}
 L_ProcesarSolicitudConcentrador53:
 	MOV	[W14+2], W1
 	MOV.B	[W1], W0
 	CP.B	W0, #2
-	BRA NZ	L__ProcesarSolicitudConcentrador313
+	BRA NZ	L__ProcesarSolicitudConcentrador331
 	GOTO	L_ProcesarSolicitudConcentrador55
-L__ProcesarSolicitudConcentrador313:
+L__ProcesarSolicitudConcentrador331:
 	MOV.B	[W1], W0
 	CP.B	W0, #3
-	BRA NZ	L__ProcesarSolicitudConcentrador314
+	BRA NZ	L__ProcesarSolicitudConcentrador332
 	GOTO	L_ProcesarSolicitudConcentrador59
-L__ProcesarSolicitudConcentrador314:
+L__ProcesarSolicitudConcentrador332:
 	MOV.B	[W1], W0
 	CP.B	W0, #4
-	BRA NZ	L__ProcesarSolicitudConcentrador315
-	GOTO	L_ProcesarSolicitudConcentrador71
-L__ProcesarSolicitudConcentrador315:
+	BRA NZ	L__ProcesarSolicitudConcentrador333
+	GOTO	L_ProcesarSolicitudConcentrador73
+L__ProcesarSolicitudConcentrador333:
 L_ProcesarSolicitudConcentrador54:
-;ConcentradorPrincipal.c,404 :: 		}
+;ConcentradorPrincipal.c,411 :: 		}
 L_end_ProcesarSolicitudConcentrador:
 	POP	W13
 	POP	W12
@@ -2451,104 +2446,104 @@ _spi_1:
 	REPEAT	#12
 	PUSH	[W0++]
 
-;ConcentradorPrincipal.c,414 :: 		void spi_1() org  IVT_ADDR_SPI1INTERRUPT {
-;ConcentradorPrincipal.c,416 :: 		SPI1IF_bit = 0;                                                            //Limpia la bandera de interrupcion por SPI
+;ConcentradorPrincipal.c,421 :: 		void spi_1() org  IVT_ADDR_SPI1INTERRUPT {
+;ConcentradorPrincipal.c,423 :: 		SPI1IF_bit = 0;                                                            //Limpia la bandera de interrupcion por SPI
 	PUSH	W10
 	PUSH	W11
 	PUSH	W12
 	BCLR	SPI1IF_bit, BitPos(SPI1IF_bit+0)
-;ConcentradorPrincipal.c,417 :: 		bufferSPI = SPI1BUF;                                                       //Guarda el contenido del bufeer (lectura)
+;ConcentradorPrincipal.c,424 :: 		bufferSPI = SPI1BUF;                                                       //Guarda el contenido del bufeer (lectura)
 	MOV	#lo_addr(_bufferSPI), W1
 	MOV.B	SPI1BUF, WREG
 	MOV.B	W0, [W1]
-;ConcentradorPrincipal.c,422 :: 		if ((banSPI0==0)&&(bufferSPI==0xA0)){
+;ConcentradorPrincipal.c,429 :: 		if ((banSPI0==0)&&(bufferSPI==0xA0)){
 	MOV	#lo_addr(_banSPI0), W0
 	MOV.B	[W0], W0
 	CP.B	W0, #0
-	BRA Z	L__spi_1317
-	GOTO	L__spi_1204
-L__spi_1317:
+	BRA Z	L__spi_1335
+	GOTO	L__spi_1222
+L__spi_1335:
 	MOV	#lo_addr(_bufferSPI), W0
 	MOV.B	[W0], W1
 	MOV.B	#160, W0
 	CP.B	W1, W0
-	BRA Z	L__spi_1318
-	GOTO	L__spi_1203
-L__spi_1318:
-L__spi_1202:
-;ConcentradorPrincipal.c,423 :: 		i = 0;                                                                //Limpia el subindice para guardar la trama SPI
+	BRA Z	L__spi_1336
+	GOTO	L__spi_1221
+L__spi_1336:
+L__spi_1220:
+;ConcentradorPrincipal.c,430 :: 		i = 0;                                                                //Limpia el subindice para guardar la trama SPI
 	CLR	W0
 	MOV	W0, _i
-;ConcentradorPrincipal.c,424 :: 		CambiarEstadoBandera(0,1);                                            //Activa la bandera 0
+;ConcentradorPrincipal.c,431 :: 		CambiarEstadoBandera(0,1);                                            //Activa la bandera 0
 	MOV.B	#1, W11
 	CLR	W10
 	CALL	_CambiarEstadoBandera
-;ConcentradorPrincipal.c,425 :: 		LED1 = 1;
+;ConcentradorPrincipal.c,432 :: 		LED1 = 1;
 	BSET	LATA1_bit, BitPos(LATA1_bit+0)
-;ConcentradorPrincipal.c,422 :: 		if ((banSPI0==0)&&(bufferSPI==0xA0)){
-L__spi_1204:
-L__spi_1203:
-;ConcentradorPrincipal.c,427 :: 		if ((banSPI0==1)&&(bufferSPI!=0xA0)&&(bufferSPI!=0xF0)){
+;ConcentradorPrincipal.c,429 :: 		if ((banSPI0==0)&&(bufferSPI==0xA0)){
+L__spi_1222:
+L__spi_1221:
+;ConcentradorPrincipal.c,434 :: 		if ((banSPI0==1)&&(bufferSPI!=0xA0)&&(bufferSPI!=0xF0)){
 	MOV	#lo_addr(_banSPI0), W0
 	MOV.B	[W0], W0
 	CP.B	W0, #1
-	BRA Z	L__spi_1319
-	GOTO	L__spi_1207
-L__spi_1319:
+	BRA Z	L__spi_1337
+	GOTO	L__spi_1225
+L__spi_1337:
 	MOV	#lo_addr(_bufferSPI), W0
 	MOV.B	[W0], W1
 	MOV.B	#160, W0
 	CP.B	W1, W0
-	BRA NZ	L__spi_1320
-	GOTO	L__spi_1206
-L__spi_1320:
+	BRA NZ	L__spi_1338
+	GOTO	L__spi_1224
+L__spi_1338:
 	MOV	#lo_addr(_bufferSPI), W0
 	MOV.B	[W0], W1
 	MOV.B	#240, W0
 	CP.B	W1, W0
-	BRA NZ	L__spi_1321
-	GOTO	L__spi_1205
-L__spi_1321:
-L__spi_1201:
-;ConcentradorPrincipal.c,428 :: 		tramaSolicitudSPI[i] = bufferSPI;                                     //Recupera la trama de solicitud SPI
+	BRA NZ	L__spi_1339
+	GOTO	L__spi_1223
+L__spi_1339:
+L__spi_1219:
+;ConcentradorPrincipal.c,435 :: 		tramaSolicitudSPI[i] = bufferSPI;                                     //Recupera la trama de solicitud SPI
 	MOV	#lo_addr(_tramaSolicitudSPI), W1
 	MOV	#lo_addr(_i), W0
 	ADD	W1, [W0], W1
 	MOV	#lo_addr(_bufferSPI), W0
 	MOV.B	[W0], [W1]
-;ConcentradorPrincipal.c,429 :: 		i++;
+;ConcentradorPrincipal.c,436 :: 		i++;
 	MOV	#1, W1
 	MOV	#lo_addr(_i), W0
 	ADD	W1, [W0], [W0]
-;ConcentradorPrincipal.c,427 :: 		if ((banSPI0==1)&&(bufferSPI!=0xA0)&&(bufferSPI!=0xF0)){
-L__spi_1207:
-L__spi_1206:
-L__spi_1205:
-;ConcentradorPrincipal.c,431 :: 		if ((banSPI0==1)&&(bufferSPI==0xF0)){
+;ConcentradorPrincipal.c,434 :: 		if ((banSPI0==1)&&(bufferSPI!=0xA0)&&(bufferSPI!=0xF0)){
+L__spi_1225:
+L__spi_1224:
+L__spi_1223:
+;ConcentradorPrincipal.c,438 :: 		if ((banSPI0==1)&&(bufferSPI==0xF0)){
 	MOV	#lo_addr(_banSPI0), W0
 	MOV.B	[W0], W0
 	CP.B	W0, #1
-	BRA Z	L__spi_1322
-	GOTO	L__spi_1209
-L__spi_1322:
+	BRA Z	L__spi_1340
+	GOTO	L__spi_1227
+L__spi_1340:
 	MOV	#lo_addr(_bufferSPI), W0
 	MOV.B	[W0], W1
 	MOV.B	#240, W0
 	CP.B	W1, W0
-	BRA Z	L__spi_1323
-	GOTO	L__spi_1208
-L__spi_1323:
-L__spi_1200:
-;ConcentradorPrincipal.c,433 :: 		for (j=0;j<5;j++){
+	BRA Z	L__spi_1341
+	GOTO	L__spi_1226
+L__spi_1341:
+L__spi_1218:
+;ConcentradorPrincipal.c,440 :: 		for (j=0;j<5;j++){
 	CLR	W0
 	MOV	W0, _j
-L_spi_184:
+L_spi_186:
 	MOV	_j, W0
 	CP	W0, #5
-	BRA LTU	L__spi_1324
-	GOTO	L_spi_185
-L__spi_1324:
-;ConcentradorPrincipal.c,434 :: 		cabeceraSolicitud[j] = tramaSolicitudSPI[j];
+	BRA LTU	L__spi_1342
+	GOTO	L_spi_187
+L__spi_1342:
+;ConcentradorPrincipal.c,441 :: 		cabeceraSolicitud[j] = tramaSolicitudSPI[j];
 	MOV	#lo_addr(_cabeceraSolicitud), W1
 	MOV	#lo_addr(_j), W0
 	ADD	W1, [W0], W2
@@ -2556,45 +2551,45 @@ L__spi_1324:
 	MOV	#lo_addr(_j), W0
 	ADD	W1, [W0], W0
 	MOV.B	[W0], [W2]
-;ConcentradorPrincipal.c,433 :: 		for (j=0;j<5;j++){
+;ConcentradorPrincipal.c,440 :: 		for (j=0;j<5;j++){
 	MOV	#1, W1
 	MOV	#lo_addr(_j), W0
 	ADD	W1, [W0], [W0]
-;ConcentradorPrincipal.c,435 :: 		}
-	GOTO	L_spi_184
-L_spi_185:
-;ConcentradorPrincipal.c,437 :: 		idSolicitud = cabeceraSolicitud[0];
+;ConcentradorPrincipal.c,442 :: 		}
+	GOTO	L_spi_186
+L_spi_187:
+;ConcentradorPrincipal.c,444 :: 		idSolicitud = cabeceraSolicitud[0];
 	MOV	#lo_addr(_idSolicitud), W1
 	MOV	#lo_addr(_cabeceraSolicitud), W0
 	MOV.B	[W0], [W1]
-;ConcentradorPrincipal.c,438 :: 		funcionSolicitud = cabeceraSolicitud[1];
+;ConcentradorPrincipal.c,445 :: 		funcionSolicitud = cabeceraSolicitud[1];
 	MOV	#lo_addr(_funcionSolicitud), W1
 	MOV	#lo_addr(_cabeceraSolicitud+1), W0
 	MOV.B	[W0], [W1]
-;ConcentradorPrincipal.c,439 :: 		subFuncionSolicitud = cabeceraSolicitud[2];
+;ConcentradorPrincipal.c,446 :: 		subFuncionSolicitud = cabeceraSolicitud[2];
 	MOV	#lo_addr(_subFuncionSolicitud), W1
 	MOV	#lo_addr(_cabeceraSolicitud+2), W0
 	MOV.B	[W0], [W1]
-;ConcentradorPrincipal.c,440 :: 		*(ptrNumDatosPayload) = cabeceraSolicitud[3];
+;ConcentradorPrincipal.c,447 :: 		*(ptrNumDatosPayload) = cabeceraSolicitud[3];
 	MOV	#lo_addr(_cabeceraSolicitud+3), W1
 	MOV	_ptrNumDatosPayload, W0
 	MOV.B	[W1], [W0]
-;ConcentradorPrincipal.c,441 :: 		*(ptrNumDatosPayload+1) = cabeceraSolicitud[4];
+;ConcentradorPrincipal.c,448 :: 		*(ptrNumDatosPayload+1) = cabeceraSolicitud[4];
 	MOV	_ptrNumDatosPayload, W0
 	ADD	W0, #1, W1
 	MOV	#lo_addr(_cabeceraSolicitud+4), W0
 	MOV.B	[W0], [W1]
-;ConcentradorPrincipal.c,443 :: 		for (j=0;j<numDatosPayload;j++){
+;ConcentradorPrincipal.c,450 :: 		for (j=0;j<numDatosPayload;j++){
 	CLR	W0
 	MOV	W0, _j
-L_spi_187:
+L_spi_189:
 	MOV	_j, W1
 	MOV	#lo_addr(_numDatosPayload), W0
 	CP	W1, [W0]
-	BRA LTU	L__spi_1325
-	GOTO	L_spi_188
-L__spi_1325:
-;ConcentradorPrincipal.c,444 :: 		payloadSolicitud[j] = tramaSolicitudSPI[5+j];
+	BRA LTU	L__spi_1343
+	GOTO	L_spi_190
+L__spi_1343:
+;ConcentradorPrincipal.c,451 :: 		payloadSolicitud[j] = tramaSolicitudSPI[5+j];
 	MOV	#lo_addr(_payloadSolicitud), W1
 	MOV	#lo_addr(_j), W0
 	ADD	W1, [W0], W2
@@ -2603,313 +2598,313 @@ L__spi_1325:
 	MOV	#lo_addr(_tramaSolicitudSPI), W0
 	ADD	W0, W1, W0
 	MOV.B	[W0], [W2]
-;ConcentradorPrincipal.c,443 :: 		for (j=0;j<numDatosPayload;j++){
+;ConcentradorPrincipal.c,450 :: 		for (j=0;j<numDatosPayload;j++){
 	MOV	#1, W1
 	MOV	#lo_addr(_j), W0
 	ADD	W1, [W0], [W0]
-;ConcentradorPrincipal.c,445 :: 		}
-	GOTO	L_spi_187
-L_spi_188:
-;ConcentradorPrincipal.c,447 :: 		if (idSolicitud==0){
+;ConcentradorPrincipal.c,452 :: 		}
+	GOTO	L_spi_189
+L_spi_190:
+;ConcentradorPrincipal.c,454 :: 		if (idSolicitud==0){
 	MOV	#lo_addr(_idSolicitud), W0
 	MOV.B	[W0], W0
 	CP.B	W0, #0
-	BRA Z	L__spi_1326
-	GOTO	L_spi_190
-L__spi_1326:
-;ConcentradorPrincipal.c,449 :: 		ProcesarSolicitudConcentrador(cabeceraSolicitud, payloadSolicitud);
+	BRA Z	L__spi_1344
+	GOTO	L_spi_192
+L__spi_1344:
+;ConcentradorPrincipal.c,456 :: 		ProcesarSolicitudConcentrador(cabeceraSolicitud, payloadSolicitud);
 	MOV	#lo_addr(_payloadSolicitud), W11
 	MOV	#lo_addr(_cabeceraSolicitud), W10
 	CALL	_ProcesarSolicitudConcentrador
-;ConcentradorPrincipal.c,450 :: 		} else {
-	GOTO	L_spi_191
-L_spi_190:
-;ConcentradorPrincipal.c,452 :: 		EnviarTramaRS485(1, cabeceraSolicitud, payloadSolicitud);
+;ConcentradorPrincipal.c,457 :: 		} else {
+	GOTO	L_spi_193
+L_spi_192:
+;ConcentradorPrincipal.c,459 :: 		EnviarTramaRS485(1, cabeceraSolicitud, payloadSolicitud);
 	MOV	#lo_addr(_payloadSolicitud), W12
 	MOV	#lo_addr(_cabeceraSolicitud), W11
 	MOV.B	#1, W10
 	CALL	_EnviarTramaRS485
-;ConcentradorPrincipal.c,453 :: 		EnviarTramaRS485(2, cabeceraSolicitud, payloadSolicitud);
+;ConcentradorPrincipal.c,460 :: 		EnviarTramaRS485(2, cabeceraSolicitud, payloadSolicitud);
 	MOV	#lo_addr(_payloadSolicitud), W12
 	MOV	#lo_addr(_cabeceraSolicitud), W11
 	MOV.B	#2, W10
 	CALL	_EnviarTramaRS485
-;ConcentradorPrincipal.c,454 :: 		}
-L_spi_191:
-;ConcentradorPrincipal.c,455 :: 		CambiarEstadoBandera(0,0);                                            //Limpia la bandera 0
+;ConcentradorPrincipal.c,461 :: 		}
+L_spi_193:
+;ConcentradorPrincipal.c,462 :: 		CambiarEstadoBandera(0,0);                                            //Limpia la bandera 0
 	CLR	W11
 	CLR	W10
 	CALL	_CambiarEstadoBandera
-;ConcentradorPrincipal.c,456 :: 		LED1 = 0;
+;ConcentradorPrincipal.c,463 :: 		LED1 = 0;
 	BCLR	LATA1_bit, BitPos(LATA1_bit+0)
-;ConcentradorPrincipal.c,431 :: 		if ((banSPI0==1)&&(bufferSPI==0xF0)){
-L__spi_1209:
-L__spi_1208:
-;ConcentradorPrincipal.c,461 :: 		if ((banSPI1==0)&&(bufferSPI==0xA1)) {
+;ConcentradorPrincipal.c,438 :: 		if ((banSPI0==1)&&(bufferSPI==0xF0)){
+L__spi_1227:
+L__spi_1226:
+;ConcentradorPrincipal.c,468 :: 		if ((banSPI1==0)&&(bufferSPI==0xA1)) {
 	MOV	#lo_addr(_banSPI1), W0
 	MOV.B	[W0], W0
 	CP.B	W0, #0
-	BRA Z	L__spi_1327
-	GOTO	L__spi_1211
-L__spi_1327:
+	BRA Z	L__spi_1345
+	GOTO	L__spi_1229
+L__spi_1345:
 	MOV	#lo_addr(_bufferSPI), W0
 	MOV.B	[W0], W1
 	MOV.B	#161, W0
 	CP.B	W1, W0
-	BRA Z	L__spi_1328
-	GOTO	L__spi_1210
-L__spi_1328:
-L__spi_1199:
-;ConcentradorPrincipal.c,462 :: 		SPI1BUF = cabeceraRespuestaSPI[0];                                    //Carga en el buffer el primer elemento de la cabecera (id)
+	BRA Z	L__spi_1346
+	GOTO	L__spi_1228
+L__spi_1346:
+L__spi_1217:
+;ConcentradorPrincipal.c,469 :: 		SPI1BUF = cabeceraRespuestaSPI[0];                                    //Carga en el buffer el primer elemento de la cabecera (id)
 	MOV	#lo_addr(_cabeceraRespuestaSPI), W0
 	ZE	[W0], W0
 	MOV	WREG, SPI1BUF
-;ConcentradorPrincipal.c,463 :: 		i = 1;
+;ConcentradorPrincipal.c,470 :: 		i = 1;
 	MOV	#1, W0
 	MOV	W0, _i
-;ConcentradorPrincipal.c,464 :: 		CambiarEstadoBandera(1,1);                                            //Activa la bandera 1
+;ConcentradorPrincipal.c,471 :: 		CambiarEstadoBandera(1,1);                                            //Activa la bandera 1
 	MOV.B	#1, W11
 	MOV.B	#1, W10
 	CALL	_CambiarEstadoBandera
-;ConcentradorPrincipal.c,461 :: 		if ((banSPI1==0)&&(bufferSPI==0xA1)) {
-L__spi_1211:
-L__spi_1210:
-;ConcentradorPrincipal.c,466 :: 		if ((banSPI1==1)&&(bufferSPI!=0xA1)&&(bufferSPI!=0xF1)){
+;ConcentradorPrincipal.c,468 :: 		if ((banSPI1==0)&&(bufferSPI==0xA1)) {
+L__spi_1229:
+L__spi_1228:
+;ConcentradorPrincipal.c,473 :: 		if ((banSPI1==1)&&(bufferSPI!=0xA1)&&(bufferSPI!=0xF1)){
 	MOV	#lo_addr(_banSPI1), W0
 	MOV.B	[W0], W0
 	CP.B	W0, #1
-	BRA Z	L__spi_1329
-	GOTO	L__spi_1214
-L__spi_1329:
+	BRA Z	L__spi_1347
+	GOTO	L__spi_1232
+L__spi_1347:
 	MOV	#lo_addr(_bufferSPI), W0
 	MOV.B	[W0], W1
 	MOV.B	#161, W0
 	CP.B	W1, W0
-	BRA NZ	L__spi_1330
-	GOTO	L__spi_1213
-L__spi_1330:
+	BRA NZ	L__spi_1348
+	GOTO	L__spi_1231
+L__spi_1348:
 	MOV	#lo_addr(_bufferSPI), W0
 	MOV.B	[W0], W1
 	MOV.B	#241, W0
 	CP.B	W1, W0
-	BRA NZ	L__spi_1331
-	GOTO	L__spi_1212
-L__spi_1331:
-L__spi_1198:
-;ConcentradorPrincipal.c,467 :: 		SPI1BUF = cabeceraRespuestaSPI[i];                                    //Se envia la trama de respuesta
+	BRA NZ	L__spi_1349
+	GOTO	L__spi_1230
+L__spi_1349:
+L__spi_1216:
+;ConcentradorPrincipal.c,474 :: 		SPI1BUF = cabeceraRespuestaSPI[i];                                    //Se envia la trama de respuesta
 	MOV	#lo_addr(_cabeceraRespuestaSPI), W1
 	MOV	#lo_addr(_i), W0
 	ADD	W1, [W0], W0
 	MOV.B	[W0], W0
 	ZE	W0, W0
 	MOV	WREG, SPI1BUF
-;ConcentradorPrincipal.c,468 :: 		i++;
+;ConcentradorPrincipal.c,475 :: 		i++;
 	MOV	#1, W1
 	MOV	#lo_addr(_i), W0
 	ADD	W1, [W0], [W0]
-;ConcentradorPrincipal.c,466 :: 		if ((banSPI1==1)&&(bufferSPI!=0xA1)&&(bufferSPI!=0xF1)){
-L__spi_1214:
-L__spi_1213:
-L__spi_1212:
-;ConcentradorPrincipal.c,470 :: 		if ((banSPI1==1)&&(bufferSPI==0xF1)){
+;ConcentradorPrincipal.c,473 :: 		if ((banSPI1==1)&&(bufferSPI!=0xA1)&&(bufferSPI!=0xF1)){
+L__spi_1232:
+L__spi_1231:
+L__spi_1230:
+;ConcentradorPrincipal.c,477 :: 		if ((banSPI1==1)&&(bufferSPI==0xF1)){
 	MOV	#lo_addr(_banSPI1), W0
 	MOV.B	[W0], W0
 	CP.B	W0, #1
-	BRA Z	L__spi_1332
-	GOTO	L__spi_1216
-L__spi_1332:
+	BRA Z	L__spi_1350
+	GOTO	L__spi_1234
+L__spi_1350:
 	MOV	#lo_addr(_bufferSPI), W0
 	MOV.B	[W0], W1
 	MOV.B	#241, W0
 	CP.B	W1, W0
-	BRA Z	L__spi_1333
-	GOTO	L__spi_1215
-L__spi_1333:
-L__spi_1197:
-;ConcentradorPrincipal.c,471 :: 		CambiarEstadoBandera(1,0);                                            //Limpia la bandera 1
+	BRA Z	L__spi_1351
+	GOTO	L__spi_1233
+L__spi_1351:
+L__spi_1215:
+;ConcentradorPrincipal.c,478 :: 		CambiarEstadoBandera(1,0);                                            //Limpia la bandera 1
 	CLR	W11
 	MOV.B	#1, W10
 	CALL	_CambiarEstadoBandera
-;ConcentradorPrincipal.c,470 :: 		if ((banSPI1==1)&&(bufferSPI==0xF1)){
-L__spi_1216:
-L__spi_1215:
-;ConcentradorPrincipal.c,474 :: 		if ((banSPI2==0)&&(bufferSPI==0xA2)){
+;ConcentradorPrincipal.c,477 :: 		if ((banSPI1==1)&&(bufferSPI==0xF1)){
+L__spi_1234:
+L__spi_1233:
+;ConcentradorPrincipal.c,481 :: 		if ((banSPI2==0)&&(bufferSPI==0xA2)){
 	MOV	#lo_addr(_banSPI2), W0
 	MOV.B	[W0], W0
 	CP.B	W0, #0
-	BRA Z	L__spi_1334
-	GOTO	L__spi_1218
-L__spi_1334:
+	BRA Z	L__spi_1352
+	GOTO	L__spi_1236
+L__spi_1352:
 	MOV	#lo_addr(_bufferSPI), W0
 	MOV.B	[W0], W1
 	MOV.B	#162, W0
 	CP.B	W1, W0
-	BRA Z	L__spi_1335
-	GOTO	L__spi_1217
-L__spi_1335:
-L__spi_1196:
-;ConcentradorPrincipal.c,475 :: 		CambiarEstadoBandera(2,1);                                            //Activa la bandera 2
+	BRA Z	L__spi_1353
+	GOTO	L__spi_1235
+L__spi_1353:
+L__spi_1214:
+;ConcentradorPrincipal.c,482 :: 		CambiarEstadoBandera(2,1);                                            //Activa la bandera 2
 	MOV.B	#1, W11
 	MOV.B	#2, W10
 	CALL	_CambiarEstadoBandera
-;ConcentradorPrincipal.c,476 :: 		SPI1BUF = pyloadRS485[0];
+;ConcentradorPrincipal.c,483 :: 		SPI1BUF = pyloadRS485[0];
 	MOV	#lo_addr(_pyloadRS485), W0
 	ZE	[W0], W0
 	MOV	WREG, SPI1BUF
-;ConcentradorPrincipal.c,477 :: 		i = 1;
+;ConcentradorPrincipal.c,484 :: 		i = 1;
 	MOV	#1, W0
 	MOV	W0, _i
-;ConcentradorPrincipal.c,474 :: 		if ((banSPI2==0)&&(bufferSPI==0xA2)){
-L__spi_1218:
-L__spi_1217:
-;ConcentradorPrincipal.c,479 :: 		if ((banSPI2==1)&&(bufferSPI!=0xA2)&&(bufferSPI!=0xF2)){
+;ConcentradorPrincipal.c,481 :: 		if ((banSPI2==0)&&(bufferSPI==0xA2)){
+L__spi_1236:
+L__spi_1235:
+;ConcentradorPrincipal.c,486 :: 		if ((banSPI2==1)&&(bufferSPI!=0xA2)&&(bufferSPI!=0xF2)){
 	MOV	#lo_addr(_banSPI2), W0
 	MOV.B	[W0], W0
 	CP.B	W0, #1
-	BRA Z	L__spi_1336
-	GOTO	L__spi_1221
-L__spi_1336:
+	BRA Z	L__spi_1354
+	GOTO	L__spi_1239
+L__spi_1354:
 	MOV	#lo_addr(_bufferSPI), W0
 	MOV.B	[W0], W1
 	MOV.B	#162, W0
 	CP.B	W1, W0
-	BRA NZ	L__spi_1337
-	GOTO	L__spi_1220
-L__spi_1337:
+	BRA NZ	L__spi_1355
+	GOTO	L__spi_1238
+L__spi_1355:
 	MOV	#lo_addr(_bufferSPI), W0
 	MOV.B	[W0], W1
 	MOV.B	#242, W0
 	CP.B	W1, W0
-	BRA NZ	L__spi_1338
-	GOTO	L__spi_1219
-L__spi_1338:
-L__spi_1195:
-;ConcentradorPrincipal.c,480 :: 		SPI1BUF = pyloadRS485[i];
+	BRA NZ	L__spi_1356
+	GOTO	L__spi_1237
+L__spi_1356:
+L__spi_1213:
+;ConcentradorPrincipal.c,487 :: 		SPI1BUF = pyloadRS485[i];
 	MOV	#lo_addr(_pyloadRS485), W1
 	MOV	#lo_addr(_i), W0
 	ADD	W1, [W0], W0
 	MOV.B	[W0], W0
 	ZE	W0, W0
 	MOV	WREG, SPI1BUF
-;ConcentradorPrincipal.c,481 :: 		i++;
+;ConcentradorPrincipal.c,488 :: 		i++;
 	MOV	#1, W1
 	MOV	#lo_addr(_i), W0
 	ADD	W1, [W0], [W0]
-;ConcentradorPrincipal.c,479 :: 		if ((banSPI2==1)&&(bufferSPI!=0xA2)&&(bufferSPI!=0xF2)){
-L__spi_1221:
-L__spi_1220:
-L__spi_1219:
-;ConcentradorPrincipal.c,483 :: 		if ((banSPI2==1)&&(bufferSPI==0xF2)){
+;ConcentradorPrincipal.c,486 :: 		if ((banSPI2==1)&&(bufferSPI!=0xA2)&&(bufferSPI!=0xF2)){
+L__spi_1239:
+L__spi_1238:
+L__spi_1237:
+;ConcentradorPrincipal.c,490 :: 		if ((banSPI2==1)&&(bufferSPI==0xF2)){
 	MOV	#lo_addr(_banSPI2), W0
 	MOV.B	[W0], W0
 	CP.B	W0, #1
-	BRA Z	L__spi_1339
-	GOTO	L__spi_1223
-L__spi_1339:
+	BRA Z	L__spi_1357
+	GOTO	L__spi_1241
+L__spi_1357:
 	MOV	#lo_addr(_bufferSPI), W0
 	MOV.B	[W0], W1
 	MOV.B	#242, W0
 	CP.B	W1, W0
-	BRA Z	L__spi_1340
-	GOTO	L__spi_1222
-L__spi_1340:
-L__spi_1194:
-;ConcentradorPrincipal.c,484 :: 		CambiarEstadoBandera(2,0);                                            //Limpia la bandera 2
+	BRA Z	L__spi_1358
+	GOTO	L__spi_1240
+L__spi_1358:
+L__spi_1212:
+;ConcentradorPrincipal.c,491 :: 		CambiarEstadoBandera(2,0);                                            //Limpia la bandera 2
 	CLR	W11
 	MOV.B	#2, W10
 	CALL	_CambiarEstadoBandera
-;ConcentradorPrincipal.c,483 :: 		if ((banSPI2==1)&&(bufferSPI==0xF2)){
-L__spi_1223:
-L__spi_1222:
-;ConcentradorPrincipal.c,487 :: 		if ((banSPI3==0)&&(bufferSPI==0xA3)){
+;ConcentradorPrincipal.c,490 :: 		if ((banSPI2==1)&&(bufferSPI==0xF2)){
+L__spi_1241:
+L__spi_1240:
+;ConcentradorPrincipal.c,494 :: 		if ((banSPI3==0)&&(bufferSPI==0xA3)){
 	MOV	#lo_addr(_banSPI3), W0
 	MOV.B	[W0], W0
 	CP.B	W0, #0
-	BRA Z	L__spi_1341
-	GOTO	L__spi_1225
-L__spi_1341:
+	BRA Z	L__spi_1359
+	GOTO	L__spi_1243
+L__spi_1359:
 	MOV	#lo_addr(_bufferSPI), W0
 	MOV.B	[W0], W1
 	MOV.B	#163, W0
 	CP.B	W1, W0
-	BRA Z	L__spi_1342
-	GOTO	L__spi_1224
-L__spi_1342:
-L__spi_1193:
-;ConcentradorPrincipal.c,488 :: 		CambiarEstadoBandera(3,1);                                            //Activa la bandera 3
+	BRA Z	L__spi_1360
+	GOTO	L__spi_1242
+L__spi_1360:
+L__spi_1211:
+;ConcentradorPrincipal.c,495 :: 		CambiarEstadoBandera(3,1);                                            //Activa la bandera 3
 	MOV.B	#1, W11
 	MOV.B	#3, W10
 	CALL	_CambiarEstadoBandera
-;ConcentradorPrincipal.c,489 :: 		SPI1BUF = payloadConcentrador[0];
+;ConcentradorPrincipal.c,496 :: 		SPI1BUF = payloadConcentrador[0];
 	MOV	#lo_addr(_payloadConcentrador), W0
 	ZE	[W0], W0
 	MOV	WREG, SPI1BUF
-;ConcentradorPrincipal.c,490 :: 		i = 1;
+;ConcentradorPrincipal.c,497 :: 		i = 1;
 	MOV	#1, W0
 	MOV	W0, _i
-;ConcentradorPrincipal.c,487 :: 		if ((banSPI3==0)&&(bufferSPI==0xA3)){
-L__spi_1225:
-L__spi_1224:
-;ConcentradorPrincipal.c,492 :: 		if ((banSPI3==1)&&(bufferSPI!=0xA3)&&(bufferSPI!=0xF3)){
+;ConcentradorPrincipal.c,494 :: 		if ((banSPI3==0)&&(bufferSPI==0xA3)){
+L__spi_1243:
+L__spi_1242:
+;ConcentradorPrincipal.c,499 :: 		if ((banSPI3==1)&&(bufferSPI!=0xA3)&&(bufferSPI!=0xF3)){
 	MOV	#lo_addr(_banSPI3), W0
 	MOV.B	[W0], W0
 	CP.B	W0, #1
-	BRA Z	L__spi_1343
-	GOTO	L__spi_1228
-L__spi_1343:
+	BRA Z	L__spi_1361
+	GOTO	L__spi_1246
+L__spi_1361:
 	MOV	#lo_addr(_bufferSPI), W0
 	MOV.B	[W0], W1
 	MOV.B	#163, W0
 	CP.B	W1, W0
-	BRA NZ	L__spi_1344
-	GOTO	L__spi_1227
-L__spi_1344:
+	BRA NZ	L__spi_1362
+	GOTO	L__spi_1245
+L__spi_1362:
 	MOV	#lo_addr(_bufferSPI), W0
 	MOV.B	[W0], W1
 	MOV.B	#243, W0
 	CP.B	W1, W0
-	BRA NZ	L__spi_1345
-	GOTO	L__spi_1226
-L__spi_1345:
-L__spi_1192:
-;ConcentradorPrincipal.c,493 :: 		SPI1BUF = payloadConcentrador[i];
+	BRA NZ	L__spi_1363
+	GOTO	L__spi_1244
+L__spi_1363:
+L__spi_1210:
+;ConcentradorPrincipal.c,500 :: 		SPI1BUF = payloadConcentrador[i];
 	MOV	#lo_addr(_payloadConcentrador), W1
 	MOV	#lo_addr(_i), W0
 	ADD	W1, [W0], W0
 	MOV.B	[W0], W0
 	ZE	W0, W0
 	MOV	WREG, SPI1BUF
-;ConcentradorPrincipal.c,494 :: 		i++;
+;ConcentradorPrincipal.c,501 :: 		i++;
 	MOV	#1, W1
 	MOV	#lo_addr(_i), W0
 	ADD	W1, [W0], [W0]
-;ConcentradorPrincipal.c,492 :: 		if ((banSPI3==1)&&(bufferSPI!=0xA3)&&(bufferSPI!=0xF3)){
-L__spi_1228:
-L__spi_1227:
-L__spi_1226:
-;ConcentradorPrincipal.c,496 :: 		if ((banSPI3==1)&&(bufferSPI==0xF3)){
+;ConcentradorPrincipal.c,499 :: 		if ((banSPI3==1)&&(bufferSPI!=0xA3)&&(bufferSPI!=0xF3)){
+L__spi_1246:
+L__spi_1245:
+L__spi_1244:
+;ConcentradorPrincipal.c,503 :: 		if ((banSPI3==1)&&(bufferSPI==0xF3)){
 	MOV	#lo_addr(_banSPI3), W0
 	MOV.B	[W0], W0
 	CP.B	W0, #1
-	BRA Z	L__spi_1346
-	GOTO	L__spi_1230
-L__spi_1346:
+	BRA Z	L__spi_1364
+	GOTO	L__spi_1248
+L__spi_1364:
 	MOV	#lo_addr(_bufferSPI), W0
 	MOV.B	[W0], W1
 	MOV.B	#243, W0
 	CP.B	W1, W0
-	BRA Z	L__spi_1347
-	GOTO	L__spi_1229
-L__spi_1347:
-L__spi_1191:
-;ConcentradorPrincipal.c,497 :: 		CambiarEstadoBandera(3,0);                                            //Limpia la bandera 3
+	BRA Z	L__spi_1365
+	GOTO	L__spi_1247
+L__spi_1365:
+L__spi_1209:
+;ConcentradorPrincipal.c,504 :: 		CambiarEstadoBandera(3,0);                                            //Limpia la bandera 3
 	CLR	W11
 	MOV.B	#3, W10
 	CALL	_CambiarEstadoBandera
-;ConcentradorPrincipal.c,496 :: 		if ((banSPI3==1)&&(bufferSPI==0xF3)){
-L__spi_1230:
-L__spi_1229:
-;ConcentradorPrincipal.c,500 :: 		}
+;ConcentradorPrincipal.c,503 :: 		if ((banSPI3==1)&&(bufferSPI==0xF3)){
+L__spi_1248:
+L__spi_1247:
+;ConcentradorPrincipal.c,507 :: 		}
 L_end_spi_1:
 	POP	W12
 	POP	W11
@@ -2933,27 +2928,27 @@ _int_1:
 	REPEAT	#12
 	PUSH	[W0++]
 
-;ConcentradorPrincipal.c,505 :: 		void int_1() org IVT_ADDR_INT1INTERRUPT {
-;ConcentradorPrincipal.c,507 :: 		INT1IF_bit = 0;                                                            //Limpia la bandera de interrupcion externa INT1
+;ConcentradorPrincipal.c,512 :: 		void int_1() org IVT_ADDR_INT1INTERRUPT {
+;ConcentradorPrincipal.c,514 :: 		INT1IF_bit = 0;                                                            //Limpia la bandera de interrupcion externa INT1
 	PUSH	W10
 	PUSH	W11
 	PUSH	W12
 	PUSH	W13
 	BCLR	INT1IF_bit, BitPos(INT1IF_bit+0)
-;ConcentradorPrincipal.c,509 :: 		if (banSetReloj==1){
+;ConcentradorPrincipal.c,516 :: 		if (banSetReloj==1){
 	MOV	#lo_addr(_banSetReloj), W0
 	MOV.B	[W0], W0
 	CP.B	W0, #1
-	BRA Z	L__int_1349
-	GOTO	L_int_1119
-L__int_1349:
-;ConcentradorPrincipal.c,510 :: 		horaSistema++;                                                         //Incrementa el reloj del sistema
+	BRA Z	L__int_1367
+	GOTO	L_int_1121
+L__int_1367:
+;ConcentradorPrincipal.c,517 :: 		horaSistema++;                                                         //Incrementa el reloj del sistema
 	MOV	#1, W1
 	MOV	#0, W2
 	MOV	#lo_addr(_horaSistema), W0
 	ADD	W1, [W0], [W0++]
 	ADDC	W2, [W0], [W0--]
-;ConcentradorPrincipal.c,511 :: 		AjustarTiempoSistema(horaSistema, fechaSistema, tiempo);
+;ConcentradorPrincipal.c,518 :: 		AjustarTiempoSistema(horaSistema, fechaSistema, tiempo);
 	MOV	_fechaSistema, W12
 	MOV	_fechaSistema+2, W13
 	MOV	_horaSistema, W10
@@ -2962,18 +2957,18 @@ L__int_1349:
 	PUSH	W0
 	CALL	_AjustarTiempoSistema
 	SUB	#2, W15
-;ConcentradorPrincipal.c,512 :: 		LED1 = ~LED1;                                                          //TEST
+;ConcentradorPrincipal.c,519 :: 		LED1 = ~LED1;
 	BTG	LATA1_bit, BitPos(LATA1_bit+0)
-;ConcentradorPrincipal.c,513 :: 		}
-L_int_1119:
-;ConcentradorPrincipal.c,516 :: 		if ((horaSistema!=0)&&(horaSistema%3600==0)){
+;ConcentradorPrincipal.c,520 :: 		}
+L_int_1121:
+;ConcentradorPrincipal.c,523 :: 		if ((horaSistema!=0)&&(horaSistema%3600==0)){
 	MOV	_horaSistema, W0
 	MOV	_horaSistema+2, W1
 	CP	W0, #0
 	CPB	W1, #0
-	BRA NZ	L__int_1350
-	GOTO	L__int_1233
-L__int_1350:
+	BRA NZ	L__int_1368
+	GOTO	L__int_1251
+L__int_1368:
 	MOV	#3600, W2
 	MOV	#0, W3
 	MOV	_horaSistema, W0
@@ -2982,32 +2977,32 @@ L__int_1350:
 	CALL	__Modulus_32x32
 	CP	W0, #0
 	CPB	W1, #0
-	BRA Z	L__int_1351
-	GOTO	L__int_1232
-L__int_1351:
-L__int_1231:
-;ConcentradorPrincipal.c,517 :: 		banRespuestaPi = 0;                                                     //No envia respuesta a la RPi
+	BRA Z	L__int_1369
+	GOTO	L__int_1250
+L__int_1369:
+L__int_1249:
+;ConcentradorPrincipal.c,524 :: 		banRespuestaPi = 0;                                                     //No envia respuesta a la RPi
 	MOV	#lo_addr(_banRespuestaPi), W1
 	CLR	W0
 	MOV.B	W0, [W1]
-;ConcentradorPrincipal.c,519 :: 		banGPSI = 1;                                                            //Activa la bandera de inicio de trama  del GPS
+;ConcentradorPrincipal.c,526 :: 		banGPSI = 1;                                                            //Activa la bandera de inicio de trama  del GPS
 	MOV	#lo_addr(_banGPSI), W1
 	MOV.B	#1, W0
 	MOV.B	W0, [W1]
-;ConcentradorPrincipal.c,520 :: 		banGPSC = 0;                                                            //Limpia la bandera de trama completa
+;ConcentradorPrincipal.c,527 :: 		banGPSC = 0;                                                            //Limpia la bandera de trama completa
 	MOV	#lo_addr(_banGPSC), W1
 	CLR	W0
 	MOV.B	W0, [W1]
-;ConcentradorPrincipal.c,521 :: 		U1MODE.UARTEN = 1;                                                      //Inicializa el UART1
+;ConcentradorPrincipal.c,528 :: 		U1MODE.UARTEN = 1;                                                      //Inicializa el UART1
 	BSET	U1MODE, #15
-;ConcentradorPrincipal.c,523 :: 		T1CON.TON = 1;
+;ConcentradorPrincipal.c,530 :: 		T1CON.TON = 1;
 	BSET	T1CON, #15
-;ConcentradorPrincipal.c,524 :: 		TMR1 = 0;
+;ConcentradorPrincipal.c,531 :: 		TMR1 = 0;
 	CLR	TMR1
-;ConcentradorPrincipal.c,516 :: 		if ((horaSistema!=0)&&(horaSistema%3600==0)){
-L__int_1233:
-L__int_1232:
-;ConcentradorPrincipal.c,527 :: 		}
+;ConcentradorPrincipal.c,523 :: 		if ((horaSistema!=0)&&(horaSistema%3600==0)){
+L__int_1251:
+L__int_1250:
+;ConcentradorPrincipal.c,534 :: 		}
 L_end_int_1:
 	POP	W13
 	POP	W12
@@ -3032,21 +3027,21 @@ _int_2:
 	REPEAT	#12
 	PUSH	[W0++]
 
-;ConcentradorPrincipal.c,532 :: 		void int_2() org IVT_ADDR_INT2INTERRUPT {
-;ConcentradorPrincipal.c,534 :: 		INT2IF_bit = 0;                                                            //Limpia la bandera de interrupcion externa INT2
+;ConcentradorPrincipal.c,539 :: 		void int_2() org IVT_ADDR_INT2INTERRUPT {
+;ConcentradorPrincipal.c,541 :: 		INT2IF_bit = 0;                                                            //Limpia la bandera de interrupcion externa INT2
 	PUSH	W10
 	PUSH	W11
 	PUSH	W12
 	PUSH	W13
 	BCLR	INT2IF_bit, BitPos(INT2IF_bit+0)
-;ConcentradorPrincipal.c,536 :: 		if (banSyncReloj==1){
+;ConcentradorPrincipal.c,543 :: 		if (banSyncReloj==1){
 	MOV	#lo_addr(_banSyncReloj), W0
 	MOV.B	[W0], W0
 	CP.B	W0, #1
-	BRA Z	L__int_2353
-	GOTO	L_int_2123
-L__int_2353:
-;ConcentradorPrincipal.c,538 :: 		AjustarTiempoSistema(horaSistema, fechaSistema, tiempo);
+	BRA Z	L__int_2371
+	GOTO	L_int_2125
+L__int_2371:
+;ConcentradorPrincipal.c,545 :: 		AjustarTiempoSistema(horaSistema, fechaSistema, tiempo);
 	MOV	_fechaSistema, W12
 	MOV	_fechaSistema+2, W13
 	MOV	_horaSistema, W10
@@ -3055,37 +3050,37 @@ L__int_2353:
 	PUSH	W0
 	CALL	_AjustarTiempoSistema
 	SUB	#2, W15
-;ConcentradorPrincipal.c,539 :: 		LED1 = ~LED1;                                                  //TEST
+;ConcentradorPrincipal.c,546 :: 		LED1 = ~LED1;                                                  //TEST
 	BTG	LATA1_bit, BitPos(LATA1_bit+0)
-;ConcentradorPrincipal.c,542 :: 		Delay_ms(499);
+;ConcentradorPrincipal.c,549 :: 		Delay_ms(499);
 	MOV	#61, W8
 	MOV	#59875, W7
-L_int_2124:
+L_int_2126:
 	DEC	W7
-	BRA NZ	L_int_2124
+	BRA NZ	L_int_2126
 	DEC	W8
-	BRA NZ	L_int_2124
+	BRA NZ	L_int_2126
 	NOP
 	NOP
 	NOP
 	NOP
-;ConcentradorPrincipal.c,543 :: 		DS3234_setDate(horaSistema, fechaSistema);                             //Configura la hora en el RTC con la hora recuperada de la RPi
+;ConcentradorPrincipal.c,550 :: 		DS3234_setDate(horaSistema, fechaSistema);                             //Configura la hora en el RTC con la hora recuperada de la RPi
 	MOV	_fechaSistema, W12
 	MOV	_fechaSistema+2, W13
 	MOV	_horaSistema, W10
 	MOV	_horaSistema+2, W11
 	CALL	_DS3234_setDate
-;ConcentradorPrincipal.c,545 :: 		banSyncReloj = 0;
+;ConcentradorPrincipal.c,552 :: 		banSyncReloj = 0;
 	MOV	#lo_addr(_banSyncReloj), W1
 	CLR	W0
 	MOV.B	W0, [W1]
-;ConcentradorPrincipal.c,546 :: 		banSetReloj = 1;                                                       //Activa esta bandera para continuar trabajando con el pulso SQW
+;ConcentradorPrincipal.c,553 :: 		banSetReloj = 1;                                                       //Activa esta bandera para continuar trabajando con el pulso SQW
 	MOV	#lo_addr(_banSetReloj), W1
 	MOV.B	#1, W0
 	MOV.B	W0, [W1]
-;ConcentradorPrincipal.c,548 :: 		}
-L_int_2123:
-;ConcentradorPrincipal.c,550 :: 		}
+;ConcentradorPrincipal.c,555 :: 		}
+L_int_2125:
+;ConcentradorPrincipal.c,557 :: 		}
 L_end_int_2:
 	POP	W13
 	POP	W12
@@ -3110,41 +3105,41 @@ _Timer1Int:
 	REPEAT	#12
 	PUSH	[W0++]
 
-;ConcentradorPrincipal.c,555 :: 		void Timer1Int() org IVT_ADDR_T1INTERRUPT{
-;ConcentradorPrincipal.c,557 :: 		T1IF_bit = 0;                                                              //Limpia la bandera de interrupcion por desbordamiento del Timer1
+;ConcentradorPrincipal.c,562 :: 		void Timer1Int() org IVT_ADDR_T1INTERRUPT{
+;ConcentradorPrincipal.c,564 :: 		T1IF_bit = 0;                                                              //Limpia la bandera de interrupcion por desbordamiento del Timer1
 	PUSH	W10
 	PUSH	W11
 	PUSH	W12
 	PUSH	W13
 	BCLR	T1IF_bit, BitPos(T1IF_bit+0)
-;ConcentradorPrincipal.c,558 :: 		contTimeout1++;                                                            //Incrementa el contador de Timeout
+;ConcentradorPrincipal.c,565 :: 		contTimeout1++;                                                            //Incrementa el contador de Timeout
 	MOV.B	#1, W1
 	MOV	#lo_addr(_contTimeout1), W0
 	ADD.B	W1, [W0], [W0]
-;ConcentradorPrincipal.c,561 :: 		if (contTimeout1==4){
+;ConcentradorPrincipal.c,568 :: 		if (contTimeout1==4){
 	MOV	#lo_addr(_contTimeout1), W0
 	MOV.B	[W0], W0
 	CP.B	W0, #4
-	BRA Z	L__Timer1Int355
-	GOTO	L_Timer1Int126
-L__Timer1Int355:
-;ConcentradorPrincipal.c,562 :: 		T1CON.TON = 0;
+	BRA Z	L__Timer1Int373
+	GOTO	L_Timer1Int128
+L__Timer1Int373:
+;ConcentradorPrincipal.c,569 :: 		T1CON.TON = 0;
 	BCLR	T1CON, #15
-;ConcentradorPrincipal.c,563 :: 		TMR1 = 0;
+;ConcentradorPrincipal.c,570 :: 		TMR1 = 0;
 	CLR	TMR1
-;ConcentradorPrincipal.c,564 :: 		contTimeout1 = 0;
+;ConcentradorPrincipal.c,571 :: 		contTimeout1 = 0;
 	MOV	#lo_addr(_contTimeout1), W1
 	CLR	W0
 	MOV.B	W0, [W1]
-;ConcentradorPrincipal.c,566 :: 		horaSistema = RecuperarHoraRTC();                                       //Recupera la hora del RTC
+;ConcentradorPrincipal.c,573 :: 		horaSistema = RecuperarHoraRTC();                                       //Recupera la hora del RTC
 	CALL	_RecuperarHoraRTC
 	MOV	W0, _horaSistema
 	MOV	W1, _horaSistema+2
-;ConcentradorPrincipal.c,567 :: 		fechaSistema = RecuperarFechaRTC();                                     //Recupera la fecha del RTC
+;ConcentradorPrincipal.c,574 :: 		fechaSistema = RecuperarFechaRTC();                                     //Recupera la fecha del RTC
 	CALL	_RecuperarFechaRTC
 	MOV	W0, _fechaSistema
 	MOV	W1, _fechaSistema+2
-;ConcentradorPrincipal.c,568 :: 		AjustarTiempoSistema(horaSistema, fechaSistema, tiempo);                //Actualiza los datos de la trama tiempo con la hora y fecha recuperadas del RTC
+;ConcentradorPrincipal.c,575 :: 		AjustarTiempoSistema(horaSistema, fechaSistema, tiempo);                //Actualiza los datos de la trama tiempo con la hora y fecha recuperadas del RTC
 	MOV.D	W0, W12
 	MOV	_horaSistema, W10
 	MOV	_horaSistema+2, W11
@@ -3152,13 +3147,67 @@ L__Timer1Int355:
 	PUSH	W0
 	CALL	_AjustarTiempoSistema
 	SUB	#2, W15
-;ConcentradorPrincipal.c,569 :: 		fuenteReloj = 7;                                                        //**Indica que se obtuvo la hora del RTC
+;ConcentradorPrincipal.c,576 :: 		fuenteReloj = 7;                                                        //**Indica que se obtuvo la hora del RTC
 	MOV	#lo_addr(_fuenteReloj), W1
 	MOV.B	#7, W0
 	MOV.B	W0, [W1]
-;ConcentradorPrincipal.c,571 :: 		}
-L_Timer1Int126:
-;ConcentradorPrincipal.c,573 :: 		}
+;ConcentradorPrincipal.c,579 :: 		if (banRespuestaPi==1){
+	MOV	#lo_addr(_banRespuestaPi), W0
+	MOV.B	[W0], W0
+	CP.B	W0, #1
+	BRA Z	L__Timer1Int374
+	GOTO	L_Timer1Int129
+L__Timer1Int374:
+;ConcentradorPrincipal.c,580 :: 		numDatosPayload = 7;
+	MOV	#7, W0
+	MOV	W0, _numDatosPayload
+;ConcentradorPrincipal.c,581 :: 		cabeceraSolicitud[3] = *(ptrNumDatosPayload);
+	MOV	_ptrNumDatosPayload, W0
+	MOV.B	[W0], W1
+	MOV	#lo_addr(_cabeceraSolicitud+3), W0
+	MOV.B	W1, [W0]
+;ConcentradorPrincipal.c,582 :: 		cabeceraSolicitud[4] = *(ptrNumDatosPayload+1);
+	MOV	_ptrNumDatosPayload, W0
+	INC	W0
+	MOV.B	[W0], W1
+	MOV	#lo_addr(_cabeceraSolicitud+4), W0
+	MOV.B	W1, [W0]
+;ConcentradorPrincipal.c,583 :: 		for (x=0;x<6;x++){
+	CLR	W0
+	MOV	W0, _x
+L_Timer1Int130:
+	MOV	_x, W0
+	CP	W0, #6
+	BRA LTU	L__Timer1Int375
+	GOTO	L_Timer1Int131
+L__Timer1Int375:
+;ConcentradorPrincipal.c,584 :: 		payloadConcentrador[x] = tiempo[x];
+	MOV	#lo_addr(_payloadConcentrador), W1
+	MOV	#lo_addr(_x), W0
+	ADD	W1, [W0], W2
+	MOV	#lo_addr(_tiempo), W1
+	MOV	#lo_addr(_x), W0
+	ADD	W1, [W0], W0
+	MOV.B	[W0], [W2]
+;ConcentradorPrincipal.c,583 :: 		for (x=0;x<6;x++){
+	MOV	#1, W1
+	MOV	#lo_addr(_x), W0
+	ADD	W1, [W0], [W0]
+;ConcentradorPrincipal.c,585 :: 		}
+	GOTO	L_Timer1Int130
+L_Timer1Int131:
+;ConcentradorPrincipal.c,586 :: 		payloadConcentrador[6] = fuenteReloj;
+	MOV	#lo_addr(_payloadConcentrador+6), W1
+	MOV	#lo_addr(_fuenteReloj), W0
+	MOV.B	[W0], [W1]
+;ConcentradorPrincipal.c,587 :: 		EnviarCabeceraRespuesta(cabeceraSolicitud);
+	MOV	#lo_addr(_cabeceraSolicitud), W10
+	CALL	_EnviarCabeceraRespuesta
+;ConcentradorPrincipal.c,588 :: 		}
+L_Timer1Int129:
+;ConcentradorPrincipal.c,590 :: 		}
+L_Timer1Int128:
+;ConcentradorPrincipal.c,592 :: 		}
 L_end_Timer1Int:
 	POP	W13
 	POP	W12
@@ -3183,30 +3232,30 @@ _Timer2Int:
 	REPEAT	#12
 	PUSH	[W0++]
 
-;ConcentradorPrincipal.c,578 :: 		void Timer2Int() org IVT_ADDR_T2INTERRUPT{
-;ConcentradorPrincipal.c,580 :: 		T2IF_bit = 0;                                                              //Limpia la bandera de interrupcion por desbordamiento del Timer2
+;ConcentradorPrincipal.c,597 :: 		void Timer2Int() org IVT_ADDR_T2INTERRUPT{
+;ConcentradorPrincipal.c,599 :: 		T2IF_bit = 0;                                                              //Limpia la bandera de interrupcion por desbordamiento del Timer2
 	BCLR	T2IF_bit, BitPos(T2IF_bit+0)
-;ConcentradorPrincipal.c,581 :: 		T2CON.TON = 0;                                                             //Apaga el Timer
+;ConcentradorPrincipal.c,600 :: 		T2CON.TON = 0;                                                             //Apaga el Timer
 	BCLR	T2CON, #15
-;ConcentradorPrincipal.c,582 :: 		TMR2 = 0;
+;ConcentradorPrincipal.c,601 :: 		TMR2 = 0;
 	CLR	TMR2
-;ConcentradorPrincipal.c,584 :: 		LED1 = ~LED1;//TEST
+;ConcentradorPrincipal.c,603 :: 		LED1 = ~LED1;//TEST
 	BTG	LATA1_bit, BitPos(LATA1_bit+0)
-;ConcentradorPrincipal.c,587 :: 		banRSI = 0;
+;ConcentradorPrincipal.c,606 :: 		banRSI = 0;
 	MOV	#lo_addr(_banRSI), W1
 	CLR	W0
 	MOV.B	W0, [W1]
-;ConcentradorPrincipal.c,588 :: 		banRSC = 0;
+;ConcentradorPrincipal.c,607 :: 		banRSC = 0;
 	MOV	#lo_addr(_banRSC), W1
 	CLR	W0
 	MOV.B	W0, [W1]
-;ConcentradorPrincipal.c,589 :: 		i_rs485 = 0;
+;ConcentradorPrincipal.c,608 :: 		i_rs485 = 0;
 	CLR	W0
 	MOV	W0, _i_rs485
-;ConcentradorPrincipal.c,592 :: 		numDatosPayload = 3;
+;ConcentradorPrincipal.c,611 :: 		numDatosPayload = 3;
 	MOV	#3, W0
 	MOV	W0, _numDatosPayload
-;ConcentradorPrincipal.c,598 :: 		}
+;ConcentradorPrincipal.c,617 :: 		}
 L_end_Timer2Int:
 	MOV	#26, W0
 	REPEAT	#12
@@ -3227,200 +3276,200 @@ _urx_1:
 	REPEAT	#12
 	PUSH	[W0++]
 
-;ConcentradorPrincipal.c,603 :: 		void urx_1() org  IVT_ADDR_U1RXINTERRUPT {
-;ConcentradorPrincipal.c,606 :: 		U1RXIF_bit = 0;                                                            //Limpia la bandera de interrupcion por UART
+;ConcentradorPrincipal.c,622 :: 		void urx_1() org  IVT_ADDR_U1RXINTERRUPT {
+;ConcentradorPrincipal.c,625 :: 		U1RXIF_bit = 0;                                                            //Limpia la bandera de interrupcion por UART
 	PUSH	W10
 	PUSH	W11
 	PUSH	W12
 	PUSH	W13
 	BCLR	U1RXIF_bit, BitPos(U1RXIF_bit+0)
-;ConcentradorPrincipal.c,607 :: 		byteGPS = U1RXREG;                                                         //Lee el byte de la trama enviada por el GPS
+;ConcentradorPrincipal.c,626 :: 		byteGPS = U1RXREG;                                                         //Lee el byte de la trama enviada por el GPS
 	MOV	#lo_addr(_byteGPS), W1
 	MOV.B	U1RXREG, WREG
 	MOV.B	W0, [W1]
-;ConcentradorPrincipal.c,608 :: 		U1STA.OERR = 0;                                                            //Limpia este bit para limpiar el FIFO UART1
+;ConcentradorPrincipal.c,627 :: 		U1STA.OERR = 0;                                                            //Limpia este bit para limpiar el FIFO UART1
 	BCLR	U1STA, #1
-;ConcentradorPrincipal.c,611 :: 		if (banGPSI==3){
+;ConcentradorPrincipal.c,630 :: 		if (banGPSI==3){
 	MOV	#lo_addr(_banGPSI), W0
 	MOV.B	[W0], W0
 	CP.B	W0, #3
-	BRA Z	L__urx_1358
-	GOTO	L_urx_1127
-L__urx_1358:
-;ConcentradorPrincipal.c,612 :: 		if (byteGPS!=0x2A){
+	BRA Z	L__urx_1378
+	GOTO	L_urx_1133
+L__urx_1378:
+;ConcentradorPrincipal.c,631 :: 		if (byteGPS!=0x2A){
 	MOV	#lo_addr(_byteGPS), W0
 	MOV.B	[W0], W1
 	MOV.B	#42, W0
 	CP.B	W1, W0
-	BRA NZ	L__urx_1359
-	GOTO	L_urx_1128
-L__urx_1359:
-;ConcentradorPrincipal.c,613 :: 		tramaGPS[i_gps] = byteGPS;                                           //LLena la tramaGPS hasta recibir el ultimo simbolo ("*") de la trama GPS
+	BRA NZ	L__urx_1379
+	GOTO	L_urx_1134
+L__urx_1379:
+;ConcentradorPrincipal.c,632 :: 		tramaGPS[i_gps] = byteGPS;                                           //LLena la tramaGPS hasta recibir el ultimo simbolo ("*") de la trama GPS
 	MOV	#lo_addr(_tramaGPS), W1
 	MOV	#lo_addr(_i_gps), W0
 	ADD	W1, [W0], W1
 	MOV	#lo_addr(_byteGPS), W0
 	MOV.B	[W0], [W1]
-;ConcentradorPrincipal.c,614 :: 		i_gps++;
+;ConcentradorPrincipal.c,633 :: 		i_gps++;
 	MOV	#1, W1
 	MOV	#lo_addr(_i_gps), W0
 	ADD	W1, [W0], [W0]
-;ConcentradorPrincipal.c,615 :: 		} else {
-	GOTO	L_urx_1129
-L_urx_1128:
-;ConcentradorPrincipal.c,616 :: 		banGPSI = 0;                                                         //Limpia la bandera de inicio de trama
+;ConcentradorPrincipal.c,634 :: 		} else {
+	GOTO	L_urx_1135
+L_urx_1134:
+;ConcentradorPrincipal.c,635 :: 		banGPSI = 0;                                                         //Limpia la bandera de inicio de trama
 	MOV	#lo_addr(_banGPSI), W1
 	CLR	W0
 	MOV.B	W0, [W1]
-;ConcentradorPrincipal.c,617 :: 		banGPSC = 1;                                                         //Activa la bandera de trama completa
+;ConcentradorPrincipal.c,636 :: 		banGPSC = 1;                                                         //Activa la bandera de trama completa
 	MOV	#lo_addr(_banGPSC), W1
 	MOV.B	#1, W0
 	MOV.B	W0, [W1]
-;ConcentradorPrincipal.c,618 :: 		}
-L_urx_1129:
-;ConcentradorPrincipal.c,619 :: 		}
-L_urx_1127:
-;ConcentradorPrincipal.c,622 :: 		if ((banGPSI==1)){
+;ConcentradorPrincipal.c,637 :: 		}
+L_urx_1135:
+;ConcentradorPrincipal.c,638 :: 		}
+L_urx_1133:
+;ConcentradorPrincipal.c,641 :: 		if ((banGPSI==1)){
 	MOV	#lo_addr(_banGPSI), W0
 	MOV.B	[W0], W0
 	CP.B	W0, #1
-	BRA Z	L__urx_1360
-	GOTO	L_urx_1130
-L__urx_1360:
-;ConcentradorPrincipal.c,623 :: 		if (byteGPS==0x24){                                                     //Verifica si el primer byte recibido sea la cabecera de trama "$"
+	BRA Z	L__urx_1380
+	GOTO	L_urx_1136
+L__urx_1380:
+;ConcentradorPrincipal.c,642 :: 		if (byteGPS==0x24){                                                     //Verifica si el primer byte recibido sea la cabecera de trama "$"
 	MOV	#lo_addr(_byteGPS), W0
 	MOV.B	[W0], W1
 	MOV.B	#36, W0
 	CP.B	W1, W0
-	BRA Z	L__urx_1361
-	GOTO	L_urx_1131
-L__urx_1361:
-;ConcentradorPrincipal.c,624 :: 		banGPSI = 2;
+	BRA Z	L__urx_1381
+	GOTO	L_urx_1137
+L__urx_1381:
+;ConcentradorPrincipal.c,643 :: 		banGPSI = 2;
 	MOV	#lo_addr(_banGPSI), W1
 	MOV.B	#2, W0
 	MOV.B	W0, [W1]
-;ConcentradorPrincipal.c,625 :: 		i_gps = 0;
+;ConcentradorPrincipal.c,644 :: 		i_gps = 0;
 	CLR	W0
 	MOV	W0, _i_gps
-;ConcentradorPrincipal.c,626 :: 		}
-L_urx_1131:
-;ConcentradorPrincipal.c,627 :: 		}
-L_urx_1130:
-;ConcentradorPrincipal.c,628 :: 		if ((banGPSI==2)&&(i_gps<6)){
+;ConcentradorPrincipal.c,645 :: 		}
+L_urx_1137:
+;ConcentradorPrincipal.c,646 :: 		}
+L_urx_1136:
+;ConcentradorPrincipal.c,647 :: 		if ((banGPSI==2)&&(i_gps<6)){
 	MOV	#lo_addr(_banGPSI), W0
 	MOV.B	[W0], W0
 	CP.B	W0, #2
-	BRA Z	L__urx_1362
-	GOTO	L__urx_1238
-L__urx_1362:
+	BRA Z	L__urx_1382
+	GOTO	L__urx_1256
+L__urx_1382:
 	MOV	_i_gps, W0
 	CP	W0, #6
-	BRA LTU	L__urx_1363
-	GOTO	L__urx_1237
-L__urx_1363:
-L__urx_1236:
-;ConcentradorPrincipal.c,629 :: 		tramaGPS[i_gps] = byteGPS;                                              //Recupera los datos de cabecera de la trama GPS: ["$", "G", "P", "R", "M", "C"]
+	BRA LTU	L__urx_1383
+	GOTO	L__urx_1255
+L__urx_1383:
+L__urx_1254:
+;ConcentradorPrincipal.c,648 :: 		tramaGPS[i_gps] = byteGPS;                                              //Recupera los datos de cabecera de la trama GPS: ["$", "G", "P", "R", "M", "C"]
 	MOV	#lo_addr(_tramaGPS), W1
 	MOV	#lo_addr(_i_gps), W0
 	ADD	W1, [W0], W1
 	MOV	#lo_addr(_byteGPS), W0
 	MOV.B	[W0], [W1]
-;ConcentradorPrincipal.c,630 :: 		i_gps++;
+;ConcentradorPrincipal.c,649 :: 		i_gps++;
 	MOV	#1, W1
 	MOV	#lo_addr(_i_gps), W0
 	ADD	W1, [W0], [W0]
-;ConcentradorPrincipal.c,628 :: 		if ((banGPSI==2)&&(i_gps<6)){
-L__urx_1238:
-L__urx_1237:
-;ConcentradorPrincipal.c,632 :: 		if ((banGPSI==2)&&(i_gps==6)){
+;ConcentradorPrincipal.c,647 :: 		if ((banGPSI==2)&&(i_gps<6)){
+L__urx_1256:
+L__urx_1255:
+;ConcentradorPrincipal.c,651 :: 		if ((banGPSI==2)&&(i_gps==6)){
 	MOV	#lo_addr(_banGPSI), W0
 	MOV.B	[W0], W0
 	CP.B	W0, #2
-	BRA Z	L__urx_1364
-	GOTO	L__urx_1245
-L__urx_1364:
+	BRA Z	L__urx_1384
+	GOTO	L__urx_1263
+L__urx_1384:
 	MOV	_i_gps, W0
 	CP	W0, #6
-	BRA Z	L__urx_1365
-	GOTO	L__urx_1244
-L__urx_1365:
-L__urx_1235:
-;ConcentradorPrincipal.c,634 :: 		T1CON.TON = 0;
+	BRA Z	L__urx_1385
+	GOTO	L__urx_1262
+L__urx_1385:
+L__urx_1253:
+;ConcentradorPrincipal.c,653 :: 		T1CON.TON = 0;
 	BCLR	T1CON, #15
-;ConcentradorPrincipal.c,635 :: 		TMR1 = 0;
+;ConcentradorPrincipal.c,654 :: 		TMR1 = 0;
 	CLR	TMR1
-;ConcentradorPrincipal.c,637 :: 		if (tramaGPS[1]=='G'&&tramaGPS[2]=='P'&&tramaGPS[3]=='R'&&tramaGPS[4]=='M'&&tramaGPS[5]=='C'){
+;ConcentradorPrincipal.c,656 :: 		if (tramaGPS[1]=='G'&&tramaGPS[2]=='P'&&tramaGPS[3]=='R'&&tramaGPS[4]=='M'&&tramaGPS[5]=='C'){
 	MOV	#lo_addr(_tramaGPS+1), W0
 	MOV.B	[W0], W1
 	MOV.B	#71, W0
 	CP.B	W1, W0
-	BRA Z	L__urx_1366
-	GOTO	L__urx_1243
-L__urx_1366:
+	BRA Z	L__urx_1386
+	GOTO	L__urx_1261
+L__urx_1386:
 	MOV	#lo_addr(_tramaGPS+2), W0
 	MOV.B	[W0], W1
 	MOV.B	#80, W0
 	CP.B	W1, W0
-	BRA Z	L__urx_1367
-	GOTO	L__urx_1242
-L__urx_1367:
+	BRA Z	L__urx_1387
+	GOTO	L__urx_1260
+L__urx_1387:
 	MOV	#lo_addr(_tramaGPS+3), W0
 	MOV.B	[W0], W1
 	MOV.B	#82, W0
 	CP.B	W1, W0
-	BRA Z	L__urx_1368
-	GOTO	L__urx_1241
-L__urx_1368:
+	BRA Z	L__urx_1388
+	GOTO	L__urx_1259
+L__urx_1388:
 	MOV	#lo_addr(_tramaGPS+4), W0
 	MOV.B	[W0], W1
 	MOV.B	#77, W0
 	CP.B	W1, W0
-	BRA Z	L__urx_1369
-	GOTO	L__urx_1240
-L__urx_1369:
+	BRA Z	L__urx_1389
+	GOTO	L__urx_1258
+L__urx_1389:
 	MOV	#lo_addr(_tramaGPS+5), W0
 	MOV.B	[W0], W1
 	MOV.B	#67, W0
 	CP.B	W1, W0
-	BRA Z	L__urx_1370
-	GOTO	L__urx_1239
-L__urx_1370:
-L__urx_1234:
-;ConcentradorPrincipal.c,638 :: 		banGPSI = 3;
+	BRA Z	L__urx_1390
+	GOTO	L__urx_1257
+L__urx_1390:
+L__urx_1252:
+;ConcentradorPrincipal.c,657 :: 		banGPSI = 3;
 	MOV	#lo_addr(_banGPSI), W1
 	MOV.B	#3, W0
 	MOV.B	W0, [W1]
-;ConcentradorPrincipal.c,639 :: 		i_gps = 0;
+;ConcentradorPrincipal.c,658 :: 		i_gps = 0;
 	CLR	W0
 	MOV	W0, _i_gps
-;ConcentradorPrincipal.c,640 :: 		} else {
-	GOTO	L_urx_1141
-;ConcentradorPrincipal.c,637 :: 		if (tramaGPS[1]=='G'&&tramaGPS[2]=='P'&&tramaGPS[3]=='R'&&tramaGPS[4]=='M'&&tramaGPS[5]=='C'){
-L__urx_1243:
-L__urx_1242:
-L__urx_1241:
-L__urx_1240:
-L__urx_1239:
-;ConcentradorPrincipal.c,641 :: 		banGPSI = 0;
+;ConcentradorPrincipal.c,659 :: 		} else {
+	GOTO	L_urx_1147
+;ConcentradorPrincipal.c,656 :: 		if (tramaGPS[1]=='G'&&tramaGPS[2]=='P'&&tramaGPS[3]=='R'&&tramaGPS[4]=='M'&&tramaGPS[5]=='C'){
+L__urx_1261:
+L__urx_1260:
+L__urx_1259:
+L__urx_1258:
+L__urx_1257:
+;ConcentradorPrincipal.c,660 :: 		banGPSI = 0;
 	MOV	#lo_addr(_banGPSI), W1
 	CLR	W0
 	MOV.B	W0, [W1]
-;ConcentradorPrincipal.c,642 :: 		banGPSC = 0;
+;ConcentradorPrincipal.c,661 :: 		banGPSC = 0;
 	MOV	#lo_addr(_banGPSC), W1
 	CLR	W0
 	MOV.B	W0, [W1]
-;ConcentradorPrincipal.c,643 :: 		i_gps = 0;
+;ConcentradorPrincipal.c,662 :: 		i_gps = 0;
 	CLR	W0
 	MOV	W0, _i_gps
-;ConcentradorPrincipal.c,645 :: 		horaSistema = RecuperarHoraRTC();                                    //Recupera la hora del RTC
+;ConcentradorPrincipal.c,664 :: 		horaSistema = RecuperarHoraRTC();                                    //Recupera la hora del RTC
 	CALL	_RecuperarHoraRTC
 	MOV	W0, _horaSistema
 	MOV	W1, _horaSistema+2
-;ConcentradorPrincipal.c,646 :: 		fechaSistema = RecuperarFechaRTC();                                  //Recupera la fecha del RTC
+;ConcentradorPrincipal.c,665 :: 		fechaSistema = RecuperarFechaRTC();                                  //Recupera la fecha del RTC
 	CALL	_RecuperarFechaRTC
 	MOV	W0, _fechaSistema
 	MOV	W1, _fechaSistema+2
-;ConcentradorPrincipal.c,647 :: 		AjustarTiempoSistema(horaSistema, fechaSistema, tiempo);             //Actualiza los datos de la trama tiempo con la hora y fecha recuperadas del RTC
+;ConcentradorPrincipal.c,666 :: 		AjustarTiempoSistema(horaSistema, fechaSistema, tiempo);             //Actualiza los datos de la trama tiempo con la hora y fecha recuperadas del RTC
 	MOV.D	W0, W12
 	MOV	_horaSistema, W10
 	MOV	_horaSistema+2, W11
@@ -3428,53 +3477,107 @@ L__urx_1239:
 	PUSH	W0
 	CALL	_AjustarTiempoSistema
 	SUB	#2, W15
-;ConcentradorPrincipal.c,648 :: 		fuenteReloj = 5;                                                     //**Fuente de reloj = RTC
+;ConcentradorPrincipal.c,667 :: 		fuenteReloj = 5;                                                     //**Fuente de reloj = RTC
 	MOV	#lo_addr(_fuenteReloj), W1
 	MOV.B	#5, W0
 	MOV.B	W0, [W1]
-;ConcentradorPrincipal.c,650 :: 		banGPSI = 0;
+;ConcentradorPrincipal.c,668 :: 		banGPSI = 0;
 	MOV	#lo_addr(_banGPSI), W1
 	CLR	W0
 	MOV.B	W0, [W1]
-;ConcentradorPrincipal.c,651 :: 		banGPSC = 0;
+;ConcentradorPrincipal.c,669 :: 		banGPSC = 0;
 	MOV	#lo_addr(_banGPSC), W1
 	CLR	W0
 	MOV.B	W0, [W1]
-;ConcentradorPrincipal.c,652 :: 		i_gps = 0;
+;ConcentradorPrincipal.c,670 :: 		i_gps = 0;
 	CLR	W0
 	MOV	W0, _i_gps
-;ConcentradorPrincipal.c,653 :: 		U1MODE.UARTEN = 0;                                                   //Desactiva el UART1
+;ConcentradorPrincipal.c,671 :: 		U1MODE.UARTEN = 0;                                                   //Desactiva el UART1
 	BCLR	U1MODE, #15
-;ConcentradorPrincipal.c,654 :: 		}
-L_urx_1141:
-;ConcentradorPrincipal.c,632 :: 		if ((banGPSI==2)&&(i_gps==6)){
-L__urx_1245:
-L__urx_1244:
-;ConcentradorPrincipal.c,658 :: 		if (banGPSC==1){
+;ConcentradorPrincipal.c,674 :: 		if (banRespuestaPi==1){
+	MOV	#lo_addr(_banRespuestaPi), W0
+	MOV.B	[W0], W0
+	CP.B	W0, #1
+	BRA Z	L__urx_1391
+	GOTO	L_urx_1148
+L__urx_1391:
+;ConcentradorPrincipal.c,675 :: 		numDatosPayload = 7;
+	MOV	#7, W0
+	MOV	W0, _numDatosPayload
+;ConcentradorPrincipal.c,676 :: 		cabeceraSolicitud[3] = *(ptrNumDatosPayload);
+	MOV	_ptrNumDatosPayload, W0
+	MOV.B	[W0], W1
+	MOV	#lo_addr(_cabeceraSolicitud+3), W0
+	MOV.B	W1, [W0]
+;ConcentradorPrincipal.c,677 :: 		cabeceraSolicitud[4] = *(ptrNumDatosPayload+1);
+	MOV	_ptrNumDatosPayload, W0
+	INC	W0
+	MOV.B	[W0], W1
+	MOV	#lo_addr(_cabeceraSolicitud+4), W0
+	MOV.B	W1, [W0]
+;ConcentradorPrincipal.c,678 :: 		for (x=0;x<6;x++){
+	CLR	W0
+	MOV	W0, _x
+L_urx_1149:
+	MOV	_x, W0
+	CP	W0, #6
+	BRA LTU	L__urx_1392
+	GOTO	L_urx_1150
+L__urx_1392:
+;ConcentradorPrincipal.c,679 :: 		payloadConcentrador[x] = tiempo[x];
+	MOV	#lo_addr(_payloadConcentrador), W1
+	MOV	#lo_addr(_x), W0
+	ADD	W1, [W0], W2
+	MOV	#lo_addr(_tiempo), W1
+	MOV	#lo_addr(_x), W0
+	ADD	W1, [W0], W0
+	MOV.B	[W0], [W2]
+;ConcentradorPrincipal.c,678 :: 		for (x=0;x<6;x++){
+	MOV	#1, W1
+	MOV	#lo_addr(_x), W0
+	ADD	W1, [W0], [W0]
+;ConcentradorPrincipal.c,680 :: 		}
+	GOTO	L_urx_1149
+L_urx_1150:
+;ConcentradorPrincipal.c,681 :: 		payloadConcentrador[6] = fuenteReloj;
+	MOV	#lo_addr(_payloadConcentrador+6), W1
+	MOV	#lo_addr(_fuenteReloj), W0
+	MOV.B	[W0], [W1]
+;ConcentradorPrincipal.c,682 :: 		EnviarCabeceraRespuesta(cabeceraSolicitud);
+	MOV	#lo_addr(_cabeceraSolicitud), W10
+	CALL	_EnviarCabeceraRespuesta
+;ConcentradorPrincipal.c,683 :: 		}
+L_urx_1148:
+;ConcentradorPrincipal.c,685 :: 		}
+L_urx_1147:
+;ConcentradorPrincipal.c,651 :: 		if ((banGPSI==2)&&(i_gps==6)){
+L__urx_1263:
+L__urx_1262:
+;ConcentradorPrincipal.c,689 :: 		if (banGPSC==1){
 	MOV	#lo_addr(_banGPSC), W0
 	MOV.B	[W0], W0
 	CP.B	W0, #1
-	BRA Z	L__urx_1371
-	GOTO	L_urx_1142
-L__urx_1371:
-;ConcentradorPrincipal.c,660 :: 		if (tramaGPS[12]==0x41) {
+	BRA Z	L__urx_1393
+	GOTO	L_urx_1152
+L__urx_1393:
+;ConcentradorPrincipal.c,691 :: 		if (tramaGPS[12]==0x41) {
 	MOV	#lo_addr(_tramaGPS+12), W0
 	MOV.B	[W0], W1
 	MOV.B	#65, W0
 	CP.B	W1, W0
-	BRA Z	L__urx_1372
-	GOTO	L_urx_1143
-L__urx_1372:
-;ConcentradorPrincipal.c,661 :: 		for (x=0;x<6;x++){
+	BRA Z	L__urx_1394
+	GOTO	L_urx_1153
+L__urx_1394:
+;ConcentradorPrincipal.c,692 :: 		for (x=0;x<6;x++){
 	CLR	W0
 	MOV	W0, _x
-L_urx_1144:
+L_urx_1154:
 	MOV	_x, W0
 	CP	W0, #6
-	BRA LTU	L__urx_1373
-	GOTO	L_urx_1145
-L__urx_1373:
-;ConcentradorPrincipal.c,662 :: 		datosGPS[x] = tramaGPS[x+1];                                     //Guarda los datos de hhmmss
+	BRA LTU	L__urx_1395
+	GOTO	L_urx_1155
+L__urx_1395:
+;ConcentradorPrincipal.c,693 :: 		datosGPS[x] = tramaGPS[x+1];                                     //Guarda los datos de hhmmss
 	MOV	#lo_addr(_datosGPS), W1
 	MOV	#lo_addr(_x), W0
 	ADD	W1, [W0], W2
@@ -3483,43 +3586,43 @@ L__urx_1373:
 	MOV	#lo_addr(_tramaGPS), W0
 	ADD	W0, W1, W0
 	MOV.B	[W0], [W2]
-;ConcentradorPrincipal.c,661 :: 		for (x=0;x<6;x++){
+;ConcentradorPrincipal.c,692 :: 		for (x=0;x<6;x++){
 	MOV	#1, W1
 	MOV	#lo_addr(_x), W0
 	ADD	W1, [W0], [W0]
-;ConcentradorPrincipal.c,663 :: 		}
-	GOTO	L_urx_1144
-L_urx_1145:
-;ConcentradorPrincipal.c,665 :: 		for (x=44;x<54;x++){
+;ConcentradorPrincipal.c,694 :: 		}
+	GOTO	L_urx_1154
+L_urx_1155:
+;ConcentradorPrincipal.c,696 :: 		for (x=44;x<54;x++){
 	MOV	#44, W0
 	MOV	W0, _x
-L_urx_1147:
+L_urx_1157:
 	MOV	#54, W1
 	MOV	#lo_addr(_x), W0
 	CP	W1, [W0]
-	BRA GTU	L__urx_1374
-	GOTO	L_urx_1148
-L__urx_1374:
-;ConcentradorPrincipal.c,666 :: 		if (tramaGPS[x]==0x2C){
+	BRA GTU	L__urx_1396
+	GOTO	L_urx_1158
+L__urx_1396:
+;ConcentradorPrincipal.c,697 :: 		if (tramaGPS[x]==0x2C){
 	MOV	#lo_addr(_tramaGPS), W1
 	MOV	#lo_addr(_x), W0
 	ADD	W1, [W0], W0
 	MOV.B	[W0], W1
 	MOV.B	#44, W0
 	CP.B	W1, W0
-	BRA Z	L__urx_1375
-	GOTO	L_urx_1150
-L__urx_1375:
-;ConcentradorPrincipal.c,667 :: 		for (y=0;y<6;y++){
+	BRA Z	L__urx_1397
+	GOTO	L_urx_1160
+L__urx_1397:
+;ConcentradorPrincipal.c,698 :: 		for (y=0;y<6;y++){
 	CLR	W0
 	MOV	W0, _y
-L_urx_1151:
+L_urx_1161:
 	MOV	_y, W0
 	CP	W0, #6
-	BRA LTU	L__urx_1376
-	GOTO	L_urx_1152
-L__urx_1376:
-;ConcentradorPrincipal.c,668 :: 		datosGPS[6+y] = tramaGPS[x+y+1];                         //Guarda los datos de DDMMAA en la trama datosGPS
+	BRA LTU	L__urx_1398
+	GOTO	L_urx_1162
+L__urx_1398:
+;ConcentradorPrincipal.c,699 :: 		datosGPS[6+y] = tramaGPS[x+y+1];                         //Guarda los datos de DDMMAA en la trama datosGPS
 	MOV	_y, W0
 	ADD	W0, #6, W1
 	MOV	#lo_addr(_datosGPS), W0
@@ -3531,33 +3634,33 @@ L__urx_1376:
 	MOV	#lo_addr(_tramaGPS), W0
 	ADD	W0, W1, W0
 	MOV.B	[W0], [W2]
-;ConcentradorPrincipal.c,667 :: 		for (y=0;y<6;y++){
+;ConcentradorPrincipal.c,698 :: 		for (y=0;y<6;y++){
 	MOV	#1, W1
 	MOV	#lo_addr(_y), W0
 	ADD	W1, [W0], [W0]
-;ConcentradorPrincipal.c,669 :: 		}
-	GOTO	L_urx_1151
-L_urx_1152:
-;ConcentradorPrincipal.c,670 :: 		}
-L_urx_1150:
-;ConcentradorPrincipal.c,665 :: 		for (x=44;x<54;x++){
+;ConcentradorPrincipal.c,700 :: 		}
+	GOTO	L_urx_1161
+L_urx_1162:
+;ConcentradorPrincipal.c,701 :: 		}
+L_urx_1160:
+;ConcentradorPrincipal.c,696 :: 		for (x=44;x<54;x++){
 	MOV	#1, W1
 	MOV	#lo_addr(_x), W0
 	ADD	W1, [W0], [W0]
-;ConcentradorPrincipal.c,671 :: 		}
-	GOTO	L_urx_1147
-L_urx_1148:
-;ConcentradorPrincipal.c,672 :: 		horaSistema = RecuperarHoraGPS(datosGPS);                            //Recupera la hora del GPS
+;ConcentradorPrincipal.c,702 :: 		}
+	GOTO	L_urx_1157
+L_urx_1158:
+;ConcentradorPrincipal.c,703 :: 		horaSistema = RecuperarHoraGPS(datosGPS);                            //Recupera la hora del GPS
 	MOV	#lo_addr(_datosGPS), W10
 	CALL	_RecuperarHoraGPS
 	MOV	W0, _horaSistema
 	MOV	W1, _horaSistema+2
-;ConcentradorPrincipal.c,673 :: 		fechaSistema = RecuperarFechaGPS(datosGPS);                          //Recupera la fecha del GPS
+;ConcentradorPrincipal.c,704 :: 		fechaSistema = RecuperarFechaGPS(datosGPS);                          //Recupera la fecha del GPS
 	MOV	#lo_addr(_datosGPS), W10
 	CALL	_RecuperarFechaGPS
 	MOV	W0, _fechaSistema
 	MOV	W1, _fechaSistema+2
-;ConcentradorPrincipal.c,674 :: 		AjustarTiempoSistema(horaSistema, fechaSistema, tiempo);             //Actualiza los datos de la trama tiempo con la hora y fecha recuperadas del gps
+;ConcentradorPrincipal.c,705 :: 		AjustarTiempoSistema(horaSistema, fechaSistema, tiempo);             //Actualiza los datos de la trama tiempo con la hora y fecha recuperadas del gps
 	MOV.D	W0, W12
 	MOV	_horaSistema, W10
 	MOV	_horaSistema+2, W11
@@ -3565,30 +3668,84 @@ L_urx_1148:
 	PUSH	W0
 	CALL	_AjustarTiempoSistema
 	SUB	#2, W15
-;ConcentradorPrincipal.c,675 :: 		fuenteReloj = 2;                                                     //Indica que se obtuvo la hora del GPS
+;ConcentradorPrincipal.c,706 :: 		fuenteReloj = 2;                                                     //Indica que se obtuvo la hora del GPS
 	MOV	#lo_addr(_fuenteReloj), W1
 	MOV.B	#2, W0
 	MOV.B	W0, [W1]
-;ConcentradorPrincipal.c,676 :: 		banSyncReloj = 1;
+;ConcentradorPrincipal.c,707 :: 		banSyncReloj = 1;
 	MOV	#lo_addr(_banSyncReloj), W1
 	MOV.B	#1, W0
 	MOV.B	W0, [W1]
-;ConcentradorPrincipal.c,677 :: 		banSetReloj = 0;
+;ConcentradorPrincipal.c,708 :: 		banSetReloj = 0;
 	MOV	#lo_addr(_banSetReloj), W1
 	CLR	W0
 	MOV.B	W0, [W1]
-;ConcentradorPrincipal.c,678 :: 		} else {
-	GOTO	L_urx_1154
-L_urx_1143:
-;ConcentradorPrincipal.c,680 :: 		horaSistema = RecuperarHoraRTC();                                    //Recupera la hora del RTC
+;ConcentradorPrincipal.c,711 :: 		if (banRespuestaPi==1){
+	MOV	#lo_addr(_banRespuestaPi), W0
+	MOV.B	[W0], W0
+	CP.B	W0, #1
+	BRA Z	L__urx_1399
+	GOTO	L_urx_1164
+L__urx_1399:
+;ConcentradorPrincipal.c,712 :: 		numDatosPayload = 7;
+	MOV	#7, W0
+	MOV	W0, _numDatosPayload
+;ConcentradorPrincipal.c,713 :: 		cabeceraSolicitud[3] = *(ptrNumDatosPayload);
+	MOV	_ptrNumDatosPayload, W0
+	MOV.B	[W0], W1
+	MOV	#lo_addr(_cabeceraSolicitud+3), W0
+	MOV.B	W1, [W0]
+;ConcentradorPrincipal.c,714 :: 		cabeceraSolicitud[4] = *(ptrNumDatosPayload+1);
+	MOV	_ptrNumDatosPayload, W0
+	INC	W0
+	MOV.B	[W0], W1
+	MOV	#lo_addr(_cabeceraSolicitud+4), W0
+	MOV.B	W1, [W0]
+;ConcentradorPrincipal.c,715 :: 		for (x=0;x<6;x++){
+	CLR	W0
+	MOV	W0, _x
+L_urx_1165:
+	MOV	_x, W0
+	CP	W0, #6
+	BRA LTU	L__urx_1400
+	GOTO	L_urx_1166
+L__urx_1400:
+;ConcentradorPrincipal.c,716 :: 		payloadConcentrador[x] = tiempo[x];
+	MOV	#lo_addr(_payloadConcentrador), W1
+	MOV	#lo_addr(_x), W0
+	ADD	W1, [W0], W2
+	MOV	#lo_addr(_tiempo), W1
+	MOV	#lo_addr(_x), W0
+	ADD	W1, [W0], W0
+	MOV.B	[W0], [W2]
+;ConcentradorPrincipal.c,715 :: 		for (x=0;x<6;x++){
+	MOV	#1, W1
+	MOV	#lo_addr(_x), W0
+	ADD	W1, [W0], [W0]
+;ConcentradorPrincipal.c,717 :: 		}
+	GOTO	L_urx_1165
+L_urx_1166:
+;ConcentradorPrincipal.c,718 :: 		payloadConcentrador[6] = fuenteReloj;
+	MOV	#lo_addr(_payloadConcentrador+6), W1
+	MOV	#lo_addr(_fuenteReloj), W0
+	MOV.B	[W0], [W1]
+;ConcentradorPrincipal.c,719 :: 		EnviarCabeceraRespuesta(cabeceraSolicitud);
+	MOV	#lo_addr(_cabeceraSolicitud), W10
+	CALL	_EnviarCabeceraRespuesta
+;ConcentradorPrincipal.c,720 :: 		}
+L_urx_1164:
+;ConcentradorPrincipal.c,722 :: 		} else {
+	GOTO	L_urx_1168
+L_urx_1153:
+;ConcentradorPrincipal.c,724 :: 		horaSistema = RecuperarHoraRTC();                                    //Recupera la hora del RTC
 	CALL	_RecuperarHoraRTC
 	MOV	W0, _horaSistema
 	MOV	W1, _horaSistema+2
-;ConcentradorPrincipal.c,681 :: 		fechaSistema = RecuperarFechaRTC();                                  //Recupera la fecha del RTC
+;ConcentradorPrincipal.c,725 :: 		fechaSistema = RecuperarFechaRTC();                                  //Recupera la fecha del RTC
 	CALL	_RecuperarFechaRTC
 	MOV	W0, _fechaSistema
 	MOV	W1, _fechaSistema+2
-;ConcentradorPrincipal.c,682 :: 		AjustarTiempoSistema(horaSistema, fechaSistema, tiempo);             //Actualiza los datos de la trama tiempo con la hora y fecha recuperadas del RTC
+;ConcentradorPrincipal.c,726 :: 		AjustarTiempoSistema(horaSistema, fechaSistema, tiempo);             //Actualiza los datos de la trama tiempo con la hora y fecha recuperadas del RTC
 	MOV.D	W0, W12
 	MOV	_horaSistema, W10
 	MOV	_horaSistema+2, W11
@@ -3596,28 +3753,82 @@ L_urx_1143:
 	PUSH	W0
 	CALL	_AjustarTiempoSistema
 	SUB	#2, W15
-;ConcentradorPrincipal.c,683 :: 		fuenteReloj = 6;                                                     //**Indica que se obtuvo la hora del RTC
+;ConcentradorPrincipal.c,727 :: 		fuenteReloj = 6;                                                     //**Indica que se obtuvo la hora del RTC
 	MOV	#lo_addr(_fuenteReloj), W1
 	MOV.B	#6, W0
 	MOV.B	W0, [W1]
-;ConcentradorPrincipal.c,685 :: 		}
-L_urx_1154:
-;ConcentradorPrincipal.c,687 :: 		banGPSI = 0;
+;ConcentradorPrincipal.c,730 :: 		if (banRespuestaPi==1){
+	MOV	#lo_addr(_banRespuestaPi), W0
+	MOV.B	[W0], W0
+	CP.B	W0, #1
+	BRA Z	L__urx_1401
+	GOTO	L_urx_1169
+L__urx_1401:
+;ConcentradorPrincipal.c,731 :: 		numDatosPayload = 7;
+	MOV	#7, W0
+	MOV	W0, _numDatosPayload
+;ConcentradorPrincipal.c,732 :: 		cabeceraSolicitud[3] = *(ptrNumDatosPayload);
+	MOV	_ptrNumDatosPayload, W0
+	MOV.B	[W0], W1
+	MOV	#lo_addr(_cabeceraSolicitud+3), W0
+	MOV.B	W1, [W0]
+;ConcentradorPrincipal.c,733 :: 		cabeceraSolicitud[4] = *(ptrNumDatosPayload+1);
+	MOV	_ptrNumDatosPayload, W0
+	INC	W0
+	MOV.B	[W0], W1
+	MOV	#lo_addr(_cabeceraSolicitud+4), W0
+	MOV.B	W1, [W0]
+;ConcentradorPrincipal.c,734 :: 		for (x=0;x<6;x++){
+	CLR	W0
+	MOV	W0, _x
+L_urx_1170:
+	MOV	_x, W0
+	CP	W0, #6
+	BRA LTU	L__urx_1402
+	GOTO	L_urx_1171
+L__urx_1402:
+;ConcentradorPrincipal.c,735 :: 		payloadConcentrador[x] = tiempo[x];
+	MOV	#lo_addr(_payloadConcentrador), W1
+	MOV	#lo_addr(_x), W0
+	ADD	W1, [W0], W2
+	MOV	#lo_addr(_tiempo), W1
+	MOV	#lo_addr(_x), W0
+	ADD	W1, [W0], W0
+	MOV.B	[W0], [W2]
+;ConcentradorPrincipal.c,734 :: 		for (x=0;x<6;x++){
+	MOV	#1, W1
+	MOV	#lo_addr(_x), W0
+	ADD	W1, [W0], [W0]
+;ConcentradorPrincipal.c,736 :: 		}
+	GOTO	L_urx_1170
+L_urx_1171:
+;ConcentradorPrincipal.c,737 :: 		payloadConcentrador[6] = fuenteReloj;
+	MOV	#lo_addr(_payloadConcentrador+6), W1
+	MOV	#lo_addr(_fuenteReloj), W0
+	MOV.B	[W0], [W1]
+;ConcentradorPrincipal.c,738 :: 		EnviarCabeceraRespuesta(cabeceraSolicitud);
+	MOV	#lo_addr(_cabeceraSolicitud), W10
+	CALL	_EnviarCabeceraRespuesta
+;ConcentradorPrincipal.c,739 :: 		}
+L_urx_1169:
+;ConcentradorPrincipal.c,741 :: 		}
+L_urx_1168:
+;ConcentradorPrincipal.c,743 :: 		banGPSI = 0;
 	MOV	#lo_addr(_banGPSI), W1
 	CLR	W0
 	MOV.B	W0, [W1]
-;ConcentradorPrincipal.c,688 :: 		banGPSC = 0;
+;ConcentradorPrincipal.c,744 :: 		banGPSC = 0;
 	MOV	#lo_addr(_banGPSC), W1
 	CLR	W0
 	MOV.B	W0, [W1]
-;ConcentradorPrincipal.c,689 :: 		i_gps = 0;
+;ConcentradorPrincipal.c,745 :: 		i_gps = 0;
 	CLR	W0
 	MOV	W0, _i_gps
-;ConcentradorPrincipal.c,690 :: 		U1MODE.UARTEN = 0;                                                      //Desactiva el UART1
+;ConcentradorPrincipal.c,746 :: 		U1MODE.UARTEN = 0;                                                      //Desactiva el UART1
 	BCLR	U1MODE, #15
-;ConcentradorPrincipal.c,692 :: 		}
-L_urx_1142:
-;ConcentradorPrincipal.c,694 :: 		}
+;ConcentradorPrincipal.c,748 :: 		}
+L_urx_1152:
+;ConcentradorPrincipal.c,750 :: 		}
 L_end_urx_1:
 	POP	W13
 	POP	W12
@@ -3642,208 +3853,208 @@ _urx_2:
 	REPEAT	#12
 	PUSH	[W0++]
 
-;ConcentradorPrincipal.c,699 :: 		void urx_2() org  IVT_ADDR_U2RXINTERRUPT {
-;ConcentradorPrincipal.c,702 :: 		U2RXIF_bit = 0;                                                            //Limpia la bandera de interrupcion por UART2
+;ConcentradorPrincipal.c,755 :: 		void urx_2() org  IVT_ADDR_U2RXINTERRUPT {
+;ConcentradorPrincipal.c,758 :: 		U2RXIF_bit = 0;                                                            //Limpia la bandera de interrupcion por UART2
 	PUSH	W10
 	BCLR	U2RXIF_bit, BitPos(U2RXIF_bit+0)
-;ConcentradorPrincipal.c,703 :: 		byteRS485 = U2RXREG;                                                       //Lee el byte de la trama enviada por el nodo
+;ConcentradorPrincipal.c,759 :: 		byteRS485 = U2RXREG;                                                       //Lee el byte de la trama enviada por el nodo
 	MOV	#lo_addr(_byteRS485), W1
 	MOV.B	U2RXREG, WREG
 	MOV.B	W0, [W1]
-;ConcentradorPrincipal.c,704 :: 		U2STA.OERR = 0;                                                            //Limpia este bit para limpiar el FIFO UART2
+;ConcentradorPrincipal.c,760 :: 		U2STA.OERR = 0;                                                            //Limpia este bit para limpiar el FIFO UART2
 	BCLR	U2STA, #1
-;ConcentradorPrincipal.c,707 :: 		if (banRSI2==2){
+;ConcentradorPrincipal.c,763 :: 		if (banRSI2==2){
 	MOV	#lo_addr(_banRSI2), W0
 	MOV.B	[W0], W0
 	CP.B	W0, #2
-	BRA Z	L__urx_2378
-	GOTO	L_urx_2155
-L__urx_2378:
-;ConcentradorPrincipal.c,709 :: 		if (i_rs4852<(numDatosPayload)){
+	BRA Z	L__urx_2404
+	GOTO	L_urx_2173
+L__urx_2404:
+;ConcentradorPrincipal.c,765 :: 		if (i_rs4852<(numDatosPayload)){
 	MOV	_i_rs4852, W1
 	MOV	#lo_addr(_numDatosPayload), W0
 	CP	W1, [W0]
-	BRA LTU	L__urx_2379
-	GOTO	L_urx_2156
-L__urx_2379:
-;ConcentradorPrincipal.c,710 :: 		pyloadRS485[i_rs4852] = byteRS4852;
+	BRA LTU	L__urx_2405
+	GOTO	L_urx_2174
+L__urx_2405:
+;ConcentradorPrincipal.c,766 :: 		pyloadRS485[i_rs4852] = byteRS4852;
 	MOV	#lo_addr(_pyloadRS485), W1
 	MOV	#lo_addr(_i_rs4852), W0
 	ADD	W1, [W0], W1
 	MOV	#lo_addr(_byteRS4852), W0
 	MOV.B	[W0], [W1]
-;ConcentradorPrincipal.c,711 :: 		i_rs4852++;
+;ConcentradorPrincipal.c,767 :: 		i_rs4852++;
 	MOV	#1, W1
 	MOV	#lo_addr(_i_rs4852), W0
 	ADD	W1, [W0], [W0]
-;ConcentradorPrincipal.c,712 :: 		} else {
-	GOTO	L_urx_2157
-L_urx_2156:
-;ConcentradorPrincipal.c,713 :: 		banRSI2 = 0;                                                       //Limpia la bandera de inicio de trama
+;ConcentradorPrincipal.c,768 :: 		} else {
+	GOTO	L_urx_2175
+L_urx_2174:
+;ConcentradorPrincipal.c,769 :: 		banRSI2 = 0;                                                       //Limpia la bandera de inicio de trama
 	MOV	#lo_addr(_banRSI2), W1
 	CLR	W0
 	MOV.B	W0, [W1]
-;ConcentradorPrincipal.c,714 :: 		banRSC2 = 1;                                                       //Activa la bandera de trama completa
+;ConcentradorPrincipal.c,770 :: 		banRSC2 = 1;                                                       //Activa la bandera de trama completa
 	MOV	#lo_addr(_banRSC2), W1
 	MOV.B	#1, W0
 	MOV.B	W0, [W1]
-;ConcentradorPrincipal.c,715 :: 		}
-L_urx_2157:
-;ConcentradorPrincipal.c,716 :: 		}
-L_urx_2155:
-;ConcentradorPrincipal.c,719 :: 		if ((banRSI2==0)&&(banRSC2==0)){
+;ConcentradorPrincipal.c,771 :: 		}
+L_urx_2175:
+;ConcentradorPrincipal.c,772 :: 		}
+L_urx_2173:
+;ConcentradorPrincipal.c,775 :: 		if ((banRSI2==0)&&(banRSC2==0)){
 	MOV	#lo_addr(_banRSI2), W0
 	MOV.B	[W0], W0
 	CP.B	W0, #0
-	BRA Z	L__urx_2380
-	GOTO	L__urx_2250
-L__urx_2380:
+	BRA Z	L__urx_2406
+	GOTO	L__urx_2268
+L__urx_2406:
 	MOV	#lo_addr(_banRSC2), W0
 	MOV.B	[W0], W0
 	CP.B	W0, #0
-	BRA Z	L__urx_2381
-	GOTO	L__urx_2249
-L__urx_2381:
-L__urx_2248:
-;ConcentradorPrincipal.c,720 :: 		if (byteRS4852==0x3A){                                                //Verifica si el primer byte recibido sea el byte de inicio de trama
+	BRA Z	L__urx_2407
+	GOTO	L__urx_2267
+L__urx_2407:
+L__urx_2266:
+;ConcentradorPrincipal.c,776 :: 		if (byteRS4852==0x3A){                                                //Verifica si el primer byte recibido sea el byte de inicio de trama
 	MOV	#lo_addr(_byteRS4852), W0
 	MOV.B	[W0], W1
 	MOV.B	#58, W0
 	CP.B	W1, W0
-	BRA Z	L__urx_2382
-	GOTO	L_urx_2161
-L__urx_2382:
-;ConcentradorPrincipal.c,721 :: 		banRSI2 = 1;
+	BRA Z	L__urx_2408
+	GOTO	L_urx_2179
+L__urx_2408:
+;ConcentradorPrincipal.c,777 :: 		banRSI2 = 1;
 	MOV	#lo_addr(_banRSI2), W1
 	MOV.B	#1, W0
 	MOV.B	W0, [W1]
-;ConcentradorPrincipal.c,722 :: 		i_rs4852 = 0;
+;ConcentradorPrincipal.c,778 :: 		i_rs4852 = 0;
 	CLR	W0
 	MOV	W0, _i_rs4852
-;ConcentradorPrincipal.c,724 :: 		}
-L_urx_2161:
-;ConcentradorPrincipal.c,719 :: 		if ((banRSI2==0)&&(banRSC2==0)){
-L__urx_2250:
-L__urx_2249:
-;ConcentradorPrincipal.c,726 :: 		if ((banRSI2==1)&&(byteRS4852!=0x3A)&&(i_rs4852<5)){
+;ConcentradorPrincipal.c,780 :: 		}
+L_urx_2179:
+;ConcentradorPrincipal.c,775 :: 		if ((banRSI2==0)&&(banRSC2==0)){
+L__urx_2268:
+L__urx_2267:
+;ConcentradorPrincipal.c,782 :: 		if ((banRSI2==1)&&(byteRS4852!=0x3A)&&(i_rs4852<5)){
 	MOV	#lo_addr(_banRSI2), W0
 	MOV.B	[W0], W0
 	CP.B	W0, #1
-	BRA Z	L__urx_2383
-	GOTO	L__urx_2253
-L__urx_2383:
+	BRA Z	L__urx_2409
+	GOTO	L__urx_2271
+L__urx_2409:
 	MOV	#lo_addr(_byteRS4852), W0
 	MOV.B	[W0], W1
 	MOV.B	#58, W0
 	CP.B	W1, W0
-	BRA NZ	L__urx_2384
-	GOTO	L__urx_2252
-L__urx_2384:
+	BRA NZ	L__urx_2410
+	GOTO	L__urx_2270
+L__urx_2410:
 	MOV	_i_rs4852, W0
 	CP	W0, #5
-	BRA LTU	L__urx_2385
-	GOTO	L__urx_2251
-L__urx_2385:
-L__urx_2247:
-;ConcentradorPrincipal.c,727 :: 		tramaCabeceraRS485[i_rs4852] = byteRS4852;                            //Recupera los datos de cabecera de la trama UART: [Direccion, Funcion, Subfuncion, NumeroDatos]
+	BRA LTU	L__urx_2411
+	GOTO	L__urx_2269
+L__urx_2411:
+L__urx_2265:
+;ConcentradorPrincipal.c,783 :: 		tramaCabeceraRS485[i_rs4852] = byteRS4852;                            //Recupera los datos de cabecera de la trama UART: [Direccion, Funcion, Subfuncion, NumeroDatos]
 	MOV	#lo_addr(_tramaCabeceraRS485), W1
 	MOV	#lo_addr(_i_rs4852), W0
 	ADD	W1, [W0], W1
 	MOV	#lo_addr(_byteRS4852), W0
 	MOV.B	[W0], [W1]
-;ConcentradorPrincipal.c,728 :: 		i_rs4852++;
+;ConcentradorPrincipal.c,784 :: 		i_rs4852++;
 	MOV	#1, W1
 	MOV	#lo_addr(_i_rs4852), W0
 	ADD	W1, [W0], [W0]
-;ConcentradorPrincipal.c,726 :: 		if ((banRSI2==1)&&(byteRS4852!=0x3A)&&(i_rs4852<5)){
-L__urx_2253:
-L__urx_2252:
-L__urx_2251:
-;ConcentradorPrincipal.c,730 :: 		if ((banRSI2==1)&&(i_rs4852==5)){
+;ConcentradorPrincipal.c,782 :: 		if ((banRSI2==1)&&(byteRS4852!=0x3A)&&(i_rs4852<5)){
+L__urx_2271:
+L__urx_2270:
+L__urx_2269:
+;ConcentradorPrincipal.c,786 :: 		if ((banRSI2==1)&&(i_rs4852==5)){
 	MOV	#lo_addr(_banRSI2), W0
 	MOV.B	[W0], W0
 	CP.B	W0, #1
-	BRA Z	L__urx_2386
-	GOTO	L__urx_2255
-L__urx_2386:
+	BRA Z	L__urx_2412
+	GOTO	L__urx_2273
+L__urx_2412:
 	MOV	_i_rs4852, W0
 	CP	W0, #5
-	BRA Z	L__urx_2387
-	GOTO	L__urx_2254
-L__urx_2387:
-L__urx_2246:
-;ConcentradorPrincipal.c,732 :: 		if (tramaCabeceraRS485[0]==idSolicitud){
+	BRA Z	L__urx_2413
+	GOTO	L__urx_2272
+L__urx_2413:
+L__urx_2264:
+;ConcentradorPrincipal.c,788 :: 		if (tramaCabeceraRS485[0]==idSolicitud){
 	MOV	#lo_addr(_tramaCabeceraRS485), W0
 	MOV.B	[W0], W1
 	MOV	#lo_addr(_idSolicitud), W0
 	CP.B	W1, [W0]
-	BRA Z	L__urx_2388
-	GOTO	L_urx_2168
-L__urx_2388:
-;ConcentradorPrincipal.c,734 :: 		funcionRS485 = tramaCabeceraRS485[1];
+	BRA Z	L__urx_2414
+	GOTO	L_urx_2186
+L__urx_2414:
+;ConcentradorPrincipal.c,790 :: 		funcionRS485 = tramaCabeceraRS485[1];
 	MOV	#lo_addr(_funcionRS485), W1
 	MOV	#lo_addr(_tramaCabeceraRS485+1), W0
 	MOV.B	[W0], [W1]
-;ConcentradorPrincipal.c,735 :: 		subFuncionRS485 = tramaCabeceraRS485[2];
+;ConcentradorPrincipal.c,791 :: 		subFuncionRS485 = tramaCabeceraRS485[2];
 	MOV	#lo_addr(_subFuncionRS485), W1
 	MOV	#lo_addr(_tramaCabeceraRS485+2), W0
 	MOV.B	[W0], [W1]
-;ConcentradorPrincipal.c,736 :: 		*(ptrNumDatosPayload) = tramaCabeceraRS485[3];
+;ConcentradorPrincipal.c,792 :: 		*(ptrNumDatosPayload) = tramaCabeceraRS485[3];
 	MOV	#lo_addr(_tramaCabeceraRS485+3), W1
 	MOV	_ptrNumDatosPayload, W0
 	MOV.B	[W1], [W0]
-;ConcentradorPrincipal.c,737 :: 		*(ptrNumDatosPayload+1) = tramaCabeceraRS485[4];
+;ConcentradorPrincipal.c,793 :: 		*(ptrNumDatosPayload+1) = tramaCabeceraRS485[4];
 	MOV	_ptrNumDatosPayload, W0
 	ADD	W0, #1, W1
 	MOV	#lo_addr(_tramaCabeceraRS485+4), W0
 	MOV.B	[W0], [W1]
-;ConcentradorPrincipal.c,738 :: 		idSolicitud = 0;                                                   //Encera el idSolicitud
+;ConcentradorPrincipal.c,794 :: 		idSolicitud = 0;                                                   //Encera el idSolicitud
 	MOV	#lo_addr(_idSolicitud), W1
 	CLR	W0
 	MOV.B	W0, [W1]
-;ConcentradorPrincipal.c,739 :: 		i_rs4852 = 0;                                                      //Encera el subindice para almacenar el payload
+;ConcentradorPrincipal.c,795 :: 		i_rs4852 = 0;                                                      //Encera el subindice para almacenar el payload
 	CLR	W0
 	MOV	W0, _i_rs4852
-;ConcentradorPrincipal.c,740 :: 		banRSI2 = 2;                                                       //Cambia el valor de la bandera para salir del bucle
+;ConcentradorPrincipal.c,796 :: 		banRSI2 = 2;                                                       //Cambia el valor de la bandera para salir del bucle
 	MOV	#lo_addr(_banRSI2), W1
 	MOV.B	#2, W0
 	MOV.B	W0, [W1]
-;ConcentradorPrincipal.c,742 :: 		} else {
-	GOTO	L_urx_2169
-L_urx_2168:
-;ConcentradorPrincipal.c,743 :: 		banRSI2 = 0;
+;ConcentradorPrincipal.c,798 :: 		} else {
+	GOTO	L_urx_2187
+L_urx_2186:
+;ConcentradorPrincipal.c,799 :: 		banRSI2 = 0;
 	MOV	#lo_addr(_banRSI2), W1
 	CLR	W0
 	MOV.B	W0, [W1]
-;ConcentradorPrincipal.c,744 :: 		banRSC2 = 0;
+;ConcentradorPrincipal.c,800 :: 		banRSC2 = 0;
 	MOV	#lo_addr(_banRSC2), W1
 	CLR	W0
 	MOV.B	W0, [W1]
-;ConcentradorPrincipal.c,745 :: 		i_rs4852 = 0;
+;ConcentradorPrincipal.c,801 :: 		i_rs4852 = 0;
 	CLR	W0
 	MOV	W0, _i_rs4852
-;ConcentradorPrincipal.c,746 :: 		}
-L_urx_2169:
-;ConcentradorPrincipal.c,730 :: 		if ((banRSI2==1)&&(i_rs4852==5)){
-L__urx_2255:
-L__urx_2254:
-;ConcentradorPrincipal.c,750 :: 		if (banRSC2==1){
+;ConcentradorPrincipal.c,802 :: 		}
+L_urx_2187:
+;ConcentradorPrincipal.c,786 :: 		if ((banRSI2==1)&&(i_rs4852==5)){
+L__urx_2273:
+L__urx_2272:
+;ConcentradorPrincipal.c,806 :: 		if (banRSC2==1){
 	MOV	#lo_addr(_banRSC2), W0
 	MOV.B	[W0], W0
 	CP.B	W0, #1
-	BRA Z	L__urx_2389
-	GOTO	L_urx_2170
-L__urx_2389:
-;ConcentradorPrincipal.c,752 :: 		EnviarCabeceraRespuesta(tramaCabeceraRS485);
+	BRA Z	L__urx_2415
+	GOTO	L_urx_2188
+L__urx_2415:
+;ConcentradorPrincipal.c,808 :: 		EnviarCabeceraRespuesta(tramaCabeceraRS485);
 	MOV	#lo_addr(_tramaCabeceraRS485), W10
 	CALL	_EnviarCabeceraRespuesta
-;ConcentradorPrincipal.c,754 :: 		banRSC2 = 0;
+;ConcentradorPrincipal.c,810 :: 		banRSC2 = 0;
 	MOV	#lo_addr(_banRSC2), W1
 	CLR	W0
 	MOV.B	W0, [W1]
-;ConcentradorPrincipal.c,755 :: 		}
-L_urx_2170:
-;ConcentradorPrincipal.c,756 :: 		}
+;ConcentradorPrincipal.c,811 :: 		}
+L_urx_2188:
+;ConcentradorPrincipal.c,812 :: 		}
 L_end_urx_2:
 	POP	W10
 	MOV	#26, W0

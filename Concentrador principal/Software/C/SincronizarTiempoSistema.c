@@ -69,11 +69,7 @@ void RecibirRespuesta();
 void RecibirPayloadConcentrador(unsigned int numBytesPyload, unsigned char* pyloadConcentrador);
 void EnviarTiempoRPi();														
 void SincronizarTiempo(short fuenteTiempoPIC);
-void ImprimirTiempoPIC();
-//void ObtenerOperacion();														//C:0xA0    F:0xF0
-//void ObtenerTiempoMaster();														//C:0xA5	F:0xF5    P:0xB1
-//void ObtenerReferenciaTiempo(unsigned short referencia);						//C:0xA6	F:0xF6
-//void SetRelojLocal(unsigned char* tramaTiempo);
+void ObetenerTiempoPIC();
 void Salir();
 
 //**************************************************************************************************************************************
@@ -107,27 +103,7 @@ int main(int argc, char *argv[]){
 		
 	//Obtencion de fuente de reloj:
 	SincronizarTiempo(fuenteTiempo);	
-	
-	/* if (fuenteTiempo==0){
-		EnviarTiempoRPi();
-	} else {
-		SincronizarTiempo(fuenteTiempo);		
-	} */
-	
-	/* //Prueba la comunicacion SPI
-	if (fuenteTiempo==9){
-		idPet = 0;
-		funcionPet = 4;
-		subFuncionPet = 1;
-		numDatosPet = 5;
-		payloadPet[0] = 1;
-		payloadPet[1] = 2;
-		payloadPet[2] = 3;
-		payloadPet[3] = 4;
-		payloadPet[4] = 5;
-		EnviarSolicitud(idPet, funcionPet, subFuncionPet, numDatosPet, payloadPet);
-	}  */
-		 
+			 
 	while(1){}
 
 }
@@ -247,7 +223,7 @@ void RecibirRespuesta(){
 	digitalWrite (LEDTEST, LOW);
 		
 	//Imprime fecha/hora del dsPIC:
-	ImprimirTiempoPIC();
+	ObetenerTiempoPIC();
 	
 	Salir();
 		
@@ -289,19 +265,18 @@ void EnviarTiempoRPi(){
 	payloadPet[4] = tm->tm_min;				//Minuto
 	payloadPet[5] = tm->tm_sec;				//Segundo 
 		
-	printf("%0.2d/",payloadPet[0]);			//aa
+	/* printf("%0.2d/",payloadPet[0]);			//aa
 	printf("%0.2d/",payloadPet[1]);			//MM
 	printf("%0.2d ",payloadPet[2]);			//dd
 	printf("%0.2d:",payloadPet[3]);			//hh
 	printf("%0.2d:",payloadPet[4]);			//mm
-	printf("%0.2d\n",payloadPet[5]);		//ss
+	printf("%0.2d\n",payloadPet[5]);		//ss */
 		
 	idPet = 0;
 	funcionPet = 3;
 	subFuncionPet = 1;
 	numDatosPet = 6;
 	EnviarSolicitud(idPet, funcionPet, subFuncionPet, numDatosPet, payloadPet);
-	//EnviarSolicitud(0, 3, 1, 6, payloadPet);
 	
 }
 //**************************************************************************************************************************************
@@ -310,7 +285,13 @@ void EnviarTiempoRPi(){
 void SincronizarTiempo(short fuenteTiempoPIC){
 	
 	//Obtiene la hora y la fecha del sistema:
-	printf("Obteniendo referencia de tiempo del dsPIC: ");
+	//printf("\nObteniendo referencia de tiempo del dsPIC...");
+	
+	if (fuenteTiempoPIC==1){
+		printf("\nEnviando referencia de tiempo de la RPi...");
+	} else {
+		printf("\nObteniendo referencia de tiempo del dsPIC...");
+	}
 	
 	switch (fuenteTiempoPIC){
 			case 0: 
@@ -320,7 +301,6 @@ void SincronizarTiempo(short fuenteTiempoPIC){
 					subFuncionPet = 0;
 					numDatosPet = 0;
 					EnviarSolicitud(idPet, funcionPet, subFuncionPet, numDatosPet, payloadPet);
-					//EnviarSolicitud(0, 2, 0, 0, payloadPet);
 					break;
 			case 1:
 					//Envia el tiempo locar de la RPi al dsPIC:
@@ -333,7 +313,6 @@ void SincronizarTiempo(short fuenteTiempoPIC){
 					subFuncionPet = 2;
 					numDatosPet = 0;
 					EnviarSolicitud(idPet, funcionPet, subFuncionPet, numDatosPet, payloadPet);
-					//EnviarSolicitud(0, 3, 2, 0, payloadPet);
 					break;			
 			case 3:
 					//Obtiene la hora del RTC
@@ -342,7 +321,6 @@ void SincronizarTiempo(short fuenteTiempoPIC){
 					subFuncionPet = 3;
 					numDatosPet = 0;
 					EnviarSolicitud(idPet, funcionPet, subFuncionPet, numDatosPet, payloadPet);
-					//EnviarSolicitud(0, 3, 3, 0, payloadPet);
 					break;
 			default:
 					//Prueba la comunicacion SPI
@@ -356,7 +334,6 @@ void SincronizarTiempo(short fuenteTiempoPIC){
 					payloadPet[3] = 4;
 					payloadPet[4] = 5;
 					EnviarSolicitud(idPet, funcionPet, subFuncionPet, numDatosPet, payloadPet);
-					//EnviarSolicitud(0, 4, 1, 5, payloadPet);
 					break;
 					
 	}
@@ -366,7 +343,7 @@ void SincronizarTiempo(short fuenteTiempoPIC){
 
 //**************************************************************************************************************************************
 //Funcion para imprimir el tiempo recuperado del dsPIC
-void ImprimirTiempoPIC(){
+void ObetenerTiempoPIC(){
 	
 	//Imprime la trama de solicitud:
 	printf("\nTrama enviada:");
@@ -375,7 +352,6 @@ void ImprimirTiempoPIC(){
 	for (i=0;i<numDatosPet;i++){
         printf("%#02X ", payloadPet[i]);
     }
-	
 	//Imprime la trama de respuesta:
 	printf("\nTrama recibida:");
 	printf("\n Cabecera: %d %d %d %d", idResp, funcionResp, subFuncionResp, numDatosResp);
@@ -384,34 +360,73 @@ void ImprimirTiempoPIC(){
 		printf("%#02X ", payloadResp[i]);
 	}
 	
-	//Imprime la hora recuperada de la RPi:
-	printf("\n");
-	printf("\nTiempo dsPIC: ");
 	
-	fuenteRelojPIC = payloadResp[numDatosResp-1];
-	switch (fuenteRelojPIC){
-			case 1: 
-					printf("RPi ");
-					break;
-			case 2:
-					printf("GPS ");
-					break;
-			case 3:
-					printf("RTC ");
-					break;			
-			default:
-					errorSinc = fuenteRelojPIC;
-					printf("E%d ", errorSinc);
-					break;
-	}
+	if (funcionPet==3&&subFuncionPet==1){
+		
+		//Imprime la hora enviada por la RPi:
+		printf("\n\nTiempo RPi: ");
+		printf("%0.2d/",payloadPet[0]);			//aa
+		printf("%0.2d/",payloadPet[1]);			//MM
+		printf("%0.2d ",payloadPet[2]);			//dd
+		printf("%0.2d:",payloadPet[3]);			//hh
+		printf("%0.2d:",payloadPet[4]);			//mm
+		printf("%0.2d\n",payloadPet[5]);		//ss
+		
+		//Imprime la hora recibida del dsPIC:
+		printf("Tiempo dsPIC: ");
+		printf("%0.2d/",payloadResp[0]);			//aa
+		printf("%0.2d/",payloadResp[1]);			//MM
+		printf("%0.2d ",payloadResp[2]);			//dd
+		printf("%0.2d:",payloadResp[3]);			//hh
+		printf("%0.2d:",payloadResp[4]);			//mm
+		printf("%0.2d\n",payloadResp[5]);			//ss
+				
 	
-	printf("%0.2d/",payloadResp[0]);		//aa
-	printf("%0.2d/",payloadResp[1]);		//MM
-	printf("%0.2d ",payloadResp[2]);		//dd
-	printf("%0.2d:",payloadResp[3]);		//hh
-	printf("%0.2d:",payloadResp[4]);		//mm
-	printf("%0.2d\n",payloadResp[5]);		//ss
+	} else {
+		
+		//Imprime la hora recuperada del dsPIC:
+		printf("\n");
+		printf("\nTiempo dsPIC: ");
+		
+		fuenteRelojPIC = payloadResp[numDatosResp-1];
+		switch (fuenteRelojPIC){
+				case 1: 
+						printf("RPi ");
+						break;
+				case 2:
+						printf("GPS ");
+						break;
+				case 3:
+						printf("RTC ");
+						break;			
+				default:
+						errorSinc = fuenteRelojPIC;
+						printf("E%d ", errorSinc);
+						break;
+		}
+		
+		printf("%0.2d/",payloadResp[0]);		//aa
+		printf("%0.2d/",payloadResp[1]);		//MM
+		printf("%0.2d ",payloadResp[2]);		//dd
+		printf("%0.2d:",payloadResp[3]);		//hh
+		printf("%0.2d:",payloadResp[4]);		//mm
+		printf("%0.2d\n",payloadResp[5]);		//ss
+		
+		if (errorSinc!=0){
+			switch (errorSinc){
+					case 5: 
+							printf("**Error 5: Problemas al recuperar la trama GPRMC del GPS\n");
+							break;
+					case 6:
+							printf("**Error 6: La hora del GPS no esta comprobada\n");   //Corregir en el concentrador//
+							break;
+					case 7:
+							printf("**Error 7: El GPS tarda en responder\n");
+							break;			
+			}
+		}
 	
+	}	
 				
 	Salir();
 	
@@ -423,7 +438,8 @@ void Salir(){
 	
 	bcm2835_spi_end();
 	bcm2835_close();
-	printf("\nAdios...\n");
+	//printf("\nAdios...\n");
+	printf("\n");
 	exit (-1);
 }
 //**************************************************************************************************************************************
