@@ -366,8 +366,8 @@ unsigned long RecuperarHoraRPI(unsigned short *tramaTiempoRpi){
 }
 #line 1 "c:/users/milto/milton/rsa/git/proyecto chanlud/concentrador pch/concentrador-pch/concentrador principal/firmware/librerias/rs485.c"
 #line 13 "c:/users/milto/milton/rsa/git/proyecto chanlud/concentrador pch/concentrador-pch/concentrador principal/firmware/librerias/rs485.c"
-extern sfr sbit MS1RS485;
-extern sfr sbit MS1RS485_Direction;
+extern sfr sbit MS2RS485;
+extern sfr sbit MS2RS485_Direction;
 
 
 
@@ -396,22 +396,22 @@ void EnviarTramaRS485(unsigned char puertoUART, unsigned char *cabecera, unsigne
  *(ptrnumDatos) = lsbNumDatos;
  *(ptrnumDatos+1) = msbNumDatos;
 
- if (puertoUART == 1){
- MS1RS485 = 1;
- UART1_Write(0x3A);
- UART1_Write(direccion);
- UART1_Write(funcion);
- UART1_Write(subfuncion);
- UART1_Write(lsbNumDatos);
- UART1_Write(msbNumDatos);
+ if (puertoUART == 2){
+ MS2RS485 = 1;
+ UART2_Write(0x3A);
+ UART2_Write(direccion);
+ UART2_Write(funcion);
+ UART2_Write(subfuncion);
+ UART2_Write(lsbNumDatos);
+ UART2_Write(msbNumDatos);
  for (iDatos=0;iDatos<numDatos;iDatos++){
- UART1_Write(payload[iDatos]);
+ UART2_Write(payload[iDatos]);
  }
- UART1_Write(0x0D);
- UART1_Write(0x0A);
- UART1_Write(0x00);
- while(UART1_Tx_Idle()==0);
- MS1RS485 = 0;
+ UART2_Write(0x0D);
+ UART2_Write(0x0A);
+ UART2_Write(0x00);
+ while(UART2_Tx_Idle()==0);
+ MS2RS485 = 0;
  }
 
 }
@@ -423,8 +423,8 @@ sbit RP1 at LATA4_bit;
 sbit RP1_Direction at TRISA4_bit;
 sbit RP2 at LATA0_bit;
 sbit RP2_Direction at TRISA0_bit;
-sbit MS1RS485 at LATB11_bit;
-sbit MS1RS485_Direction at TRISB11_bit;
+sbit MS2RS485 at LATB11_bit;
+sbit MS2RS485_Direction at TRISB11_bit;
 sbit LED1 at LATA1_bit;
 sbit LED1_Direction at TRISA1_bit;
 
@@ -524,7 +524,7 @@ void main() {
  subFuncionRS485 = 0;
  numDatosPayload = 0;
  ptrNumDatosPayload = (unsigned char *) & numDatosPayload;
- MS1RS485 = 0;
+ MS2RS485 = 0;
 
 
  i_gps = 0;
@@ -551,7 +551,7 @@ void main() {
  RP1 = 0;
  RP2 = 0;
  LED1 = 0;
- MS1RS485 = 0;
+ MS2RS485 = 0;
 
 
  fechaSistema = RecuperarFechaRTC();
@@ -590,7 +590,7 @@ void ConfiguracionPrincipal(){
  LED1_Direction = 0;
  RP1_Direction = 0;
  RP2_Direction = 0;
- MS1RS485_Direction = 0;
+ MS2RS485_Direction = 0;
  TRISB13_bit = 1;
  TRISB14_bit = 1;
 
@@ -825,7 +825,6 @@ void spi_1() org IVT_ADDR_SPI1INTERRUPT {
  ProcesarSolicitudConcentrador(cabeceraSolicitud, payloadSolicitud);
  } else {
 
- EnviarTramaRS485(1, cabeceraSolicitud, payloadSolicitud);
  EnviarTramaRS485(2, cabeceraSolicitud, payloadSolicitud);
  }
  CambiarEstadoBandera(0,0);
@@ -1016,7 +1015,7 @@ void Timer2Int() org IVT_ADDR_T2INTERRUPT{
 
 
  numDatosPayload = 3;
-#line 626 "C:/Users/milto/Milton/RSA/Git/Proyecto Chanlud/Concentrador PCh/Concentrador-PCh/Concentrador principal/Firmware/ConcentradorPrincipal/ConcentradorPrincipal.c"
+#line 625 "C:/Users/milto/Milton/RSA/Git/Proyecto Chanlud/Concentrador PCh/Concentrador-PCh/Concentrador principal/Firmware/ConcentradorPrincipal/ConcentradorPrincipal.c"
 }
 
 
@@ -1156,4 +1155,66 @@ void urx_1() org IVT_ADDR_U1RXINTERRUPT {
 
  }
 
+}
+
+
+
+
+void urx_2() org IVT_ADDR_U2RXINTERRUPT {
+
+
+ U2RXIF_bit = 0;
+ byteRS485 = U2RXREG;
+ U2STA.OERR = 0;
+
+
+ if (banRSI2==2){
+
+ if (i_rs4852<(numDatosPayload)){
+ pyloadRS485[i_rs4852] = byteRS4852;
+ i_rs4852++;
+ } else {
+ banRSI2 = 0;
+ banRSC2 = 1;
+ }
+ }
+
+
+ if ((banRSI2==0)&&(banRSC2==0)){
+ if (byteRS4852==0x3A){
+ banRSI2 = 1;
+ i_rs4852 = 0;
+
+ }
+ }
+ if ((banRSI2==1)&&(byteRS4852!=0x3A)&&(i_rs4852<5)){
+ tramaCabeceraRS485[i_rs4852] = byteRS4852;
+ i_rs4852++;
+ }
+ if ((banRSI2==1)&&(i_rs4852==5)){
+
+ if (tramaCabeceraRS485[0]==idSolicitud){
+
+ funcionRS485 = tramaCabeceraRS485[1];
+ subFuncionRS485 = tramaCabeceraRS485[2];
+ *(ptrNumDatosPayload) = tramaCabeceraRS485[3];
+ *(ptrNumDatosPayload+1) = tramaCabeceraRS485[4];
+ idSolicitud = 0;
+ i_rs4852 = 0;
+ banRSI2 = 2;
+
+ } else {
+ banRSI2 = 0;
+ banRSC2 = 0;
+ i_rs4852 = 0;
+ }
+ }
+
+
+ if (banRSC2==1){
+
+ EnviarCabeceraRespuesta(tramaCabeceraRS485);
+
+ banRSC2 = 0;
+ }
 }

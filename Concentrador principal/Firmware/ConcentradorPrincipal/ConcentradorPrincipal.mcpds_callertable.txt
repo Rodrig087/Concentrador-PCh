@@ -43,6 +43,8 @@ main
 	AjustarTiempoSistema
 		_Divide_32x32
 		_Modulus_32x32
+urx_2
+	EnviarCabeceraRespuesta
 int_2
 	DS3234_setDate
 		SPI2_Init_Advanced
@@ -81,8 +83,8 @@ spi_1
 		DS3234_setDate
 		EnviarCabeceraRespuesta
 	EnviarTramaRS485
-		UART1_Write
-		UART1_Tx_Idle
+		UART2_Write
+		UART2_Tx_Idle
 Timer2Int
 Timer1Int
 	RecuperarHoraRTC

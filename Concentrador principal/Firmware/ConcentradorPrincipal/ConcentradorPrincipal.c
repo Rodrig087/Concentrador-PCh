@@ -25,8 +25,8 @@ sbit RP1 at LATA4_bit;                                                          
 sbit RP1_Direction at TRISA4_bit;
 sbit RP2 at LATA0_bit;                                                          //Definicion del pin P2
 sbit RP2_Direction at TRISA0_bit;
-sbit MS1RS485 at LATB11_bit;                                                    //Definicion del pin MS RS485
-sbit MS1RS485_Direction at TRISB11_bit;
+sbit MS2RS485 at LATB11_bit;                                                    //Definicion del pin MS RS485
+sbit MS2RS485_Direction at TRISB11_bit;
 sbit LED1 at LATA1_bit;                                                         //Led TEST
 sbit LED1_Direction at TRISA1_bit;
 
@@ -126,7 +126,7 @@ void main() {
      subFuncionRS485 = 0;
      numDatosPayload = 0;
      ptrNumDatosPayload = (unsigned char *) & numDatosPayload;
-     MS1RS485 = 0;
+     MS2RS485 = 0;
 
      //GPS:
      i_gps = 0;
@@ -153,7 +153,7 @@ void main() {
      RP1 = 0;                                                                   //Encera el pin de interrupcion de la RPi
      RP2 = 0;                                                                   //Encera el pin de interrupcion de la RPi
      LED1 = 0;                                                                  //Enciende el pin TEST
-     MS1RS485 = 0;                                                              //Establece el Max485 en modo de lectura;
+     MS2RS485 = 0;                                                              //Establece el Max485 en modo de lectura;
      
      //Recupera la hora del RTC:
      fechaSistema = RecuperarFechaRTC();                                        //Recupera la fecha del RTC
@@ -192,7 +192,7 @@ void ConfiguracionPrincipal(){
      LED1_Direction = 0;                                                        //INT_SINC
      RP1_Direction = 0;                                                         //RP1
      RP2_Direction = 0;                                                         //RP2
-     MS1RS485_Direction = 0;                                                    //MSRS485
+     MS2RS485_Direction = 0;                                                    //MSRS485
      TRISB13_bit = 1;                                                           //SQW
      TRISB14_bit = 1;                                                           //PPS
 
@@ -427,7 +427,6 @@ void spi_1() org  IVT_ADDR_SPI1INTERRUPT {
                ProcesarSolicitudConcentrador(cabeceraSolicitud, payloadSolicitud);
           } else {
                //Renvia la trama de solicitud a los nodos a traves de RS485:
-               EnviarTramaRS485(1, cabeceraSolicitud, payloadSolicitud);
                EnviarTramaRS485(2, cabeceraSolicitud, payloadSolicitud);
           }
           CambiarEstadoBandera(0,0);                                            //Limpia la bandera 0
@@ -766,7 +765,7 @@ void urx_1() org  IVT_ADDR_U1RXINTERRUPT {
 //*****************************************************************************************************************************************
 
 //*****************************************************************************************************************************************
-/*//Interrupcion UART2
+//Interrupcion UART2
 void urx_2() org  IVT_ADDR_U2RXINTERRUPT {
 
      //Recupera el byte recibido en cada interrupcion:
@@ -825,5 +824,4 @@ void urx_2() org  IVT_ADDR_U2RXINTERRUPT {
           banRSC2 = 0;
        }
 }
-*/
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

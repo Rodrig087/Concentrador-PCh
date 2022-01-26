@@ -6080,8 +6080,8 @@ mode16
 mode16_bit
 mode16_spi1con1_bit
 mode16_spi2con1_bit
-ms1rs485
-ms1rs485_direction
+ms2rs485
+ms2rs485_direction
 msten
 msten
 msten
@@ -12049,6 +12049,7 @@ uldiv
 unused
 unused
 urx_1
+urx_2
 urxda
 urxda
 urxda
