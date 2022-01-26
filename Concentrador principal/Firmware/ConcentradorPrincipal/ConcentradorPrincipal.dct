@@ -1286,6 +1286,7 @@ b9
 bangpsc
 bangpsi
 baniniciomuestreo
+banp1
 banrespuestapi
 banrsc
 banrsc2
@@ -4039,6 +4040,7 @@ homirq_bit
 hompol
 hompol
 hompol_bit
+horarpirtc
 horasistema
 i
 i_gps
@@ -9103,6 +9105,8 @@ rosslp
 rosslp_bit
 rp1
 rp1_direction
+rp2
+rp2_direction
 rp20r
 rp20r_0
 rp20r_0_bit
@@ -11141,7 +11145,7 @@ tgen
 tgen
 tgen_bit
 tiempo
-tiemporpi
+tiemporpirtc
 timer1int
 timer2int
 tmr1
@@ -12045,7 +12049,6 @@ uldiv
 unused
 unused
 urx_1
-urx_2
 urxda
 urxda
 urxda

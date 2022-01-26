@@ -26,24 +26,7 @@ main
 			SPI2_Write
 				SPI2_Read
 		SPI2_Init
-urx_2
-	EnviarCabeceraRespuesta
-int_2
-	AjustarTiempoSistema
-		_Divide_32x32
-		_Modulus_32x32
-	DS3234_setDate
-		SPI2_Init_Advanced
-		Dec2Bcd
-		DS3234_write_byte
-		SPI2_Init
-		_Divide_32x32
-		_Modulus_32x32
-int_1
-	AjustarTiempoSistema
-	_Modulus_32x32
-urx_1
-	RecuperarHoraRTC
+	RecuperarFechaRTC
 		SPI2_Init_Advanced
 		DS3234_read_byte
 			SPI2_Write
@@ -51,12 +34,31 @@ urx_1
 		Bcd2Dec
 		SPI2_Init
 		_Multiply_32x32
-	RecuperarFechaRTC
+	RecuperarHoraRTC
 		SPI2_Init_Advanced
 		DS3234_read_byte
 		Bcd2Dec
 		SPI2_Init
 		_Multiply_32x32
+	AjustarTiempoSistema
+		_Divide_32x32
+		_Modulus_32x32
+int_2
+	DS3234_setDate
+		SPI2_Init_Advanced
+		Dec2Bcd
+		DS3234_write_byte
+		SPI2_Init
+		_Divide_32x32
+		_Modulus_32x32
+	AjustarTiempoSistema
+int_1
+	AjustarTiempoSistema
+	EnviarCabeceraRespuesta
+	_Modulus_32x32
+urx_1
+	RecuperarHoraRTC
+	RecuperarFechaRTC
 	AjustarTiempoSistema
 	EnviarCabeceraRespuesta
 	RecuperarHoraGPS
@@ -69,15 +71,15 @@ urx_1
 spi_1
 	CambiarEstadoBandera
 	ProcesarSolicitudConcentrador
-		EnviarCabeceraRespuesta
+		RecuperarFechaRTC
+		RecuperarHoraRTC
+		AjustarTiempoSistema
 		RecuperarHoraRPI
 			_Multiply_32x32
 		RecuperarFechaRPI
 			_Multiply_32x32
 		DS3234_setDate
-		RecuperarHoraRTC
-		RecuperarFechaRTC
-		AjustarTiempoSistema
+		EnviarCabeceraRespuesta
 	EnviarTramaRS485
 		UART1_Write
 		UART1_Tx_Idle

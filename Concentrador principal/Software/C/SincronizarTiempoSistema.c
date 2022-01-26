@@ -28,6 +28,7 @@ uso: ./sincronizartiemposistema [opcion] [0: (L)Consultar hora actural dsPIC, 1:
 
 //Declaracion de constantes
 #define P1 0																	//Pin 11 GPIO
+#define P2 2																	//Pin 13 GPIO
 #define MCLR 28																	//Pin 38 GPIO
 #define LEDTEST 29 																//Pin 40 GPIO																						
 #define TIEMPO_SPI 100
@@ -68,7 +69,7 @@ void RecibirPayloadConcentrador(unsigned int numBytesPyload, unsigned char* pylo
 void EnviarTiempoRPi();														
 void SincronizarTiempo(short fuenteTiempoPIC);
 void ObtenerTiempoPIC();
-void SetRelojLocal(unsigned char* tramaTiempo);
+void SetRelojLocal();
 void Salir();
 
 //**************************************************************************************************************************************
@@ -145,6 +146,7 @@ int ConfiguracionPrincipal(){
 	pinMode(MCLR, OUTPUT);
 	pinMode(LEDTEST, OUTPUT);
 	wiringPiISR (P1, INT_EDGE_RISING, RecibirRespuesta);
+	wiringPiISR (P2, INT_EDGE_RISING, SetRelojLocal);
 		
 	//printf("Configuracion completa\n");
 	
@@ -224,7 +226,7 @@ void RecibirRespuesta(){
 	//Imprime fecha/hora del dsPIC:
 	ObtenerTiempoPIC();
 	
-	Salir();
+	//Salir();
 		
 }
 //**************************************************************************************************************************************
@@ -261,15 +263,23 @@ void SincronizarTiempo(short fuenteTiempoPIC){
 					//Realiza una lectura del tiempo actual del dsPIC
 					idPet = 0;
 					funcionPet = 2;
-					subFuncionPet = 0;
+					subFuncionPet = 1;
 					numDatosPet = 0;
 					EnviarSolicitud(idPet, funcionPet, subFuncionPet, numDatosPet, payloadPet);
 					break;
 			case 1:
+					//Realiza una lectura del tiempo del RTC
+					idPet = 0;
+					funcionPet = 2;
+					subFuncionPet = 2;
+					numDatosPet = 0;
+					EnviarSolicitud(idPet, funcionPet, subFuncionPet, numDatosPet, payloadPet);
+					break;
+			case 2:
 					//Envia el tiempo locar de la RPi al dsPIC:
 					EnviarTiempoRPi();
 					break;
-			case 2:
+			case 3:
 					//Obtiene la hora del GPS
 					idPet = 0;
 					funcionPet = 3;
@@ -277,14 +287,6 @@ void SincronizarTiempo(short fuenteTiempoPIC){
 					numDatosPet = 0;
 					EnviarSolicitud(idPet, funcionPet, subFuncionPet, numDatosPet, payloadPet);
 					break;			
-			case 3:
-					//Obtiene la hora del RTC
-					idPet = 0;
-					funcionPet = 3;
-					subFuncionPet = 3;
-					numDatosPet = 0;
-					EnviarSolicitud(idPet, funcionPet, subFuncionPet, numDatosPet, payloadPet);
-					break;
 			default:
 					//Prueba la comunicacion SPI
 					idPet = 0;
@@ -350,6 +352,7 @@ void ObtenerTiempoPIC(){
 		printf("%#02X ", payloadResp[i]);
 	}
 	
+	//Imprime el tiempo recuperado del dsPIC:
 	if (funcionPet==3&&subFuncionPet==1){
 		
 		//Imprime la hora enviada por la RPi:
@@ -369,10 +372,16 @@ void ObtenerTiempoPIC(){
 		printf("%0.2d:",payloadResp[3]);			//hh
 		printf("%0.2d:",payloadResp[4]);			//mm
 		printf("%0.2d\n",payloadResp[5]);			//ss
-				
+		
+		//Imprime la hora del sistema:
+		//printf("\n");
+		system("date");
+		
+		Salir();
+						
 	
 	}else{
-		
+				
 		//Imprime la hora recuperada del dsPIC:
 		printf("\n");
 		printf("\nTiempo dsPIC: ");
@@ -384,13 +393,15 @@ void ObtenerTiempoPIC(){
 						break;
 				case 2:
 						printf("GPS ");
+						//SetRelojLocal();
 						break;
 				case 3:
 						printf("RTC ");
+						//SetRelojLocal(payloadResp);
 						break;			
 				default:
 						errorSinc = fuenteRelojPIC;
-						printf("E%d ", errorSinc);
+						printf("RTC|E%d ", errorSinc);
 						break;
 		}
 		
@@ -415,21 +426,29 @@ void ObtenerTiempoPIC(){
 			}
 		}
 	
+		//Imprime la hora del sistema:
+		//printf("\n");
+		system("date");
+		
+		//Sale del programa si recibe la respuesta de una solicitud de lectura:
+		if (funcionPet==2){
+			Salir();
+		}
+	
 	}	
 	
-	
+
 	//tiempoEjecucion = ((double)(tv2.tv_usec - tv1.tv_usec));
 	//printf ("\nTiempo de descarga = %0.3f us", tiempoEjecucion);
 		
-	Salir();
 	
 }
 //**************************************************************************************************************************************
 
 //**************************************************************************************************************************************
-void SetRelojLocal(unsigned char* tramaTiempo){
+void SetRelojLocal(){
 	
-	printf("Sincronizando hora local...\n");
+	printf("\nSincronizando hora local...\n");
 	char datePIC[22];
 	char comando[40];	
 	//Configura el reloj interno de la RPi con la hora recuperada del PIC:
@@ -438,30 +457,32 @@ void SetRelojLocal(unsigned char* tramaTiempo){
 	datePIC[0] = 0x27;						//'
 	datePIC[1] = '2';
 	datePIC[2] = '0';
-	datePIC[3] = (tramaTiempo[0]/10)+48;		//aa: (19/10)+48 = 49 = '1'
-	datePIC[4] = (tramaTiempo[0]%10)+48;		//    (19%10)+48 = 57 = '9'
+	datePIC[3] = (payloadResp[0]/10)+48;		//aa: (19/10)+48 = 49 = '1'
+	datePIC[4] = (payloadResp[0]%10)+48;		//    (19%10)+48 = 57 = '9'
 	datePIC[5] = '-';	
-	datePIC[6] = (tramaTiempo[1]/10)+48;		//MM
-	datePIC[7] = (tramaTiempo[1]%10)+48;
+	datePIC[6] = (payloadResp[1]/10)+48;		//MM
+	datePIC[7] = (payloadResp[1]%10)+48;
 	datePIC[8] = '-';
-	datePIC[9] = (tramaTiempo[2]/10)+48;		//dd
-	datePIC[10] = (tramaTiempo[2]%10)+48;
+	datePIC[9] = (payloadResp[2]/10)+48;		//dd
+	datePIC[10] = (payloadResp[2]%10)+48;
 	datePIC[11] = ' ';
-	datePIC[12] = (tramaTiempo[3]/10)+48;		//hh
-	datePIC[13] = (tramaTiempo[3]%10)+48;
+	datePIC[12] = (payloadResp[3]/10)+48;		//hh
+	datePIC[13] = (payloadResp[3]%10)+48;
 	datePIC[14] = ':';
-	datePIC[15] = (tramaTiempo[4]/10)+48;		//mm
-	datePIC[16] = (tramaTiempo[4]%10)+48;
+	datePIC[15] = (payloadResp[4]/10)+48;		//mm
+	datePIC[16] = (payloadResp[4]%10)+48;
 	datePIC[17] = ':';
-	datePIC[18] = (tramaTiempo[5]/10)+48;		//ss
-	datePIC[19] = (tramaTiempo[5]%10)+48;
+	datePIC[18] = (payloadResp[5]/10)+48;		//ss
+	datePIC[19] = (payloadResp[5]%10)+48;
 	datePIC[20] = 0x27;
 	datePIC[21] = '\0';
 	
 	strcat(comando, datePIC);
 	
 	system(comando);
-	system("date");
+	//system("date");
+	
+	Salir();
 	
 }
 //**************************************************************************************************************************************

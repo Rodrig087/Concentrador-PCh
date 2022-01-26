@@ -421,6 +421,8 @@ unsigned int i, j, x, y;
 
 sbit RP1 at LATA4_bit;
 sbit RP1_Direction at TRISA4_bit;
+sbit RP2 at LATA0_bit;
+sbit RP2_Direction at TRISA0_bit;
 sbit MS1RS485 at LATB11_bit;
 sbit MS1RS485_Direction at TRISB11_bit;
 sbit LED1 at LATA1_bit;
@@ -436,15 +438,16 @@ unsigned char contTimeout1;
 
 
 unsigned char tiempo[6];
-unsigned char tiempoRPI[6];
 unsigned char banSetReloj, banSyncReloj, banRespuestaPi;
 unsigned char fuenteReloj;
 unsigned long horaSistema, fechaSistema;
 unsigned char referenciaTiempo;
+unsigned long horaRPiRTC;
+unsigned char tiempoRPiRTC[6];
 
 
 unsigned char bufferSPI;
-unsigned char banSPI0, banSPI1, banSPI2, banSPI3;
+unsigned char banSPI0, banSPI1, banSPI2, banSPI3, banP1;
 unsigned char tramaSolicitudSPI[20];
 unsigned char cabeceraRespuestaSPI[10];
 unsigned char payloadConcentrador[10];
@@ -503,6 +506,7 @@ void main() {
  banSPI1 = 0;
  banSPI2 = 0;
  banSPI3 = 0;
+ banP1 = 0;
  bufferSPI = 0;
  idSolicitud = 0;
  funcionSolicitud = 0;
@@ -538,22 +542,23 @@ void main() {
  fechaSistema = 0;
  fuenteReloj = 0;
  referenciaTiempo = 0;
+ horaRPiRTC = 0;
 
 
  banInicioMuestreo = 0;
 
 
  RP1 = 0;
+ RP2 = 0;
  LED1 = 0;
  MS1RS485 = 0;
 
 
- banGPSI = 1;
- banGPSC = 0;
- U1MODE.UARTEN = 1;
-
- T1CON.TON = 1;
- TMR1 = 0;
+ fechaSistema = RecuperarFechaRTC();
+ horaSistema = RecuperarHoraRTC();
+ AjustarTiempoSistema(horaRPiRTC, fechaSistema, tiempo);
+ fuenteReloj = 3;
+ banSetReloj = 1;
 
  while(1){
  asm CLRWDT;
@@ -584,6 +589,7 @@ void ConfiguracionPrincipal(){
  TRISA2_bit = 0;
  LED1_Direction = 0;
  RP1_Direction = 0;
+ RP2_Direction = 0;
  MS1RS485_Direction = 0;
  TRISB13_bit = 1;
  TRISB14_bit = 1;
@@ -716,21 +722,21 @@ void ProcesarSolicitudConcentrador(unsigned char* cabeceraSolicitudCon, unsigned
 
  switch (cabeceraSolicitudCon[1]){
  case 2:
+ switch (cabeceraSolicitudCon[2]){
+ case 1:
 
+ banRespuestaPi = 1;
+ break;
+ case 2:
 
+ fechaSistema = RecuperarFechaRTC();
+ horaRPiRTC = RecuperarHoraRTC();
+ horaRPiRTC = horaRPiRTC + 1;
+ AjustarTiempoSistema(horaRPiRTC, fechaSistema, tiempo);
 
-
- numDatosPayload = 7;
- cabeceraSolicitud[3] = *(ptrNumDatosPayload);
- cabeceraSolicitud[4] = *(ptrNumDatosPayload+1);
-
- for (x=0;x<6;x++){
- payloadConcentrador[x] = tiempo[x];
+ banRespuestaPi = 1;
+ break;
  }
- payloadConcentrador[6] = fuenteReloj;
-
- EnviarCabeceraRespuesta(cabeceraSolicitud);
-
  break;
  case 3:
  switch (cabeceraSolicitudCon[2]){
@@ -739,57 +745,22 @@ void ProcesarSolicitudConcentrador(unsigned char* cabeceraSolicitudCon, unsigned
  horaSistema = RecuperarHoraRPI(payloadSolicitudCon);
  fechaSistema = RecuperarFechaRPI(payloadSolicitudCon);
  DS3234_setDate(horaSistema, fechaSistema);
- horaSistema = RecuperarHoraRTC();
- fechaSistema = RecuperarFechaRTC();
  AjustarTiempoSistema(horaSistema, fechaSistema, tiempo);
  fuenteReloj = 1;
  banSetReloj = 1;
  banRespuestaPi = 1;
-
-
- if (banRespuestaPi==1){
- numDatosPayload = 7;
- cabeceraSolicitud[3] = *(ptrNumDatosPayload);
- cabeceraSolicitud[4] = *(ptrNumDatosPayload+1);
- for (x=0;x<6;x++){
- payloadConcentrador[x] = tiempo[x];
- }
- payloadConcentrador[6] = fuenteReloj;
- EnviarCabeceraRespuesta(cabeceraSolicitud);
- }
-
  break;
  case 2:
 
- banRespuestaPi = 1;
+ banRespuestaPi = 0;
  banGPSI = 1;
  banGPSC = 0;
  U1MODE.UARTEN = 1;
 
- T1CON.TON = 1;
  TMR1 = 0;
- break;
- case 3:
+ T1CON.TON = 1;
 
- horaSistema = RecuperarHoraRTC();
- fechaSistema = RecuperarFechaRTC();
- AjustarTiempoSistema(horaSistema, fechaSistema, tiempo);
- fuenteReloj = 3;
- banSetReloj = 1;
- banRespuestaPi = 1;
-
-
- if (banRespuestaPi==1){
- numDatosPayload = 7;
- cabeceraSolicitud[3] = *(ptrNumDatosPayload);
- cabeceraSolicitud[4] = *(ptrNumDatosPayload+1);
- for (x=0;x<6;x++){
- payloadConcentrador[x] = tiempo[x];
- }
- payloadConcentrador[6] = fuenteReloj;
- EnviarCabeceraRespuesta(cabeceraSolicitud);
- }
-
+ INT1IE_bit = 0;
  break;
  }
  break;
@@ -900,6 +871,7 @@ void spi_1() org IVT_ADDR_SPI1INTERRUPT {
  }
  if ((banSPI3==1)&&(bufferSPI==0xF3)){
  CambiarEstadoBandera(3,0);
+ banP1 = 0;
  }
 
 }
@@ -911,10 +883,39 @@ void int_1() org IVT_ADDR_INT1INTERRUPT {
 
  INT1IF_bit = 0;
 
+
+ if ((banRespuestaPi==2)&&(banP1==0)){
+ RP2 = 1;
+ Delay_us(100);
+ RP2 = 0;
+ banRespuestaPi = 0;
+ }
+
+
  if (banSetReloj==1){
  horaSistema++;
  AjustarTiempoSistema(horaSistema, fechaSistema, tiempo);
  LED1 = ~LED1;
+ }
+
+
+ if (banRespuestaPi==1){
+
+
+
+ numDatosPayload = 7;
+ cabeceraSolicitud[3] = *(ptrNumDatosPayload);
+ cabeceraSolicitud[4] = *(ptrNumDatosPayload+1);
+
+ for (x=0;x<6;x++){
+ payloadConcentrador[x] = tiempo[x];
+ }
+
+ payloadConcentrador[6] = fuenteReloj;
+
+ EnviarCabeceraRespuesta(cabeceraSolicitud);
+
+ banRespuestaPi = 0;
  }
 
 
@@ -940,12 +941,18 @@ void int_2() org IVT_ADDR_INT2INTERRUPT {
 
  if (banSyncReloj==1){
 
- AjustarTiempoSistema(horaSistema, fechaSistema, tiempo);
  LED1 = ~LED1;
+
+
+ horaSistema = horaSistema + 2;
 
 
  Delay_ms(499);
  DS3234_setDate(horaSistema, fechaSistema);
+
+
+ horaSistema = horaSistema - 1;
+ AjustarTiempoSistema(horaSistema, fechaSistema, tiempo);
 
  banSyncReloj = 0;
  banSetReloj = 1;
@@ -970,11 +977,11 @@ void Timer1Int() org IVT_ADDR_T1INTERRUPT{
 
  horaSistema = RecuperarHoraRTC();
  fechaSistema = RecuperarFechaRTC();
- AjustarTiempoSistema(horaSistema, fechaSistema, tiempo);
+ horaRPiRTC = horaSistema + 2;
+ AjustarTiempoSistema(horaRPiRTC, fechaSistema, tiempo);
  fuenteReloj = 7;
 
 
- if (banRespuestaPi==1){
  numDatosPayload = 7;
  cabeceraSolicitud[3] = *(ptrNumDatosPayload);
  cabeceraSolicitud[4] = *(ptrNumDatosPayload+1);
@@ -983,8 +990,10 @@ void Timer1Int() org IVT_ADDR_T1INTERRUPT{
  }
  payloadConcentrador[6] = fuenteReloj;
  EnviarCabeceraRespuesta(cabeceraSolicitud);
- }
+ banP1 = 1;
+ banRespuestaPi = 2;
 
+ INT1IE_bit = 1;
  }
 
 }
@@ -1007,7 +1016,7 @@ void Timer2Int() org IVT_ADDR_T2INTERRUPT{
 
 
  numDatosPayload = 3;
-#line 617 "C:/Users/milto/Milton/RSA/Git/Proyecto Chanlud/Concentrador PCh/Concentrador-PCh/Concentrador principal/Firmware/ConcentradorPrincipal/ConcentradorPrincipal.c"
+#line 626 "C:/Users/milto/Milton/RSA/Git/Proyecto Chanlud/Concentrador PCh/Concentrador-PCh/Concentrador principal/Firmware/ConcentradorPrincipal/ConcentradorPrincipal.c"
 }
 
 
@@ -1057,15 +1066,14 @@ void urx_1() org IVT_ADDR_U1RXINTERRUPT {
 
  horaSistema = RecuperarHoraRTC();
  fechaSistema = RecuperarFechaRTC();
- AjustarTiempoSistema(horaSistema, fechaSistema, tiempo);
+ horaRPiRTC = horaSistema + 2;
+ AjustarTiempoSistema(horaRPiRTC, fechaSistema, tiempo);
  fuenteReloj = 5;
  banGPSI = 0;
  banGPSC = 0;
  i_gps = 0;
- U1MODE.UARTEN = 0;
 
 
- if (banRespuestaPi==1){
  numDatosPayload = 7;
  cabeceraSolicitud[3] = *(ptrNumDatosPayload);
  cabeceraSolicitud[4] = *(ptrNumDatosPayload+1);
@@ -1074,8 +1082,11 @@ void urx_1() org IVT_ADDR_U1RXINTERRUPT {
  }
  payloadConcentrador[6] = fuenteReloj;
  EnviarCabeceraRespuesta(cabeceraSolicitud);
- }
+ banP1 = 1;
+ banRespuestaPi = 2;
 
+ U1MODE.UARTEN = 0;
+ INT1IE_bit = 1;
  }
  }
 
@@ -1096,13 +1107,12 @@ void urx_1() org IVT_ADDR_U1RXINTERRUPT {
  }
  horaSistema = RecuperarHoraGPS(datosGPS);
  fechaSistema = RecuperarFechaGPS(datosGPS);
- AjustarTiempoSistema(horaSistema, fechaSistema, tiempo);
+ horaSistema = horaSistema + 1;
+ horaRPiRTC = horaSistema + 1;
+ AjustarTiempoSistema(horaRPiRTC, fechaSistema, tiempo);
  fuenteReloj = 2;
- banSyncReloj = 1;
- banSetReloj = 0;
 
 
- if (banRespuestaPi==1){
  numDatosPayload = 7;
  cabeceraSolicitud[3] = *(ptrNumDatosPayload);
  cabeceraSolicitud[4] = *(ptrNumDatosPayload+1);
@@ -1111,17 +1121,20 @@ void urx_1() org IVT_ADDR_U1RXINTERRUPT {
  }
  payloadConcentrador[6] = fuenteReloj;
  EnviarCabeceraRespuesta(cabeceraSolicitud);
- }
+ banP1 = 1;
+ banRespuestaPi = 2;
 
+ banSyncReloj = 1;
+ banSetReloj = 0;
  } else {
 
  horaSistema = RecuperarHoraRTC();
  fechaSistema = RecuperarFechaRTC();
- AjustarTiempoSistema(horaSistema, fechaSistema, tiempo);
+ horaRPiRTC = horaSistema + 2;
+ AjustarTiempoSistema(horaRPiRTC, fechaSistema, tiempo);
  fuenteReloj = 6;
 
 
- if (banRespuestaPi==1){
  numDatosPayload = 7;
  cabeceraSolicitud[3] = *(ptrNumDatosPayload);
  cabeceraSolicitud[4] = *(ptrNumDatosPayload+1);
@@ -1130,7 +1143,8 @@ void urx_1() org IVT_ADDR_U1RXINTERRUPT {
  }
  payloadConcentrador[6] = fuenteReloj;
  EnviarCabeceraRespuesta(cabeceraSolicitud);
- }
+ banP1 = 1;
+ banRespuestaPi = 2;
 
  }
 
@@ -1138,69 +1152,8 @@ void urx_1() org IVT_ADDR_U1RXINTERRUPT {
  banGPSC = 0;
  i_gps = 0;
  U1MODE.UARTEN = 0;
+ INT1IE_bit = 1;
 
  }
 
-}
-
-
-
-
-void urx_2() org IVT_ADDR_U2RXINTERRUPT {
-
-
- U2RXIF_bit = 0;
- byteRS485 = U2RXREG;
- U2STA.OERR = 0;
-
-
- if (banRSI2==2){
-
- if (i_rs4852<(numDatosPayload)){
- pyloadRS485[i_rs4852] = byteRS4852;
- i_rs4852++;
- } else {
- banRSI2 = 0;
- banRSC2 = 1;
- }
- }
-
-
- if ((banRSI2==0)&&(banRSC2==0)){
- if (byteRS4852==0x3A){
- banRSI2 = 1;
- i_rs4852 = 0;
-
- }
- }
- if ((banRSI2==1)&&(byteRS4852!=0x3A)&&(i_rs4852<5)){
- tramaCabeceraRS485[i_rs4852] = byteRS4852;
- i_rs4852++;
- }
- if ((banRSI2==1)&&(i_rs4852==5)){
-
- if (tramaCabeceraRS485[0]==idSolicitud){
-
- funcionRS485 = tramaCabeceraRS485[1];
- subFuncionRS485 = tramaCabeceraRS485[2];
- *(ptrNumDatosPayload) = tramaCabeceraRS485[3];
- *(ptrNumDatosPayload+1) = tramaCabeceraRS485[4];
- idSolicitud = 0;
- i_rs4852 = 0;
- banRSI2 = 2;
-
- } else {
- banRSI2 = 0;
- banRSC2 = 0;
- i_rs4852 = 0;
- }
- }
-
-
- if (banRSC2==1){
-
- EnviarCabeceraRespuesta(tramaCabeceraRS485);
-
- banRSC2 = 0;
- }
 }

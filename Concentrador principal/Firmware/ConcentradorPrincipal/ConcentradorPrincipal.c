@@ -23,6 +23,8 @@ unsigned int i, j, x, y;
 //Definicion de pines:
 sbit RP1 at LATA4_bit;                                                          //Definicion del pin P1
 sbit RP1_Direction at TRISA4_bit;
+sbit RP2 at LATA0_bit;                                                          //Definicion del pin P2
+sbit RP2_Direction at TRISA0_bit;
 sbit MS1RS485 at LATB11_bit;                                                    //Definicion del pin MS RS485
 sbit MS1RS485_Direction at TRISB11_bit;
 sbit LED1 at LATA1_bit;                                                         //Led TEST
@@ -37,16 +39,17 @@ unsigned char datosGPS[13];
 unsigned char contTimeout1;
 
 //Variables para manejo del tiempo:
-unsigned char tiempo[6];                                                       //Vector de datos de tiempo del sistema
-unsigned char tiempoRPI[6];                                                    //Vector para recuperar el tiempo enviado desde la RPi
+unsigned char tiempo[6];                                                        //Vector de datos de tiempo del sistema
 unsigned char banSetReloj, banSyncReloj, banRespuestaPi;
-unsigned char fuenteReloj;                                                     //Indica la fuente de reloj: 1=GPS, 2=RTC, 3=RPi
+unsigned char fuenteReloj;                                                      //Indica la fuente de reloj: 1=GPS, 2=RTC, 3=RPi
 unsigned long horaSistema, fechaSistema;
-unsigned char referenciaTiempo;                                                //Variable para la referencia de tiempo solicitada: 1=GPS, 2=RTC
+unsigned char referenciaTiempo;                                                 //Variable para la referencia de tiempo solicitada: 1=GPS, 2=RTC
+unsigned long horaRPiRTC;
+unsigned char tiempoRPiRTC[6];                                                  //Vector para enviar el tiempo local al RTC y a la RPi
 
 //Variables para la comunicacion SPI:
 unsigned char bufferSPI;
-unsigned char banSPI0, banSPI1, banSPI2, banSPI3;
+unsigned char banSPI0, banSPI1, banSPI2, banSPI3, banP1;
 unsigned char tramaSolicitudSPI[20];                                            //Vector para almacenar los datos de solicitud que envia la RPi a traves del SPI
 unsigned char cabeceraRespuestaSPI[10];
 unsigned char payloadConcentrador[10];
@@ -105,6 +108,7 @@ void main() {
      banSPI1 = 0;
      banSPI2 = 0;
      banSPI3 = 0;
+     banP1 = 0;
      bufferSPI = 0;
      idSolicitud = 0;
      funcionSolicitud = 0;
@@ -140,22 +144,23 @@ void main() {
      fechaSistema = 0;
      fuenteReloj = 0;
      referenciaTiempo = 0;
+     horaRPiRTC = 0;
 
      //Muestreo:
      banInicioMuestreo = 0;
 
      //Puertos:
      RP1 = 0;                                                                   //Encera el pin de interrupcion de la RPi
+     RP2 = 0;                                                                   //Encera el pin de interrupcion de la RPi
      LED1 = 0;                                                                  //Enciende el pin TEST
      MS1RS485 = 0;                                                              //Establece el Max485 en modo de lectura;
      
-     //Recupera el tiempo del GPS:
-     banGPSI = 1;                                                               //Activa la bandera de inicio de trama  del GPS
-     banGPSC = 0;                                                               //Limpia la bandera de trama completa
-     U1MODE.UARTEN = 1;                                                         //Inicializa el UART1
-     //Inicia el Timeout 1:
-     T1CON.TON = 1;
-     TMR1 = 0;
+     //Recupera la hora del RTC:
+     fechaSistema = RecuperarFechaRTC();                                        //Recupera la fecha del RTC
+     horaSistema = RecuperarHoraRTC();                                          //Recupera la hora del RTC
+     AjustarTiempoSistema(horaRPiRTC, fechaSistema, tiempo);                    //Actualiza los datos de la trama tiempo con la hora y fecha recuperadas
+     fuenteReloj = 3;                                                           //Fuente de reloj: RTC
+     banSetReloj = 1;                                                           //Activa esta bandera para usar la hora/fecha recuperada
 
      while(1){
               asm CLRWDT;         //Clear the watchdog timer
@@ -186,6 +191,7 @@ void ConfiguracionPrincipal(){
      TRISA2_bit = 0;                                                            //RTC_CS
      LED1_Direction = 0;                                                        //INT_SINC
      RP1_Direction = 0;                                                         //RP1
+     RP2_Direction = 0;                                                         //RP2
      MS1RS485_Direction = 0;                                                    //MSRS485
      TRISB13_bit = 1;                                                           //SQW
      TRISB14_bit = 1;                                                           //PPS
@@ -267,7 +273,7 @@ void EnviarCabeceraRespuesta(unsigned char *cabeceraRespuesta){
      cabeceraRespuestaSPI[3] = cabeceraRespuesta[3];
      cabeceraRespuestaSPI[4] = cabeceraRespuesta[4];
 
-     //Genera el pulso RP0 para producir la interrupcion externa en la RPi:
+     //Genera el pulso RP1 para producir la interrupcion externa en la RPi:
      RP1 = 1;
      Delay_us(100);
      RP1 = 0;
@@ -318,21 +324,21 @@ void ProcesarSolicitudConcentrador(unsigned char* cabeceraSolicitudCon, unsigned
      
      switch (cabeceraSolicitudCon[1]){
             case 2:
-                 //Envia la hora actual a la RPi
-                 //******************************************************
-                 //Envia la actualizacion de tiempo a la RPi
-                 //Actualiza el numero de datos del payload:
-                 numDatosPayload = 7;
-                 cabeceraSolicitud[3] = *(ptrNumDatosPayload);
-                 cabeceraSolicitud[4] = *(ptrNumDatosPayload+1);
-                 //Llena el payload con los datos de tiempo actual:
-                 for (x=0;x<6;x++){
-                     payloadConcentrador[x] = tiempo[x];
+                 switch (cabeceraSolicitudCon[2]){
+                        case 1:
+                             //Activa la bandera para enviar la hora actual a la RPi en el siguiente pulso SQW:
+                             banRespuestaPi = 1;
+                             break;
+                        case 2:
+                             //Subfuncion=3: Hora RTC
+                             fechaSistema = RecuperarFechaRTC();                        //Recupera la fecha del RTC
+                             horaRPiRTC = RecuperarHoraRTC();                           //Recupera la hora del RTC
+                             horaRPiRTC = horaRPiRTC + 1;                               //Incrementa un segundo para enviar la hora exacta en el siguiente pulso SQW.
+                             AjustarTiempoSistema(horaRPiRTC, fechaSistema, tiempo);    //Actualiza los datos de la trama tiempo con la hora y fecha recuperadas
+                             //fuenteReloj = 3;                                           //Fuente de reloj = RTC
+                             banRespuestaPi = 1;
+                             break;
                  }
-                 payloadConcentrador[6] = fuenteReloj;
-                 //Envia la cabecera de respuesta:
-                 EnviarCabeceraRespuesta(cabeceraSolicitud);
-                 //******************************************************
                  break;
             case 3:
                  switch (cabeceraSolicitudCon[2]){
@@ -341,58 +347,23 @@ void ProcesarSolicitudConcentrador(unsigned char* cabeceraSolicitudCon, unsigned
                              horaSistema = RecuperarHoraRPI(payloadSolicitudCon);        //Recupera la hora de la RPi
                              fechaSistema = RecuperarFechaRPI(payloadSolicitudCon);      //Recupera la fecha de la RPi
                              DS3234_setDate(horaSistema, fechaSistema);                  //Configura la hora en el RTC
-                             horaSistema = RecuperarHoraRTC();                           //Recupera la hora del RTC
-                             fechaSistema = RecuperarFechaRTC();                         //Recupera la fecha del RTC
                              AjustarTiempoSistema(horaSistema, fechaSistema, tiempo);    //Actualiza los datos de la trama tiempo con la hora y fecha recuperadas
                              fuenteReloj = 1;                                            //Fuente de reloj = RED
                              banSetReloj = 1;                                            //Activa esta bandera para usar la hora/fecha recuperada
                              banRespuestaPi = 1;                                         //Activa esta bandera para enviar la trama de tiempo a la RPi
-                             //******************************************************
-                             //Envia la actualizacion de tiempo a la RPi
-                             if (banRespuestaPi==1){
-                                 numDatosPayload = 7;
-                                 cabeceraSolicitud[3] = *(ptrNumDatosPayload);
-                                 cabeceraSolicitud[4] = *(ptrNumDatosPayload+1);
-                                 for (x=0;x<6;x++){
-                                     payloadConcentrador[x] = tiempo[x];
-                                 }
-                                 payloadConcentrador[6] = fuenteReloj;
-                                 EnviarCabeceraRespuesta(cabeceraSolicitud);
-                             }
-                             //******************************************************
                              break;
                         case 2:
                              //Subfuncion=2: Hora GPS
-                             banRespuestaPi = 1;
+                             banRespuestaPi = 0;
                              banGPSI = 1;                                                //Activa la bandera de inicio de trama  del GPS
                              banGPSC = 0;                                                //Limpia la bandera de trama completa
                              U1MODE.UARTEN = 1;                                          //Inicializa el UART1
                              //Inicia el Timeout 1:
-                             T1CON.TON = 1;
                              TMR1 = 0;
+                             T1CON.TON = 1;
+                             //Desactiva la interrupcion INT1/SQW:
+                             INT1IE_bit = 0;
                              break;
-                        case 3:
-                             //Subfuncion=3: Hora RTC
-                              horaSistema = RecuperarHoraRTC();                          //Recupera la hora del RTC
-                              fechaSistema = RecuperarFechaRTC();                        //Recupera la fecha del RTC
-                              AjustarTiempoSistema(horaSistema, fechaSistema, tiempo);   //Actualiza los datos de la trama tiempo con la hora y fecha recuperadas
-                              fuenteReloj = 3;                                           //Fuente de reloj = RTC
-                              banSetReloj = 1;                                           //Activa esta bandera para usar la hora/fecha recuperada del RTC
-                              banRespuestaPi = 1;
-                              //******************************************************
-                             //Envia la actualizacion de tiempo a la RPi
-                              if (banRespuestaPi==1){
-                                  numDatosPayload = 7;
-                                  cabeceraSolicitud[3] = *(ptrNumDatosPayload);
-                                  cabeceraSolicitud[4] = *(ptrNumDatosPayload+1);
-                                  for (x=0;x<6;x++){
-                                      payloadConcentrador[x] = tiempo[x];
-                                  }
-                                  payloadConcentrador[6] = fuenteReloj;
-                                  EnviarCabeceraRespuesta(cabeceraSolicitud);
-                              }
-                              //******************************************************
-                              break;
                  }
                  break;
             case 4:
@@ -502,6 +473,7 @@ void spi_1() org  IVT_ADDR_SPI1INTERRUPT {
        }
        if ((banSPI3==1)&&(bufferSPI==0xF3)){
           CambiarEstadoBandera(3,0);                                            //Limpia la bandera 3
+          banP1 = 0;
        }
        //************************************************************************************************************************************
 }
@@ -512,13 +484,42 @@ void spi_1() org  IVT_ADDR_SPI1INTERRUPT {
 void int_1() org IVT_ADDR_INT1INTERRUPT {
 
      INT1IF_bit = 0;                                                            //Limpia la bandera de interrupcion externa INT1
+     
+     //Genera el pulso RP2 para producir la interrupcion externa en la RPi:
+     if ((banRespuestaPi==2)&&(banP1==0)){
+         RP2 = 1;
+         Delay_us(100);
+         RP2 = 0;
+         banRespuestaPi = 0;
+     }
 
+     //Incrementa el reloj del sistema:
      if (banSetReloj==1){
-         horaSistema++;                                                         //Incrementa el reloj del sistema
+         horaSistema++;
          AjustarTiempoSistema(horaSistema, fechaSistema, tiempo);
          LED1 = ~LED1;
      }
 
+     //Envia el tiempo solicitado a la RPi.
+     if (banRespuestaPi==1){
+         //******************************************************
+         //Envia la actualizacion de tiempo a la RPi
+         //Actualiza el numero de datos del payload:
+         numDatosPayload = 7;
+         cabeceraSolicitud[3] = *(ptrNumDatosPayload);
+         cabeceraSolicitud[4] = *(ptrNumDatosPayload+1);
+         //Llena el payload con los datos de tiempo actual:
+         for (x=0;x<6;x++){
+             payloadConcentrador[x] = tiempo[x];
+         }
+         //Lena el ultimo byte del payload con el codigo
+         payloadConcentrador[6] = fuenteReloj;
+         //Envia la cabecera de respuesta:
+         EnviarCabeceraRespuesta(cabeceraSolicitud);
+         //******************************************************
+         banRespuestaPi = 0;
+     }
+     
      //Sincroniza el reloj local con el GPS cada hora:
      if ((horaSistema!=0)&&(horaSistema%3600==0)){
         banRespuestaPi = 0;                                                     //No envia respuesta a la RPi
@@ -541,13 +542,19 @@ void int_2() org IVT_ADDR_INT2INTERRUPT {
      INT2IF_bit = 0;                                                            //Limpia la bandera de interrupcion externa INT2
 
      if (banSyncReloj==1){
-         //Cumple en este turno las tareas del pulso SQW:
-         AjustarTiempoSistema(horaSistema, fechaSistema, tiempo);
-         LED1 = ~LED1;                                                  //TEST
+         
+         LED1 = ~LED1;                                                          //TEST
+         
+         //Incrementa el tiempo 2seg para setear el RTC
+         horaSistema = horaSistema + 2;
 
          //Realiza el retraso necesario para sincronizar el RTC con el PPS (Consultar Datasheet del DS3234)
          Delay_ms(499);
          DS3234_setDate(horaSistema, fechaSistema);                             //Configura la hora en el RTC con la hora recuperada de la RPi
+
+         //
+         horaSistema = horaSistema - 1;
+         AjustarTiempoSistema(horaSistema, fechaSistema, tiempo);
 
          banSyncReloj = 0;
          banSetReloj = 1;                                                       //Activa esta bandera para continuar trabajando con el pulso SQW
@@ -558,7 +565,7 @@ void int_2() org IVT_ADDR_INT2INTERRUPT {
 //*****************************************************************************************************************************************
 
 //*****************************************************************************************************************************************
-//Timeout de 4*300ms para el UART1:
+//Timeout de 4*300ms para el UART1: Espera la señal del GPS durante 0.9 segundos.
 void Timer1Int() org IVT_ADDR_T1INTERRUPT{
 
      T1IF_bit = 0;                                                              //Limpia la bandera de interrupcion por desbordamiento del Timer1
@@ -566,27 +573,29 @@ void Timer1Int() org IVT_ADDR_T1INTERRUPT{
 
      //Despues de 4 desbordamientos apaga el Timer2 y recupera la hora del RTC:
      if (contTimeout1==4){
-        T1CON.TON = 0;
+        T1CON.TON = 0;                                                          //Apaga el Timer1
         TMR1 = 0;
         contTimeout1 = 0;
         //Recupera la hora del RTC:
         horaSistema = RecuperarHoraRTC();                                       //Recupera la hora del RTC
         fechaSistema = RecuperarFechaRTC();                                     //Recupera la fecha del RTC
-        AjustarTiempoSistema(horaSistema, fechaSistema, tiempo);                //Actualiza los datos de la trama tiempo con la hora y fecha recuperadas del RTC
-        fuenteReloj = 7;                                                        //**Indica que se obtuvo la hora del RTC
+        horaRPiRTC = horaSistema + 2;
+        AjustarTiempoSistema(horaRPiRTC, fechaSistema, tiempo);                 //Actualiza los datos de la trama tiempo con la hora y fecha recuperadas del RTC
+        fuenteReloj = 7;                                                        //Fuente de reloj = RTC|E7: El GPS tarda en responder
         //******************************************************
         //Envia la actualizacion de tiempo a la RPi
-        if (banRespuestaPi==1){
-            numDatosPayload = 7;
-            cabeceraSolicitud[3] = *(ptrNumDatosPayload);
-            cabeceraSolicitud[4] = *(ptrNumDatosPayload+1);
-            for (x=0;x<6;x++){
-                payloadConcentrador[x] = tiempo[x];
-            }
-            payloadConcentrador[6] = fuenteReloj;
-            EnviarCabeceraRespuesta(cabeceraSolicitud);
+        numDatosPayload = 7;
+        cabeceraSolicitud[3] = *(ptrNumDatosPayload);
+        cabeceraSolicitud[4] = *(ptrNumDatosPayload+1);
+        for (x=0;x<6;x++){
+            payloadConcentrador[x] = tiempo[x];
         }
+        payloadConcentrador[6] = fuenteReloj;
+        EnviarCabeceraRespuesta(cabeceraSolicitud);
+        banP1 = 1;                                                              //Activa esta bandera para evitar que se genere el pulso P2 hasta que se haya terminado de enviar el payload.
+        banRespuestaPi = 2;
         //******************************************************
+        INT1IE_bit = 1;                                                         //Activa la interrupcion INT1
      }
 
 }
@@ -663,25 +672,27 @@ void urx_1() org  IVT_ADDR_U1RXINTERRUPT {
            //Recupera la hora del RTC:
            horaSistema = RecuperarHoraRTC();                                    //Recupera la hora del RTC
            fechaSistema = RecuperarFechaRTC();                                  //Recupera la fecha del RTC
-           AjustarTiempoSistema(horaSistema, fechaSistema, tiempo);             //Actualiza los datos de la trama tiempo con la hora y fecha recuperadas del RTC
-           fuenteReloj = 5;                                                     //**Fuente de reloj = RTC
+           horaRPiRTC = horaSistema + 2;
+           AjustarTiempoSistema(horaRPiRTC, fechaSistema, tiempo);              //Actualiza los datos de la trama tiempo con la hora y fecha recuperadas del RTC
+           fuenteReloj = 5;                                                     //Fuente de reloj = RTC|E5: Problemas al recuperar la trama GPRMC del GPS
            banGPSI = 0;
            banGPSC = 0;
            i_gps = 0;
-           U1MODE.UARTEN = 0;                                                   //Desactiva el UART1
            //******************************************************
-           //Envia la actualizacion de tiempo a la RPi:
-           if (banRespuestaPi==1){
-               numDatosPayload = 7;
-               cabeceraSolicitud[3] = *(ptrNumDatosPayload);
-               cabeceraSolicitud[4] = *(ptrNumDatosPayload+1);
-               for (x=0;x<6;x++){
-                   payloadConcentrador[x] = tiempo[x];
-               }
-               payloadConcentrador[6] = fuenteReloj;
-               EnviarCabeceraRespuesta(cabeceraSolicitud);
+           //Envia la actualizacion de tiempo a la RPi
+           numDatosPayload = 7;
+           cabeceraSolicitud[3] = *(ptrNumDatosPayload);
+           cabeceraSolicitud[4] = *(ptrNumDatosPayload+1);
+           for (x=0;x<6;x++){
+               payloadConcentrador[x] = tiempo[x];
            }
-           //****************************************************
+           payloadConcentrador[6] = fuenteReloj;
+           EnviarCabeceraRespuesta(cabeceraSolicitud);
+           banP1 = 1;
+           banRespuestaPi = 2;
+           //******************************************************
+           U1MODE.UARTEN = 0;                                                   //Desactiva el UART1
+           INT1IE_bit = 1;                                                      //Activa la interrupcion INT1
         }
      }
 
@@ -702,56 +713,60 @@ void urx_1() org  IVT_ADDR_U1RXINTERRUPT {
            }
            horaSistema = RecuperarHoraGPS(datosGPS);                            //Recupera la hora del GPS
            fechaSistema = RecuperarFechaGPS(datosGPS);                          //Recupera la fecha del GPS
-           AjustarTiempoSistema(horaSistema, fechaSistema, tiempo);             //Actualiza los datos de la trama tiempo con la hora y fecha recuperadas del gps
-           fuenteReloj = 2;                                                     //Indica que se obtuvo la hora del GPS
+           horaSistema = horaSistema + 1;                                       //Incrementa un segundo debido a que la trama NMEA corresponde al segundo anterior
+           horaRPiRTC = horaSistema + 1;                                        //**REVISAR** Funciona a la fuerza
+           AjustarTiempoSistema(horaRPiRTC, fechaSistema, tiempo);              //Actualiza los datos de la trama tiempo con la hora y fecha recuperadas del gps
+           fuenteReloj = 2;                                                     //Fuente de reloj = GPS
+           //******************************************************
+           //Envia la actualizacion de tiempo a la RPi
+           numDatosPayload = 7;
+           cabeceraSolicitud[3] = *(ptrNumDatosPayload);
+           cabeceraSolicitud[4] = *(ptrNumDatosPayload+1);
+           for (x=0;x<6;x++){
+                payloadConcentrador[x] = tiempo[x];
+           }
+           payloadConcentrador[6] = fuenteReloj;
+           EnviarCabeceraRespuesta(cabeceraSolicitud);
+           banP1 = 1;
+           banRespuestaPi = 2;
+          //******************************************************
            banSyncReloj = 1;
            banSetReloj = 0;
-           //******************************************************
-           //Envia la actualizacion de tiempo a la RPi:
-           if (banRespuestaPi==1){
-               numDatosPayload = 7;
-               cabeceraSolicitud[3] = *(ptrNumDatosPayload);
-               cabeceraSolicitud[4] = *(ptrNumDatosPayload+1);
-               for (x=0;x<6;x++){
-                   payloadConcentrador[x] = tiempo[x];
-               }
-               payloadConcentrador[6] = fuenteReloj;
-               EnviarCabeceraRespuesta(cabeceraSolicitud);
-           }
-           //****************************************************
         } else {
            //Recupera la hora del RTC:
            horaSistema = RecuperarHoraRTC();                                    //Recupera la hora del RTC
            fechaSistema = RecuperarFechaRTC();                                  //Recupera la fecha del RTC
-           AjustarTiempoSistema(horaSistema, fechaSistema, tiempo);             //Actualiza los datos de la trama tiempo con la hora y fecha recuperadas del RTC
-           fuenteReloj = 6;                                                     //**Indica que se obtuvo la hora del RTC
+           horaRPiRTC = horaSistema + 2;
+           AjustarTiempoSistema(horaRPiRTC, fechaSistema, tiempo);              //Actualiza los datos de la trama tiempo con la hora y fecha recuperadas del RTC
+           fuenteReloj = 6;                                                     //Fuente de reloj = RTC|E6: La hora del GPS es invalida
            //******************************************************
-           //Envia la actualizacion de tiempo a la RPi:
-           if (banRespuestaPi==1){
-               numDatosPayload = 7;
-               cabeceraSolicitud[3] = *(ptrNumDatosPayload);
-               cabeceraSolicitud[4] = *(ptrNumDatosPayload+1);
-               for (x=0;x<6;x++){
-                   payloadConcentrador[x] = tiempo[x];
-               }
-               payloadConcentrador[6] = fuenteReloj;
-               EnviarCabeceraRespuesta(cabeceraSolicitud);
+           //Envia la actualizacion de tiempo a la RPi
+           numDatosPayload = 7;
+           cabeceraSolicitud[3] = *(ptrNumDatosPayload);
+           cabeceraSolicitud[4] = *(ptrNumDatosPayload+1);
+           for (x=0;x<6;x++){
+               payloadConcentrador[x] = tiempo[x];
            }
-           //****************************************************
+           payloadConcentrador[6] = fuenteReloj;
+           EnviarCabeceraRespuesta(cabeceraSolicitud);
+           banP1 = 1;
+           banRespuestaPi = 2;
+           //******************************************************
         }
 
         banGPSI = 0;
         banGPSC = 0;
         i_gps = 0;
         U1MODE.UARTEN = 0;                                                      //Desactiva el UART1
-
+        INT1IE_bit = 1;                                                         //Activa la interrupcion INT1
+        
      }
 
 }
 //*****************************************************************************************************************************************
 
 //*****************************************************************************************************************************************
-//Interrupcion UART2
+/*//Interrupcion UART2
 void urx_2() org  IVT_ADDR_U2RXINTERRUPT {
 
      //Recupera el byte recibido en cada interrupcion:
@@ -810,5 +825,5 @@ void urx_2() org  IVT_ADDR_U2RXINTERRUPT {
           banRSC2 = 0;
        }
 }
-
+*/
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
