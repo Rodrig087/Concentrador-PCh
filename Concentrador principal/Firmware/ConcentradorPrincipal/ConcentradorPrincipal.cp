@@ -613,6 +613,7 @@ void ConfiguracionPrincipal(){
  UART2_Init(19200);
 
 
+
  SPI1STAT.SPIEN = 1;
  SPI1_Init_Advanced(_SPI_SLAVE, _SPI_8_BIT, _SPI_PRESCALE_SEC_1, _SPI_PRESCALE_PRI_1, _SPI_SS_ENABLE, _SPI_DATA_SAMPLE_END, _SPI_CLK_IDLE_HIGH, _SPI_ACTIVE_2_IDLE);
  SPI1IF_bit = 0;
@@ -894,7 +895,7 @@ void int_1() org IVT_ADDR_INT1INTERRUPT {
  if (banSetReloj==1){
  horaSistema++;
  AjustarTiempoSistema(horaSistema, fechaSistema, tiempo);
- LED1 = ~LED1;
+
  }
 
 
@@ -1015,7 +1016,7 @@ void Timer2Int() org IVT_ADDR_T2INTERRUPT{
 
 
  numDatosPayload = 3;
-#line 625 "C:/Users/milto/Milton/RSA/Git/Proyecto Chanlud/Concentrador PCh/Concentrador-PCh/Concentrador principal/Firmware/ConcentradorPrincipal/ConcentradorPrincipal.c"
+#line 626 "C:/Users/milto/Milton/RSA/Git/Proyecto Chanlud/Concentrador PCh/Concentrador-PCh/Concentrador principal/Firmware/ConcentradorPrincipal/ConcentradorPrincipal.c"
 }
 
 
@@ -1164,7 +1165,7 @@ void urx_2() org IVT_ADDR_U2RXINTERRUPT {
 
 
  U2RXIF_bit = 0;
- byteRS485 = U2RXREG;
+ byteRS4852 = U2RXREG;
  U2STA.OERR = 0;
 
 
@@ -1184,7 +1185,6 @@ void urx_2() org IVT_ADDR_U2RXINTERRUPT {
  if (byteRS4852==0x3A){
  banRSI2 = 1;
  i_rs4852 = 0;
-
  }
  }
  if ((banRSI2==1)&&(byteRS4852!=0x3A)&&(i_rs4852<5)){
@@ -1212,6 +1212,7 @@ void urx_2() org IVT_ADDR_U2RXINTERRUPT {
 
 
  if (banRSC2==1){
+
 
  EnviarCabeceraRespuesta(tramaCabeceraRS485);
 

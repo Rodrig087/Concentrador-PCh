@@ -9,7 +9,7 @@ hint: 0	1004	interrupt handler (Timer1Int at 0x001A)	ConcentradorPrincipal.c
 hint: 0	1004	interrupt handler (Timer2Int at 0x0022)	ConcentradorPrincipal.c
 hint: 0	1004	interrupt handler (urx_1 at 0x002A)	ConcentradorPrincipal.c
 hint: 0	1004	interrupt handler (urx_2 at 0x0050)	ConcentradorPrincipal.c
-diagnostics: 826	123	Compiled Successfully	ConcentradorPrincipal.c
+diagnostics: 827	123	Compiled Successfully	ConcentradorPrincipal.c
 warning: 30	1512	variable 'numDatos' might not have been initialized	rs485.c
 warning: 165	1519	Logical expression is always: 'False'	ConcentradorPrincipal.c
 hint: 77	1164	Variable 'value' has been eliminated by optimizer	ConcentradorPrincipal.c
@@ -22,11 +22,11 @@ hint: 65	1164	Variable 'fechaGPS' has been eliminated by optimizer	ConcentradorP
 hint: 96	1164	Variable 'horaGPS' has been eliminated by optimizer	ConcentradorPrincipal.c
 hint: 12	1164	Variable 'fechaRPi' has been eliminated by optimizer	ConcentradorPrincipal.c
 hint: 23	1164	Variable 'horaRPi' has been eliminated by optimizer	ConcentradorPrincipal.c
-diagnostics: 0	127	All files Compiled in 141 ms	 
+diagnostics: 0	127	All files Compiled in 140 ms	 
 hint: 0	1144	Used RX (bytes): 32 (100%)   Free RX (bytes): 0 (0%)	Used RX (bytes): 32 (100%)   Free RX (bytes): 0 (0%)
 hint: 0	1144	Static RAM (bytes): 1173   Dynamic RAM (bytes): 27498	Static RAM (bytes): 1173   Dynamic RAM (bytes): 27498
-hint: 0	1144	Used ROM (bytes): 6828 (4%)  Free ROM (bytes): 169280 (96%)	Used ROM (bytes): 6828 (4%)  Free ROM (bytes): 169280 (96%)
+hint: 0	1144	Used ROM (bytes): 6826 (4%)  Free ROM (bytes): 169282 (96%)	Used ROM (bytes): 6826 (4%)  Free ROM (bytes): 169282 (96%)
 diagnostics: 0	125	Project Linked Successfully	ConcentradorPrincipal.mcpds
 diagnostics: 0	128	Linked in 125 ms	 
-diagnostics: 0	129	Project 'ConcentradorPrincipal.mcpds' completed: 375 ms	 
-diagnostics: 0	103	Finished successfully: 26 ene. 2022, 12:39:38	ConcentradorPrincipal.mcpds
+diagnostics: 0	129	Project 'ConcentradorPrincipal.mcpds' completed: 359 ms	 
+diagnostics: 0	103	Finished successfully: 22 mar. 2022, 20:16:41	ConcentradorPrincipal.mcpds

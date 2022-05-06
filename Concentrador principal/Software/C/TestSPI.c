@@ -1,5 +1,6 @@
 //Compilar:
 //gcc TestSPI.c -o testspi -lbcm2835 -lwiringPi 
+//gcc TestSPI.c -o /home/rsa/Ejecutables/testspi -lbcm2835 -lwiringPi
 
 /*-------------------------------------------------------------------------------------------------------------------------
 Autor: Milton Munoz

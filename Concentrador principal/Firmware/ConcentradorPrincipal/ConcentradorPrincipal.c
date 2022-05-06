@@ -214,6 +214,7 @@ void ConfiguracionPrincipal(){
      U2STAbits.URXISEL = 0x00;
      UART2_Init(19200);                                                         //Inicializa el UART2 a 19200 bps
 
+
      //Configuracion del puerto SPI1 en modo Esclavo
      SPI1STAT.SPIEN = 1;                                                        //Habilita el SPI1 *
      SPI1_Init_Advanced(_SPI_SLAVE, _SPI_8_BIT, _SPI_PRESCALE_SEC_1, _SPI_PRESCALE_PRI_1, _SPI_SS_ENABLE, _SPI_DATA_SAMPLE_END, _SPI_CLK_IDLE_HIGH, _SPI_ACTIVE_2_IDLE);
@@ -496,7 +497,7 @@ void int_1() org IVT_ADDR_INT1INTERRUPT {
      if (banSetReloj==1){
          horaSistema++;
          AjustarTiempoSistema(horaSistema, fechaSistema, tiempo);
-         LED1 = ~LED1;
+         //LED1 = ~LED1;
      }
 
      //Envia el tiempo solicitado a la RPi.
@@ -770,7 +771,7 @@ void urx_2() org  IVT_ADDR_U2RXINTERRUPT {
 
      //Recupera el byte recibido en cada interrupcion:
      U2RXIF_bit = 0;                                                            //Limpia la bandera de interrupcion por UART2
-     byteRS485 = U2RXREG;                                                       //Lee el byte de la trama enviada por el nodo
+     byteRS4852 = U2RXREG;                                                       //Lee el byte de la trama enviada por el nodo
      U2STA.OERR = 0;                                                            //Limpia este bit para limpiar el FIFO UART2
 
      //Recupera el pyload de la trama RS485:                                  //Aqui deberia entrar despues de recuperar la cabecera de trama
@@ -790,7 +791,6 @@ void urx_2() org  IVT_ADDR_U2RXINTERRUPT {
           if (byteRS4852==0x3A){                                                //Verifica si el primer byte recibido sea el byte de inicio de trama
              banRSI2 = 1;
              i_rs4852 = 0;
-             //LED2 = 1;
           }
        }
        if ((banRSI2==1)&&(byteRS4852!=0x3A)&&(i_rs4852<5)){
@@ -819,6 +819,7 @@ void urx_2() org  IVT_ADDR_U2RXINTERRUPT {
        //Realiza el procesamiento de la informacion del  pyload:                //Aqui se realiza cualquier accion con el pyload recuperado
        if (banRSC2==1){
           //LED2 = 0;
+
           EnviarCabeceraRespuesta(tramaCabeceraRS485);
           //Limpia la bandera de trama completa:
           banRSC2 = 0;
