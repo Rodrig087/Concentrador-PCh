@@ -1,3 +1,4 @@
+
 //Compilar:
 //gcc TestSPI.c -o testspi -lbcm2835 -lwiringPi 
 //gcc TestSPI.c -o /home/rsa/Ejecutables/testspi -lbcm2835 -lwiringPi
@@ -13,6 +14,7 @@ Funcion 4: Test comunicacion
         Subfuncion 1: Test SPI (sumRecibido=1645)
         Subfuncion 2: Test RS485 (sumRecibido=1805)
 -------------------------------------------------------------------------------------------------------------------------*/
+
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -55,6 +57,8 @@ unsigned char payloadResp[2600];
 unsigned int sumEnviado;
 unsigned int sumRecibido;
 
+char menuNodo;
+
 FILE *fp;
 
 
@@ -74,9 +78,7 @@ void Salir();
 //**************************************************************************************************************************************
 //************************************************************** Principal *************************************************************
 //**************************************************************************************************************************************
-int main() {
-
-	//printf("Iniciando...\n");
+int main(int argc, char *argv[]) {
   
 	//Inicializa las variables:
 	i = 0;
@@ -91,21 +93,67 @@ int main() {
 	subFuncionResp = 0;
 	numDatosResp = 0;
 	ptrNumDatosResp = (unsigned char *) & numDatosResp;
+	
+	//Verifica si la peticion va dirigida al concentrador o a un nodo:
+	idPet = (char)(atoi(argv[1]));
+	if (idPet==0){
+		funcionPet = 4;
+		subFuncionPet = 1;
+		numDatosPet = 5;
+		/*
+		payloadPet[0] = 0xA1;
+		payloadPet[1] = 0xA2;
+		payloadPet[2] = 0xA3;
+		payloadPet[3] = 0xA4;
+		payloadPet[4] = 0xA5;
+		*/
+		payloadPet[0] = 1;
+		payloadPet[1] = 2;
+		payloadPet[2] = 3;
+		payloadPet[3] = 4;
+		payloadPet[4] = 5;
+	} else {
+		printf("Menu\n");
+		printf("  [1] Test trama corta\n");
+		printf("  [2] Test larga corta\n");
+		scanf(" %c", &menuNodo);            //Ojo: toma el valor del caracter, no el valor hexadecimal ('1'=0x31)
+		
+		switch (menuNodo){
+			case 0x31: 
+				printf("Case 1");
+				subFuncionPet = 1;
+				break;
+			case 0x32: 
+				printf("Case 2");
+				subFuncionPet = 2;
+				break;
+			default:
+				printf("Opcion invalida \n");
+				Salir();
+				break;
+		} 
+		
+		//subFuncionPet = 1;
+		funcionPet = 4;
+		numDatosPet = 5;
+		/*
+		payloadPet[0] = 0xB1;
+		payloadPet[1] = 0xB2;
+		payloadPet[2] = 0xB3;
+		payloadPet[3] = 0xB4;
+		payloadPet[4] = 0xB5;
+		*/
+		payloadPet[0] = 1;
+		payloadPet[1] = 2;
+		payloadPet[2] = 3;
+		payloadPet[3] = 4;
+		payloadPet[4] = 5;
+	}
+	
 		
 	//Configuracion principal:
 	ConfiguracionPrincipal();
-	
-	//Datos de prueba:
-	idPet = 0;
-	funcionPet = 4;
-	subFuncionPet = 1;
-	numDatosPet = 5;
-	payloadPet[0] = 1;
-	payloadPet[1] = 2;
-	payloadPet[2] = 3;
-	payloadPet[3] = 4;
-	payloadPet[4] = 5;
-	
+			
 	sumEnviado = 0;
 	sumRecibido = 0;
 	
@@ -382,7 +430,6 @@ void GuardarTrama(unsigned char* tramaRS485, unsigned int longitudTrama){
 
 //**************************************************************************************************************************************
 void Salir(){
-	
 	bcm2835_spi_end();
 	bcm2835_close();
 	printf("\nAdios...\n");
@@ -392,5 +439,18 @@ void Salir(){
 
 
 
+/*
+#include <stdio.h>
+ 
+int main() {
+    char ch;
+    printf("Enter a character : ");
+    //read input from user to "ch"
+    scanf("%c", &ch);
+    //print to console
+    printf("You entered %c\n", ch);
+    return 0;
+}
+*/
 
 
