@@ -2,6 +2,7 @@
 //Compilar:
 //gcc TestSPI.c -o testspi -lbcm2835 -lwiringPi 
 //gcc TestSPI.c -o /home/rsa/Ejecutables/testspi -lbcm2835 -lwiringPi
+//gcc /home/rsa/Programas/TestSPI.c -o /home/rsa/Ejecutables/testspi -lbcm2835 -lwiringPi
 
 /*-------------------------------------------------------------------------------------------------------------------------
 Autor: Milton Munoz
@@ -80,10 +81,12 @@ void Salir();
 //**************************************************************************************************************************************
 int main(int argc, char *argv[]) {
   
+	//Configuracion principal:
+	ConfiguracionPrincipal();
+	
 	//Inicializa las variables:
 	i = 0;
 	x = 0;
-	
 	idPet = 0;
 	funcionPet = 0;
 	subFuncionPet = 0;
@@ -91,6 +94,8 @@ int main(int argc, char *argv[]) {
 	idResp = 0;
 	funcionPet = 0;
 	subFuncionResp = 0;
+	sumEnviado = 0;
+	sumRecibido = 0;
 	numDatosResp = 0;
 	ptrNumDatosResp = (unsigned char *) & numDatosResp;
 	
@@ -150,13 +155,7 @@ int main(int argc, char *argv[]) {
 		payloadPet[4] = 5;
 	}
 	
-		
-	//Configuracion principal:
-	ConfiguracionPrincipal();
-			
-	sumEnviado = 0;
-	sumRecibido = 0;
-	
+	//Envia la solicitud:
 	EnviarSolicitud(idPet, funcionPet, subFuncionPet, numDatosPet, payloadPet);
 	
 	while(1){}
